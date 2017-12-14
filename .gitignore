@@ -1,0 +1,11 @@
+*.sdf
+*.opendb
+*.exp
+*.idb
+*.tlog
+*.lastbuildstate
+jam/build/
+jam/Debug/
+*.user
+*.db
+jam/.vs/jam/v14/.suo
