@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LOADING...</title>
+</head>
+<body>
+
+<script type="text/javascript">
+
+window.onload = function () {
+	window.outputLog = null;
+	window.Module = {
+		print: function (text) {
+			if (window.outputLog !== null) {
+				window.outputLog.innerHTML += text + '\n';
+				window.outputLog.scrollTop = window.outputLog.scrollHeight;
+			}
+			console.log(text);
+		},
+		printErr: function (text) {
+			if (window.outputLog !== null) {
+				window.outputLog.innerHTML += text + '\n';
+				window.outputLog.scrollTop = window.outputLog.scrollHeight;
+			}
+			console.log(text);
+		}
+	};
+	var LoadAsmJS = function (fileName, onLoad) {
+		var script = document.createElement('script');
+		script.addEventListener('load', function (evt) {
+			/* Stupid hack */
+			setTimeout(function checkScriptLoaded () {
+				if (!window.Module.asm._free) {
+					setTimeout(checkScriptLoaded, 100);
+				} else {
+					onLoad();
+					console.log('ASM.js file loaded');
+					location.hash = '#asm.js'
+				}
+			}, 100);
+		}, true);
+		script.addEventListener('error', function () {
+			console.error('Failed to load asm.js');
+		});
+		script.async = true;
+		script.src = fileName + '.asm.js';
+		document.body.appendChild(script);
+	};
+
+	var LoadEM = function (fileName, onLoad) {
+		window.Module = window.Module || {};
+		if (location.hash !== '#asm.js' && ('WebAssembly' in window && WebAssembly.instantiate !== undefined)) {
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', fileName + '.wasm', true);
+			xhr.responseType = 'arraybuffer';
+			xhr.addEventListener('error', function () {
+				console.log('Failed to load wasm file');
+				LoadAsmJS(fileName, onLoad);
+				console.log('Fallback to asm.js');
+			});
+			xhr.addEventListener('load', function() {
+				if (xhr.status === 200) {
+					var script = document.createElement('script');
+					window.Module.wasmBinary = xhr.response;
+					script.onload = function (evt) {
+						/* Stupid hack */
+						setTimeout(function checkScriptLoaded () {
+							if (!window.Module.asm._free) {
+								setTimeout(checkScriptLoaded, 100);
+							} else {
+								onLoad();
+								console.log('WebAssembly binary loaded');
+							}
+						}, 100);
+					};
+					script.src = fileName + '.js';
+					document.body.appendChild(script);
+				} else if( xhr.status == 404) {
+					LoadAsmJS(fileName, onLoad);
+					console.log('Fallback to asm.js');
+				}
+			}, true);
+			xhr.async = true;
+			xhr.send(null);
+		} else {
+			LoadAsmJS(fileName, onLoad);
+			console.log('Fallback to asm.js');
+		}
+	};
+	LoadEM(/* Here set the name for your app ==> */ 'game', function () {
+		console.log('Loading complete');
+	});
+}
+</script>
+<!--
+{{{ SCRIPT }}}
+-->
+</body>
+</html>
