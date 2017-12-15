@@ -4,8 +4,8 @@
 *.idb
 *.tlog
 *.lastbuildstate
-jam/build/
-jam/Debug/
+entanglement/bin/
+entanglement/Debug/
 *.user
 *.db
-jam/.vs/jam/v14/.suo
+entanglement/.vs/
