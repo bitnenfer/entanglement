@@ -8,4 +8,4 @@ entanglement/bin/
 entanglement/Debug/
 *.user
 *.db
-entanglement/.vs/
+.vs/
