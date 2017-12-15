@@ -1,0 +1,9 @@
+﻿  unity.c
+     Creating library bin\Release\x64\build.lib and object bin\Release\x64\build.exp
+  Generating code
+  6 of 29 functions (20.7%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  entanglement.vcxproj -> C:\dev\entanglement\entanglement\bin\Release\x64\build.exe
+  entanglement.vcxproj -> bin\Release\x64\build.pdb (Full PDB)

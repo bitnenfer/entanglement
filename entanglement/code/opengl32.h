@@ -1744,6 +1744,8 @@ PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate = NULL;
 PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparate = NULL;
 PFNGLDRAWELEMENTSBASEVERTEXPROC glDrawElementsBaseVertex = NULL;
 
+static const char k_ShaderHeader[] = "#version 120\n";
+static const size_t k_ShaderHeaderSize = sizeof(k_ShaderHeader) - 1;
 
 #elif defined(PLATFORM_WEB)
 
@@ -1751,6 +1753,9 @@ PFNGLDRAWELEMENTSBASEVERTEXPROC glDrawElementsBaseVertex = NULL;
 #include <GLES2/gl2ext.h>
 
 #define __debugbreak()
+
+static const char k_ShaderHeader[] = "precision mediump float;\n";
+static const size_t k_ShaderHeaderSize = sizeof(k_ShaderHeader) - 1;
 
 #endif
 

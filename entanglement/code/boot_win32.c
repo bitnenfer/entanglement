@@ -1,3 +1,4 @@
+
 __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
 __declspec(dllexport) unsigned long AmdPowerXpressRequestHighPerformance = 0x00000001;
 
@@ -33,10 +34,12 @@ uint32_t k_KeyCodeMap[(int32_t)KEYCODE_LENGTH] = {
     0x11, 0x10, 0x12
 };
 int32_t g_KeyDown[(int32_t)KEYCODE_LENGTH] = { 0 };
+int32_t g_KeyHit[(int32_t)KEYCODE_LENGTH] = { 0 };
 int32_t g_MouseX = 0;
 int32_t g_MouseY = 0;
 float32_t g_MouseWheel = 0.0f;
 int32_t g_MouseButtonDown[3] = { 0 };
+int32_t g_MouseButtonHit[3] = { 0 };
 
 /* Window */
 HWND g_WindowHandle = NULL;
@@ -319,6 +322,15 @@ void poll_events()
 {
     MSG msg;
 
+    g_MouseButtonHit[0] = 0;
+    g_MouseButtonHit[1] = 0;
+    g_MouseButtonHit[2] = 0;
+
+    for (int32_t index = 0; index < KEYCODE_LENGTH; ++index)
+    {
+        g_KeyHit[index] = 0;
+    }
+
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
     {
         TranslateMessage(&msg);
@@ -352,6 +364,10 @@ void poll_events()
         {
             g_MouseX = GET_X_LPARAM(msg.lParam);
             g_MouseY = GET_Y_LPARAM(msg.lParam);
+            if (!g_MouseButtonDown[MOUSE_BUTTON_LEFT])
+            {
+                g_MouseButtonHit[MOUSE_BUTTON_LEFT] = 1;
+            }
             g_MouseButtonDown[MOUSE_BUTTON_LEFT] = 1;
             break;
         }
@@ -359,6 +375,10 @@ void poll_events()
         {
             g_MouseX = GET_X_LPARAM(msg.lParam);
             g_MouseY = GET_Y_LPARAM(msg.lParam);
+            if (!g_MouseButtonDown[MOUSE_BUTTON_RIGHT])
+            {
+                g_MouseButtonHit[MOUSE_BUTTON_RIGHT] = 1;
+            }
             g_MouseButtonDown[MOUSE_BUTTON_RIGHT] = 1;
             break;
         }
@@ -366,6 +386,10 @@ void poll_events()
         {
             g_MouseX = GET_X_LPARAM(msg.lParam);
             g_MouseY = GET_Y_LPARAM(msg.lParam);
+            if (!g_MouseButtonDown[MOUSE_BUTTON_MIDDLE])
+            {
+                g_MouseButtonHit[MOUSE_BUTTON_MIDDLE] = 1;
+            }
             g_MouseButtonDown[MOUSE_BUTTON_MIDDLE] = 1;
             break;
         }
@@ -374,6 +398,7 @@ void poll_events()
             g_MouseX = GET_X_LPARAM(msg.lParam);
             g_MouseY = GET_Y_LPARAM(msg.lParam);
             g_MouseButtonDown[MOUSE_BUTTON_LEFT] = 0;
+            g_MouseButtonHit[MOUSE_BUTTON_LEFT] = 0;
             break;
         }
         case WM_RBUTTONUP:
@@ -381,6 +406,7 @@ void poll_events()
             g_MouseX = GET_X_LPARAM(msg.lParam);
             g_MouseY = GET_Y_LPARAM(msg.lParam);
             g_MouseButtonDown[MOUSE_BUTTON_RIGHT] = 0;
+            g_MouseButtonHit[MOUSE_BUTTON_RIGHT] = 0;
             break;
         }
         case WM_MBUTTONUP:
@@ -388,6 +414,7 @@ void poll_events()
             g_MouseX = GET_X_LPARAM(msg.lParam);
             g_MouseY = GET_Y_LPARAM(msg.lParam);
             g_MouseButtonDown[MOUSE_BUTTON_MIDDLE] = 0;
+            g_MouseButtonHit[MOUSE_BUTTON_MIDDLE] = 0;
             break;
         }
         case WM_KEYDOWN:
@@ -396,6 +423,10 @@ void poll_events()
             {
                 if (k_KeyCodeMap[index] == msg.wParam)
                 {
+                    if (!g_KeyDown[index])
+                    {
+                        g_KeyHit[index] = 1;
+                    }
                     g_KeyDown[index] = 1;
                     break;
                 }
@@ -409,6 +440,7 @@ void poll_events()
                 if (k_KeyCodeMap[index] == msg.wParam)
                 {
                     g_KeyDown[index] = 0;
+                    g_KeyHit[index] = 0;
                     break;
                 }
             }
@@ -423,13 +455,21 @@ void poll_events()
         }
     }
 }
-int32_t is_key_down(enum KeyCode key)
+int32_t is_key_down(enum key_code key)
 {
     return g_KeyDown[key];
 }
-int32_t is_mouse_down(enum MouseButton button)
+int32_t is_key_hit(enum key_code key)
+{
+    return g_KeyHit[key];
+}
+int32_t is_mouse_down(enum mouse_button button)
 {
     return g_MouseButtonDown[button];
+}
+int32_t is_mouse_hit(enum mouse_button button)
+{
+    return g_MouseButtonHit[button];
 }
 float32_t mouse_x()
 {

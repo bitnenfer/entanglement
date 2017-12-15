@@ -3,7 +3,7 @@
 
 #include "config.h"
 
-enum KeyCode
+enum key_code
 {   
     KEYCODE_ABNT_C1,
     KEYCODE_ABNT_C2,
@@ -203,19 +203,7 @@ enum KeyCode
     /* How many keycodes */
     KEYCODE_LENGTH
 };
-enum KeyState
-{
-    KEY_STATE_DOWN,
-    KEY_STATE_RELEASE
-};
-enum MouseState
-{
-    MOUSE_STATE_DOWN,
-    MOUSE_STATE_RELEASE,
-    MOUSE_STATE_MOVE,
-    MOUSE_STATE_WHEEL
-};
-enum MouseButton
+enum mouse_button
 {
     MOUSE_BUTTON_LEFT = 0,
     MOUSE_BUTTON_MIDDLE = 1,
@@ -231,6 +219,7 @@ void debug_print(const char* p_fmt, ...);
 #define EM_ASM_ARGS(x, ...)
 #define EM_ASM_INT(x, ...) 0
 #define EM_ASM_DOUBLE(x, ...) 0.0
+
 #elif defined(__EMSCRIPTEN__)
 #define PLATFORM_WEB 1
 #define WRITE_EM(...) __VA_ARGS__ 

@@ -1,3 +1,7 @@
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 /* =============================================== */
 /* ===== ORDER MATTERS. DON'T MESS WITH THIS ===== */
 /* =============================================== */
@@ -8,8 +12,9 @@
 /* Common Compilation Units */
 /* ======================== */
 
-#include "game.c"
+#include "loader.c"
 #include "alloc.c"
+#include "game.c"
 
 /* ======================== */
 

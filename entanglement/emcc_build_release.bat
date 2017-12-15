@@ -39,9 +39,9 @@ echo Building Release
 
 mkdir %SAMPLE_OUTPUT_DIR%
 call %CC% %FLAGS_WASM% -c code\unity.c -o %SAMPLE_OUTPUT_DIR%game.o
-call %CC% %FLAGS_WASM% %SAMPLE_OUTPUT_DIR%game.o -o %SAMPLE_OUTPUT_DIR%game.html --preload-file .\data\
+call %CC% %FLAGS_WASM% %SAMPLE_OUTPUT_DIR%game.o -o %SAMPLE_OUTPUT_DIR%index.html --preload-file .\data\
 call %CC% %FLAGS_ASMJS% -c code\unity.c -o %SAMPLE_OUTPUT_DIR%game.o
-call %CC% %FLAGS_ASMJS% %SAMPLE_OUTPUT_DIR%game.o -o %SAMPLE_OUTPUT_DIR%game.asm.js --preload-file .\data\
+call %CC% %FLAGS_ASMJS% %SAMPLE_OUTPUT_DIR%game.o -o %SAMPLE_OUTPUT_DIR%index.asm.js --preload-file .\data\
 call rm -rf %SAMPLE_OUTPUT_DIR%game.o
 
 echo Compilation Complete

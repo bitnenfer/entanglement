@@ -6,6 +6,11 @@
 #include "opengl32.h"
 #include "boot.h"
 
+#include <assert.h>
+
+GLuint u_time_location = 0;
+float32_t time = 0.0;
+
 void start_game()
 {
     float32_t vertices[] = { -1, 1, -1, -7, 7, 1 };
@@ -14,37 +19,16 @@ void start_game()
     GLuint fshader = glCreateShader(GL_FRAGMENT_SHADER);
     GLuint vbo;
 
-    const char* v_shader_source =
-#if defined(PLATFORM_WEB)
-        "precision mediump float;\n"
-#else
-        "#version 120\n"
-#endif
-        "attribute vec2 vert_position;\n"
-        "void main() {\n"
-        "    gl_Position = vec4(vert_position, 0.0, 1.0);"
-        "}";
+    file_binary_t* p_vshader_file = file_binary_load_with_header("data/shaders/flat.vert", LOAD_SCRATCH, k_ShaderHeader, k_ShaderHeaderSize);
+    file_binary_t* p_fshader_file = file_binary_load_with_header("data/shaders/flat.frag", LOAD_SCRATCH, k_ShaderHeader, k_ShaderHeaderSize);
 
-    const char* f_shader_source =
-#if defined(PLATFORM_WEB)
-        "precision mediump float;\n"
-#else
-        "#version 120\n"
-#endif
-        "float circle(vec2 position, vec2 origin, float radius)\n"
-        "{\n"
-        "    return length(position - origin) - radius;\n"
-        "}\n"
-        "\n"
-        "void main()\n"
-        "{\n"
-        "    vec2 texcoord = gl_FragCoord.xy / vec2(512.0);\n"
-        "    gl_FragColor = vec4(circle(texcoord, vec2(0.5), 0.25));\n"
-        "}\n"
-        ;
+    assert(p_vshader_file != NULL && p_fshader_file != NULL);
 
-    glShaderSource(vshader, 1, &v_shader_source, NULL);
-    glShaderSource(fshader, 1, &f_shader_source, NULL);
+    const char* p_vshader_code = (const char*)file_binary_get_data(p_vshader_file);
+    const char* p_fshader_code = (const char*)file_binary_get_data(p_fshader_file);
+
+    glShaderSource(vshader, 1, &p_vshader_code, NULL);
+    glShaderSource(fshader, 1, &p_fshader_code, NULL);
     glCompileShader(vshader);
     glCompileShader(fshader);
 
@@ -56,6 +40,7 @@ void start_game()
         char* p_buffer_info_log = (char*)scratch_alloc(1024, 4);
         glGetShaderInfoLog(vshader, 1024, &length, p_buffer_info_log);
         debug_print("Vertex Shader Error\n\n%s\n\n", p_buffer_info_log);
+        debug_print("Shader Source:\n%s\n", p_vshader_code);
         exit(-1);
     }
 
@@ -66,6 +51,7 @@ void start_game()
         char* p_buffer_info_log = (char*)scratch_alloc(1024, 4);
         glGetShaderInfoLog(fshader, 1024, &length, p_buffer_info_log);
         debug_print("Fragment Shader Error\n\n%s\n\n", p_buffer_info_log);
+        debug_print("Shader Source:\n%s\n", p_fshader_code);
         exit(-1);
     }
 
@@ -92,6 +78,9 @@ void start_game()
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 8, NULL);
     OPENGL_ERROR_CHECK();
     scratch_clear();
+
+    u_time_location = glGetUniformLocation(program, "u_time");
+    glUniform2f(glGetUniformLocation(program, "u_resolution"), CONFIG_WIDTH, CONFIG_HEIGHT);
 }
 
 /* Should update at 0.16ms */
@@ -101,10 +90,28 @@ void update_game(float32_t delta)
     {
         quit_game();
     }
+
+    if (is_key_hit(KEYCODE_SPACE))
+    {
+        debug_print("key hit\n");
+    }
+
+    if (is_mouse_hit(MOUSE_BUTTON_LEFT))
+    {
+        debug_print("mouse hit\n");
+    }
+
+    if (is_mouse_down(MOUSE_BUTTON_LEFT))
+    {
+        debug_print("mouse down\n");
+    }
+
+    time += 0.01f;
 }
 
 void render_game()
 {
+    glUniform1f(u_time_location, time);
     glClearColor(mouse_x() / CONFIG_WIDTH, mouse_y() / CONFIG_HEIGHT, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     glDrawArrays(GL_TRIANGLES, 0, 3);
