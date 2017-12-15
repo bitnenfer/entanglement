@@ -261,8 +261,9 @@ void initalize_game(int argc, const char* p_argv[])
 
 #if defined(PLATFORM_DEBUG)
                 window.outputLog = document.createElement('pre');
+                window.outputLog.id = 'gunk_outputlog';
                 window.outputLog.style.width = $0 + 'px';
-                window.outputLog.style.height = '100px';
+                window.outputLog.style.height = '150px';
                 window.outputLog.style.overflow = 'auto';
                 window.outputLog.style.backgroundColor = '#000';
                 window.outputLog.style.color = '#fff';
