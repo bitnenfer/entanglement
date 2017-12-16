@@ -1,5 +1,5 @@
-#ifndef _OPENGL32_H_
-#define _OPENGL32_H_
+#ifndef _OPENGL_H_
+#define _OPENGL_H_
 
 #include <stdlib.h>
 #include <stdio.h>

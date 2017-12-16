@@ -4,7 +4,7 @@
 #include <stdarg.h>
 
 #include "boot.h"
-#include "opengl32.h"
+#include "opengl.h"
 #include "alloc.h"
 
 #if defined(PLATFORM_WEB)

@@ -3,7 +3,7 @@
 #include "alloc.h"
 #include "config.h"
 #include "platform.h"
-#include "opengl32.h"
+#include "glutils.h"
 #include "boot.h"
 
 #include <assert.h>
@@ -14,9 +14,7 @@ float32_t time = 0.0;
 void start_game()
 {
     float32_t vertices[] = { -1, 1, -1, -7, 7, 1 };
-    GLuint program = glCreateProgram();
-    GLuint vshader = glCreateShader(GL_VERTEX_SHADER);
-    GLuint fshader = glCreateShader(GL_FRAGMENT_SHADER);
+    GLuint program;
     GLuint vbo;
 
     file_binary_t* p_vshader_file = file_binary_load_with_header("data/shaders/flat.vert", LOAD_SCRATCH, k_ShaderHeader, k_ShaderHeaderSize);
@@ -24,63 +22,21 @@ void start_game()
 
     assert(p_vshader_file != NULL && p_fshader_file != NULL);
 
-    const char* p_vshader_code = (const char*)file_binary_get_data(p_vshader_file);
-    const char* p_fshader_code = (const char*)file_binary_get_data(p_fshader_file);
+    program = glu_create_program(file_binary_get_data(p_vshader_file), file_binary_get_data(p_fshader_file));
+    vbo = glu_create_vertex_buffer(vertices, sizeof(vertices), GL_STATIC_DRAW);
+    glu_bind_vertex_buffer(vbo);
 
-    glShaderSource(vshader, 1, &p_vshader_code, NULL);
-    glShaderSource(fshader, 1, &p_fshader_code, NULL);
-    glCompileShader(vshader);
-    glCompileShader(fshader);
-
-    GLint shader_ok;
-    glGetShaderiv(vshader, GL_COMPILE_STATUS, &shader_ok);
-    if (shader_ok == GL_FALSE)
-    {
-        GLsizei length;
-        char* p_buffer_info_log = (char*)scratch_alloc(1024, 4);
-        glGetShaderInfoLog(vshader, 1024, &length, p_buffer_info_log);
-        debug_print("Vertex Shader Error\n\n%s\n\n", p_buffer_info_log);
-        debug_print("Shader Source:\n%s\n", p_vshader_code);
-        exit(-1);
-    }
-
-    glGetShaderiv(fshader, GL_COMPILE_STATUS, &shader_ok);
-    if (shader_ok == GL_FALSE)
-    {
-        GLsizei length;
-        char* p_buffer_info_log = (char*)scratch_alloc(1024, 4);
-        glGetShaderInfoLog(fshader, 1024, &length, p_buffer_info_log);
-        debug_print("Fragment Shader Error\n\n%s\n\n", p_buffer_info_log);
-        debug_print("Shader Source:\n%s\n", p_fshader_code);
-        exit(-1);
-    }
-
-    glAttachShader(program, vshader);
-    glAttachShader(program, fshader);
-    glLinkProgram(program);
-
-    glGetProgramiv(program, GL_LINK_STATUS, &shader_ok);
-    if (shader_ok == GL_FALSE)
-    {
-        GLsizei length;
-        char* p_buffer_info_log = (char*)scratch_alloc(1024, 4);
-        glGetProgramInfoLog(vshader, 1024, &length, p_buffer_info_log);
-        debug_print("Program Link Error: %s", p_buffer_info_log);
-        exit(-1);
-    }
-
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glUseProgram(program);
     glBindAttribLocation(program, 0, "vert_position");
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 8, NULL);
+    
     OPENGL_ERROR_CHECK();
-    scratch_clear();
 
     u_time_location = glGetUniformLocation(program, "u_time");
     glUniform2f(glGetUniformLocation(program, "u_resolution"), CONFIG_WIDTH, CONFIG_HEIGHT);
+ 
+    scratch_clear();
 }
 
 /* Should update at 0.16ms */

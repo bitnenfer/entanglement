@@ -152,9 +152,10 @@
     <ClInclude Include="code\boot.h" />
     <ClInclude Include="code\config.h" />
     <ClInclude Include="code\game.h" />
+    <ClInclude Include="code\glutils.h" />
     <ClInclude Include="code\loader.h" />
     <ClInclude Include="code\math.h" />
-    <ClInclude Include="code\opengl32.h" />
+    <ClInclude Include="code\opengl.h" />
     <ClInclude Include="code\platform.h" />
     <ClInclude Include="code\types.h" />
     <ClInclude Include="code\utils.h" />

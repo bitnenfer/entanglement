@@ -7,7 +7,7 @@ __declspec(dllexport) unsigned long AmdPowerXpressRequestHighPerformance = 0x000
 #include <stdarg.h>
 
 #include "boot.h"
-#include "opengl32.h"
+#include "opengl.h"
 #include "alloc.h"
 #include <Windows.h>
 #include <windowsx.h>

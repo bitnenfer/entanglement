@@ -239,4 +239,14 @@ void debug_print(const char* p_fmt, ...);
 #define PLATFORM_RELEASE 1
 #endif
 
+#if defined(PLATFORM_WINDOWS) || defined(_MSC_VER)
+#define FORCEINLINE __forceinline
+#define NOINLINE __declspec(noinline)
+#define ALIGN(x) __declspec(align(x))
+#elif defined(__GNUC__) || defined(PLATFORM_WEB)
+#define FORCEINLINE inline __attribute__((always_inline))
+#define NOINLINE __attribute__((noinline))
+#define ALIGN(x) __attribute__((aligned(x))
+#endif
+
 #endif // !_PLATFORM_H_
