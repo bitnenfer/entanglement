@@ -16,6 +16,9 @@
 #include "alloc.c"
 #include "game.c"
 
+/* Passes */
+#include "passes/first_pass.c"
+
 /* ======================== */
 
 /* =================================== */

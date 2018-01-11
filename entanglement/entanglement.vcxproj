@@ -156,6 +156,7 @@
     <ClInclude Include="code\loader.h" />
     <ClInclude Include="code\math.h" />
     <ClInclude Include="code\opengl.h" />
+    <ClInclude Include="code\passes\first_pass.h" />
     <ClInclude Include="code\platform.h" />
     <ClInclude Include="code\types.h" />
     <ClInclude Include="code\utils.h" />

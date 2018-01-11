@@ -1,4 +1,4 @@
-
+#include "game.h"
 #include "types.h"
 #include "alloc.h"
 #include "config.h"
@@ -6,70 +6,51 @@
 #include "glutils.h"
 #include "boot.h"
 
+#include "passes/first_pass.h"
+
 #include <assert.h>
 
-GLuint u_time_location = 0;
-float32_t time = 0.0;
+state_t* g_pCurrentState = NULL;
+state_t* g_pNextState = NULL;
+
+void game_swap_state(state_t* p_next_state)
+{
+    g_pNextState = p_next_state;
+}
 
 void start_game()
 {
-    float32_t vertices[] = { -1, 1, -1, -7, 7, 1 };
-    GLuint program;
-    GLuint vbo;
-
-    file_binary_t* p_vshader_file = file_binary_load_with_header("data/shaders/flat.vert", LOAD_SCRATCH, k_ShaderHeader, k_ShaderHeaderSize);
-    file_binary_t* p_fshader_file = file_binary_load_with_header("data/shaders/flat.frag", LOAD_SCRATCH, k_ShaderHeader, k_ShaderHeaderSize);
-
-    assert(p_vshader_file != NULL && p_fshader_file != NULL);
-
-    program = glu_create_program(file_binary_get_data(p_vshader_file), file_binary_get_data(p_fshader_file));
-    vbo = glu_create_vertex_buffer(vertices, sizeof(vertices), GL_STATIC_DRAW);
-    glu_bind_vertex_buffer(vbo);
-
-    glUseProgram(program);
-    glBindAttribLocation(program, 0, "vert_position");
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 8, NULL);
-    
-    OPENGL_ERROR_CHECK();
-
-    u_time_location = glGetUniformLocation(program, "u_time");
-    glUniform2f(glGetUniformLocation(program, "u_resolution"), CONFIG_WIDTH, CONFIG_HEIGHT);
- 
-    scratch_clear();
+    game_swap_state(&g_FirstPassState);
 }
 
 /* Should update at 0.16ms */
 void update_game(float32_t delta)
 {
-    if (is_key_down(KEYCODE_ESCAPE))
+    if (g_pNextState != NULL)
     {
-        quit_game();
+        if (g_pCurrentState != NULL && g_pCurrentState->fp_destroy != NULL)
+        {
+            g_pCurrentState->fp_destroy();
+        }
+
+        g_pNextState->fp_create();
+        g_pCurrentState = g_pNextState;
+        g_pNextState = NULL;
     }
 
-    if (is_key_hit(KEYCODE_SPACE))
+    if (g_pCurrentState != NULL && g_pCurrentState->fp_update)
     {
-        debug_print("key hit\n");
+        g_pCurrentState->fp_update(delta);
     }
 
-    if (is_mouse_hit(MOUSE_BUTTON_LEFT))
-    {
-        debug_print("mouse hit\n");
-    }
-
-    if (is_mouse_down(MOUSE_BUTTON_LEFT))
-    {
-        debug_print("mouse down\n");
-    }
-
-    time += 0.01f;
+    scratch_clear();
 }
 
 void render_game()
 {
-    glUniform1f(u_time_location, time);
-    glClearColor(mouse_x() / CONFIG_WIDTH, mouse_y() / CONFIG_HEIGHT, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    if (g_pCurrentState != NULL && g_pCurrentState->fp_render)
+    {
+        g_pCurrentState->fp_render();
+    }
 }
 
