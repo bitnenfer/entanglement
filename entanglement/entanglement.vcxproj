@@ -146,6 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="code\unity.c" />
+    <ClCompile Include="code\utils\camera.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\alloc.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="code\platform.h" />
     <ClInclude Include="code\types.h" />
     <ClInclude Include="code\utils.h" />
+    <ClInclude Include="code\utils\camera.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
