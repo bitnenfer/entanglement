@@ -2,6 +2,7 @@
 #define _MATH_H_
 
 #include "types.h"
+#include <math.h>
 
 struct quat
 {
@@ -22,11 +23,6 @@ struct vec3
         {
             float32_t x;
             float32_t y;
-            float32_t z;
-        };
-        struct
-        {
-            struct vec2 vec2;
             float32_t z;
         };
     };
@@ -54,7 +50,7 @@ struct mat4
             float32_t a, b, c, d;
             float32_t e, f, g, h;
             float32_t i, j, k, l;
-            float32_t m, n, o, p;
+            float32_t p_m, n, o, p;
         };
         float32_t data[16];
     };
@@ -62,72 +58,72 @@ struct mat4
 
 /* mat2d */
 struct mat2d* mat2d_identity(struct mat2d* p_out);
-struct mat2d* mat2d_mul(struct mat2d* p_out, struct mat2d* m0, struct mat2d* m1);
-struct vec2* mat2d_vec2_mul(struct vec2* p_out, struct mat2d* m0, struct vec2* v1);
-struct mat2d* mat2d_translate(struct mat2d* p_out, struct mat2d* m, float32_t x, float32_t y);
-struct mat2d* mat2d_scale(struct mat2d* p_out, struct mat2d* m, float32_t x, float32_t y);
-struct mat2d* mat2d_rotate(struct mat2d* p_out, struct mat2d* m, float32_t radian);
+struct mat2d* mat2d_mul(struct mat2d* p_out, struct mat2d* p_m0, struct mat2d* p_m1);
+struct vec2* mat2d_vec2_mul(struct vec2* p_out, struct mat2d* p_m0, struct vec2* p_v1);
+struct mat2d* mat2d_translate(struct mat2d* p_out, struct mat2d* p_m, float32_t x, float32_t y);
+struct mat2d* mat2d_scale(struct mat2d* p_out, struct mat2d* p_m, float32_t x, float32_t y);
+struct mat2d* mat2d_rotate(struct mat2d* p_out, struct mat2d* p_m, float32_t radian);
 
 /* mat4 */
 struct mat4* mat4_identity(struct mat4* p_out);
-struct mat4* mat4_mul(struct mat4* p_out, struct mat4* m0, struct mat4* m1);
-struct vec3* mat4_vec3_mul(struct vec3* p_out, struct mat4* m0, struct vec3* v1);
-struct mat4* mat4_transpose(struct mat4* p_out, struct mat4* m);
-struct mat4* mat4_invert(struct mat4* p_out, struct mat4* m);
-struct mat4* mat4_rotate_x(struct mat4* p_out, struct mat4* m, float32_t radian);
-struct mat4* mat4_rotate_y(struct mat4* p_out, struct mat4* m, float32_t radian);
-struct mat4* mat4_rotate_z(struct mat4* p_out, struct mat4* m, float32_t radian);
-struct mat4* mat4_rotate(struct mat4* p_out, struct mat4* m, struct vec3* axis, float32_t radian);
-struct mat4* mat4_scale(struct mat4* p_out, struct mat4* m, struct vec3* scale);
-struct mat4* mat4_translate(struct mat4* p_out, struct mat4* m, struct vec3* translate);
+struct mat4* mat4_mul(struct mat4* p_out, struct mat4* p_m0, struct mat4* p_m1);
+struct vec3* mat4_vec3_mul(struct vec3* p_out, struct mat4* p_m0, struct vec3* p_v1);
+struct mat4* mat4_transpose(struct mat4* p_out, struct mat4* p_m);
+struct mat4* mat4_invert(struct mat4* p_out, struct mat4* p_m);
+struct mat4* mat4_rotate_x(struct mat4* p_out, struct mat4* p_m, float32_t radian);
+struct mat4* mat4_rotate_y(struct mat4* p_out, struct mat4* p_m, float32_t radian);
+struct mat4* mat4_rotate_z(struct mat4* p_out, struct mat4* p_m, float32_t radian);
+struct mat4* mat4_rotate(struct mat4* p_out, struct mat4* p_m, struct vec3* p_axis, float32_t radian);
+struct mat4* mat4_scale(struct mat4* p_out, struct mat4* p_m, struct vec3* p_scale);
+struct mat4* mat4_translate(struct mat4* p_out, struct mat4* p_m, struct vec3* p_translate);
 struct mat4* mat4_frustum(struct mat4* p_out, float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t frustum_near, float32_t frustum_far);
 struct mat4* mat4_perspective(struct mat4* p_out, float32_t fov_y, float32_t aspect, float32_t persp_near, float32_t persp_far);
 struct mat4* mat4_ortho(struct mat4* p_out, float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t ortho_near, float32_t ortho_far);
-struct mat4* mat4_look_at(struct mat4* p_out, struct vec3* eye, struct vec3* center, struct vec3* up);
+struct mat4* mat4_look_at(struct mat4* p_out, struct vec3* p_eye, struct vec3* p_center, struct vec3* p_up);
 
 /* vec2 */
-struct vec2 vec2_add(struct vec2 v0, struct vec2 v1);
-struct vec2 vec2_sub(struct vec2 v0, struct vec2 v1);
-struct vec2 vec2_mul(struct vec2 v0, struct vec2 v1);
-struct vec2 vec2_invert(struct vec2 v);
-struct vec2 vec2_negate(struct vec2 v);
-struct vec2 vec2_normalize(struct vec2 v);
-int32_t vec2_equal(struct vec2 v0, struct vec2 v1);
-struct vec3 vec2_cross(struct vec2 v0, struct vec2 v1);
-float32_t vec2_distance(struct vec2 v0, struct vec2 v1);
-float32_t vec2_dot(struct vec2 v0, struct vec2 v1);
-float32_t vec2_length(struct vec2 v);
-float32_t vec2_length2(struct vec2 v);
-float32_t vec2_distance2(struct vec2 v0, struct vec2 v1);
+struct vec2* vec2_add(struct vec2* p_out, struct vec2* p_v0, struct vec2* p_v1);
+struct vec2* vec2_sub(struct vec2* p_out, struct vec2* p_v0, struct vec2* p_v1);
+struct vec2* vec2_mul(struct vec2* p_out, struct vec2* p_v0, struct vec2* p_v1);
+struct vec2* vec2_invert(struct vec2* p_out, struct vec2* p_v);
+struct vec2* vec2_negate(struct vec2* p_out, struct vec2* p_v);
+struct vec2* vec2_normalize(struct vec2* p_out, struct vec2* p_v);
+int32_t vec2_equal(struct vec2* p_v0, struct vec2* p_v1);
+struct vec3* vec2_cross(struct vec3* p_out, struct vec2* p_v0, struct vec2* p_v1);
+float32_t vec2_distance(struct vec2* p_v0, struct vec2* p_v1);
+float32_t vec2_dot(struct vec2* p_v0, struct vec2* p_v1);
+float32_t vec2_length(struct vec2* p_v);
+float32_t vec2_length2(struct vec2* p_v);
+float32_t vec2_distance2(struct vec2* p_v0, struct vec2* p_v1);
 
 /* vec3 */
-struct vec3 vec3_add(struct vec3 v0, struct vec3 v1);
-struct vec3 vec3_sub(struct vec3 v0, struct vec3 v1);
-struct vec3 vec3_mul(struct vec3 v0, struct vec3 v1);
-struct vec3 vec3_invert(struct vec3 v);
-struct vec3 vec3_negate(struct vec3 v);
-struct vec3 vec3_normalize(struct vec3 v);
-int32_t vec3_equal(struct vec3 v0, struct vec3 v1);
-struct vec3 vec3_cross(struct vec3 v0, struct vec3 v1);
-float32_t vec3_distance(struct vec3 v0, struct vec3 v1);
-float32_t vec3_dot(struct vec3 v0, struct vec3 v1);
-float32_t vec3_length(struct vec3 v);
-float32_t vec3_length2(struct vec3 v);
-float32_t vec3_distance2(struct vec3 v0, struct vec3 v1);
+struct vec3* vec3_add(struct vec3* p_out, struct vec3* p_v0, struct vec3* p_v1);
+struct vec3* vec3_sub(struct vec3* p_out, struct vec3* p_v0, struct vec3* p_v1);
+struct vec3* vec3_mul(struct vec3* p_out, struct vec3* p_v0, struct vec3* p_v1);
+struct vec3* vec3_invert(struct vec3* p_out, struct vec3* p_v);
+struct vec3* vec3_negate(struct vec3* p_out, struct vec3* p_v);
+struct vec3* vec3_normalize(struct vec3* p_out, struct vec3* p_v);
+int32_t vec3_equal(struct vec3* p_v0, struct vec3* p_v1);
+struct vec3* vec3_cross(struct vec3* p_out, struct vec3* p_v0, struct vec3* p_v1);
+float32_t vec3_distance(struct vec3* p_v0, struct vec3* p_v1);
+float32_t vec3_dot(struct vec3* p_v0, struct vec3* p_v1);
+float32_t vec3_length(struct vec3* p_v);
+float32_t vec3_length2(struct vec3* p_v);
+float32_t vec3_distance2(struct vec3* p_v0, struct vec3* p_v1);
 
 /* quat */
-struct quat quat_identity();
-struct quat quat_add(struct quat q0, struct quat q1);
-struct quat quat_mul(struct quat q0, struct quat q1);
-struct quat quat_set_axis_angle(struct vec3 axis, float32_t radian);
-struct quat quat_rotate_x(struct quat q, float32_t radian);
-struct quat quat_rotate_y(struct quat q, float32_t radian);
-struct quat quat_rotate_z(struct quat q, float32_t radian);
-struct quat quat_calcw(struct quat q);
-struct quat quat_invert(struct quat q);
-struct quat quat_conjugate(struct quat q);
-struct mat4 quat_to_mat4(struct quat q);
-float32_t quat_get_axis_angle(struct vec3* p_out_axis, struct quat q);
+struct quat* quat_identity(struct quat* p_out);
+struct quat* quat_add(struct quat* p_out, struct quat* p_q0, struct quat* p_q1);
+struct quat* quat_mul(struct quat* p_out, struct quat* p_q0, struct quat* p_q1);
+struct quat* quat_set_axis_angle(struct quat* p_out, struct vec3* p_axis, float32_t radian);
+struct quat* quat_rotate_x(struct quat* p_out, struct quat* p_q, float32_t radian);
+struct quat* quat_rotate_y(struct quat* p_out, struct quat* p_q, float32_t radian);
+struct quat* quat_rotate_z(struct quat* p_out, struct quat* p_q, float32_t radian);
+struct quat* quat_calcw(struct quat* p_out, struct quat* p_q);
+struct quat* quat_invert(struct quat* p_out, struct quat* p_q);
+struct quat* quat_conjugate(struct quat* p_out, struct quat* p_q);
+struct mat4* quat_to_mat4(struct mat4* p_out, struct quat* p_q);
+float32_t quat_get_axis_angle(struct vec3* p_out_axis, struct quat* p_q);
 
 /* Definition */
 typedef struct quat quat_t;
@@ -147,10 +143,10 @@ struct mat2d* mat2d_identity(struct mat2d* p_out)
     p_out->data[5] = 0.0f;
     return p_out;
 }
-struct mat2d* mat2d_mul(struct mat2d* p_out, struct mat2d* m0, struct mat2d* m1)
+struct mat2d* mat2d_mul(struct mat2d* p_out, struct mat2d* p_m0, struct mat2d* p_m1)
 {
-    const float32_t* matrix_a = m0->data;
-    const float32_t* matrix_b = m1->data;
+    const float32_t* matrix_a = p_m0->data;
+    const float32_t* matrix_b = p_m1->data;
     float32_t* matrix = p_out->data;
 
     float32_t a = matrix_a[0];
@@ -176,35 +172,34 @@ struct mat2d* mat2d_mul(struct mat2d* p_out, struct mat2d* m0, struct mat2d* m1)
 
     return p_out;
 }
-struct vec2* mat2d_vec2_mul(struct vec2* p_out, struct mat2d* m0, struct vec2* v1)
+struct vec2* mat2d_vec2_mul(struct vec2* p_out, struct mat2d* p_m0, struct vec2* p_v1)
 {
-    struct vec2 v;
-    p_out->x = v1->x * m0->a + v1->y * m0->c + m0->tx;
-    p_out->y = v1->x * m0->b + v1->y * m0->d + m0->ty;
+    p_out->x = p_v1->x * p_m0->a + p_v1->y * p_m0->c + p_m0->tx;
+    p_out->y = p_v1->x * p_m0->b + p_v1->y * p_m0->d + p_m0->ty;
     return p_out;
 }
-struct mat2d* mat2d_translate(struct mat2d* p_out, struct mat2d* m, float32_t x, float32_t y)
+struct mat2d* mat2d_translate(struct mat2d* p_out, struct mat2d* p_m, float32_t x, float32_t y)
 {
-    p_out->data[4] = m->data[0] * x + m->data[2] * y + m->data[4];
-    p_out->data[5] = m->data[1] * x + m->data[3] * y + m->data[5];
+    p_out->data[4] = p_m->data[0] * x + p_m->data[2] * y + p_m->data[4];
+    p_out->data[5] = p_m->data[1] * x + p_m->data[3] * y + p_m->data[5];
     return p_out;
 }
-struct mat2d* mat2d_scale(struct mat2d* p_out, struct mat2d* m, float32_t x, float32_t y)
+struct mat2d* mat2d_scale(struct mat2d* p_out, struct mat2d* p_m, float32_t x, float32_t y)
 {
-    p_out->data[0] = m->data[0] * x;
-    p_out->data[1] = m->data[1] * x;
-    p_out->data[2] = m->data[2] * y;
-    p_out->data[3] = m->data[3] * y;
+    p_out->data[0] = p_m->data[0] * x;
+    p_out->data[1] = p_m->data[1] * x;
+    p_out->data[2] = p_m->data[2] * y;
+    p_out->data[3] = p_m->data[3] * y;
     return p_out;
 }
-struct mat2d* mat2d_rotate(struct mat2d* p_out, struct mat2d* m, float32_t radian)
+struct mat2d* mat2d_rotate(struct mat2d* p_out, struct mat2d* p_m, float32_t radian)
 {
     float32_t sn = sinf(radian);
     float32_t cs = cosf(radian);
-    p_out->data[0] = cs * m->data[0] + -sn * m->data[2];
-    p_out->data[1] = cs * m->data[1] + -sn * m->data[3];
-    p_out->data[2] = sn * m->data[0] + cs * m->data[2];
-    p_out->data[3] = sn * m->data[1] + cs * m->data[3];
+    p_out->data[0] = cs * p_m->data[0] + -sn * p_m->data[2];
+    p_out->data[1] = cs * p_m->data[1] + -sn * p_m->data[3];
+    p_out->data[2] = sn * p_m->data[0] + cs * p_m->data[2];
+    p_out->data[3] = sn * p_m->data[1] + cs * p_m->data[3];
     return p_out;
 }
 
@@ -229,159 +224,159 @@ struct mat4* mat4_identity(struct mat4* p_out)
     p_out->data[15] = 1.0f;
     return p_out;
 }
-struct mat4* mat4_mul(struct mat4* p_out, struct mat4* m0, struct mat4* m1)
+struct mat4* mat4_mul(struct mat4* p_out, struct mat4* p_m0, struct mat4* p_m1)
 {
-    p_out->data[0] = m1->data[0] * m0->data[0] + m1->data[1] * m0->data[4] + m1->data[2] * m0->data[8] + m1->data[3] * m0->data[12];
-    p_out->data[1] = m1->data[0] * m0->data[1] + m1->data[1] * m0->data[5] + m1->data[2] * m0->data[9] + m1->data[3] * m0->data[13];
-    p_out->data[2] = m1->data[0] * m0->data[2] + m1->data[1] * m0->data[6] + m1->data[2] * m0->data[10] + m1->data[3] * m0->data[14];
-    p_out->data[3] = m1->data[0] * m0->data[3] + m1->data[1] * m0->data[7] + m1->data[2] * m0->data[11] + m1->data[3] * m0->data[15];
-    p_out->data[4] = m1->data[4] * m0->data[0] + m1->data[5] * m0->data[4] + m1->data[6] * m0->data[8] + m1->data[7] * m0->data[12];
-    p_out->data[5] = m1->data[4] * m0->data[1] + m1->data[5] * m0->data[5] + m1->data[6] * m0->data[9] + m1->data[7] * m0->data[13];
-    p_out->data[6] = m1->data[4] * m0->data[2] + m1->data[5] * m0->data[6] + m1->data[6] * m0->data[10] + m1->data[7] * m0->data[14];
-    p_out->data[7] = m1->data[4] * m0->data[3] + m1->data[5] * m0->data[7] + m1->data[6] * m0->data[11] + m1->data[7] * m0->data[15];
-    p_out->data[8] = m1->data[8] * m0->data[0] + m1->data[9] * m0->data[4] + m1->data[10] * m0->data[8] + m1->data[11] * m0->data[12];
-    p_out->data[9] = m1->data[8] * m0->data[1] + m1->data[9] * m0->data[5] + m1->data[10] * m0->data[9] + m1->data[11] * m0->data[13];
-    p_out->data[10] = m1->data[8] * m0->data[2] + m1->data[9] * m0->data[6] + m1->data[10] * m0->data[10] + m1->data[11] * m0->data[14];
-    p_out->data[11] = m1->data[8] * m0->data[3] + m1->data[9] * m0->data[7] + m1->data[10] * m0->data[11] + m1->data[11] * m0->data[15];
-    p_out->data[12] = m1->data[12] * m0->data[0] + m1->data[13] * m0->data[4] + m1->data[14] * m0->data[8] + m1->data[15] * m0->data[12];
-    p_out->data[13] = m1->data[12] * m0->data[1] + m1->data[13] * m0->data[5] + m1->data[14] * m0->data[9] + m1->data[15] * m0->data[13];
-    p_out->data[14] = m1->data[12] * m0->data[2] + m1->data[13] * m0->data[6] + m1->data[14] * m0->data[10] + m1->data[15] * m0->data[14];
-    p_out->data[15] = m1->data[12] * m0->data[3] + m1->data[13] * m0->data[7] + m1->data[14] * m0->data[11] + m1->data[15] * m0->data[15];
+    p_out->data[0] = p_m1->data[0] * p_m0->data[0] + p_m1->data[1] * p_m0->data[4] + p_m1->data[2] * p_m0->data[8] + p_m1->data[3] * p_m0->data[12];
+    p_out->data[1] = p_m1->data[0] * p_m0->data[1] + p_m1->data[1] * p_m0->data[5] + p_m1->data[2] * p_m0->data[9] + p_m1->data[3] * p_m0->data[13];
+    p_out->data[2] = p_m1->data[0] * p_m0->data[2] + p_m1->data[1] * p_m0->data[6] + p_m1->data[2] * p_m0->data[10] + p_m1->data[3] * p_m0->data[14];
+    p_out->data[3] = p_m1->data[0] * p_m0->data[3] + p_m1->data[1] * p_m0->data[7] + p_m1->data[2] * p_m0->data[11] + p_m1->data[3] * p_m0->data[15];
+    p_out->data[4] = p_m1->data[4] * p_m0->data[0] + p_m1->data[5] * p_m0->data[4] + p_m1->data[6] * p_m0->data[8] + p_m1->data[7] * p_m0->data[12];
+    p_out->data[5] = p_m1->data[4] * p_m0->data[1] + p_m1->data[5] * p_m0->data[5] + p_m1->data[6] * p_m0->data[9] + p_m1->data[7] * p_m0->data[13];
+    p_out->data[6] = p_m1->data[4] * p_m0->data[2] + p_m1->data[5] * p_m0->data[6] + p_m1->data[6] * p_m0->data[10] + p_m1->data[7] * p_m0->data[14];
+    p_out->data[7] = p_m1->data[4] * p_m0->data[3] + p_m1->data[5] * p_m0->data[7] + p_m1->data[6] * p_m0->data[11] + p_m1->data[7] * p_m0->data[15];
+    p_out->data[8] = p_m1->data[8] * p_m0->data[0] + p_m1->data[9] * p_m0->data[4] + p_m1->data[10] * p_m0->data[8] + p_m1->data[11] * p_m0->data[12];
+    p_out->data[9] = p_m1->data[8] * p_m0->data[1] + p_m1->data[9] * p_m0->data[5] + p_m1->data[10] * p_m0->data[9] + p_m1->data[11] * p_m0->data[13];
+    p_out->data[10] = p_m1->data[8] * p_m0->data[2] + p_m1->data[9] * p_m0->data[6] + p_m1->data[10] * p_m0->data[10] + p_m1->data[11] * p_m0->data[14];
+    p_out->data[11] = p_m1->data[8] * p_m0->data[3] + p_m1->data[9] * p_m0->data[7] + p_m1->data[10] * p_m0->data[11] + p_m1->data[11] * p_m0->data[15];
+    p_out->data[12] = p_m1->data[12] * p_m0->data[0] + p_m1->data[13] * p_m0->data[4] + p_m1->data[14] * p_m0->data[8] + p_m1->data[15] * p_m0->data[12];
+    p_out->data[13] = p_m1->data[12] * p_m0->data[1] + p_m1->data[13] * p_m0->data[5] + p_m1->data[14] * p_m0->data[9] + p_m1->data[15] * p_m0->data[13];
+    p_out->data[14] = p_m1->data[12] * p_m0->data[2] + p_m1->data[13] * p_m0->data[6] + p_m1->data[14] * p_m0->data[10] + p_m1->data[15] * p_m0->data[14];
+    p_out->data[15] = p_m1->data[12] * p_m0->data[3] + p_m1->data[13] * p_m0->data[7] + p_m1->data[14] * p_m0->data[11] + p_m1->data[15] * p_m0->data[15];
     return p_out;
 }
-struct vec3* mat4_vec3_mul(struct vec3* p_out, struct mat4* m0, struct vec3* v1)
+struct vec3* mat4_vec3_mul(struct vec3* p_out, struct mat4* p_m0, struct vec3* p_v1)
 {
-    p_out->x = m0->data[0] * v1->x + m0->data[4] * v1->y + m0->data[8] * v1->z + m0->data[12];
-    p_out->y = m0->data[1] * v1->x + m0->data[5] * v1->y + m0->data[9] * v1->z + m0->data[13];
-    p_out->z = m0->data[2] * v1->x + m0->data[6] * v1->y + m0->data[10] * v1->z + m0->data[14];
+    p_out->x = p_m0->data[0] * p_v1->x + p_m0->data[4] * p_v1->y + p_m0->data[8] * p_v1->z + p_m0->data[12];
+    p_out->y = p_m0->data[1] * p_v1->x + p_m0->data[5] * p_v1->y + p_m0->data[9] * p_v1->z + p_m0->data[13];
+    p_out->z = p_m0->data[2] * p_v1->x + p_m0->data[6] * p_v1->y + p_m0->data[10] * p_v1->z + p_m0->data[14];
     return p_out;
 }
-struct mat4* mat4_transpose(struct mat4* p_out, struct mat4* m)
+struct mat4* mat4_transpose(struct mat4* p_out, struct mat4* p_m)
 {
-    p_out->data[0] = m->data[0];
-    p_out->data[1] = m->data[4];
-    p_out->data[2] = m->data[8];
-    p_out->data[3] = m->data[12];
-    p_out->data[4] = m->data[1];
-    p_out->data[5] = m->data[5];
-    p_out->data[6] = m->data[9];
-    p_out->data[7] = m->data[13];
-    p_out->data[8] = m->data[2];
-    p_out->data[9] = m->data[6];
-    p_out->data[10] = m->data[10];
-    p_out->data[11] = m->data[14];
-    p_out->data[12] = m->data[3];
-    p_out->data[13] = m->data[7];
-    p_out->data[14] = m->data[11];
-    p_out->data[15] = m->data[15];
+    p_out->data[0] = p_m->data[0];
+    p_out->data[1] = p_m->data[4];
+    p_out->data[2] = p_m->data[8];
+    p_out->data[3] = p_m->data[12];
+    p_out->data[4] = p_m->data[1];
+    p_out->data[5] = p_m->data[5];
+    p_out->data[6] = p_m->data[9];
+    p_out->data[7] = p_m->data[13];
+    p_out->data[8] = p_m->data[2];
+    p_out->data[9] = p_m->data[6];
+    p_out->data[10] = p_m->data[10];
+    p_out->data[11] = p_m->data[14];
+    p_out->data[12] = p_m->data[3];
+    p_out->data[13] = p_m->data[7];
+    p_out->data[14] = p_m->data[11];
+    p_out->data[15] = p_m->data[15];
     return p_out;
 }
-struct mat4* mat4_invert(struct mat4* p_out, struct mat4* m)
+struct mat4* mat4_invert(struct mat4* p_out, struct mat4* p_m)
 {
-    float32_t d0 = m->data[0] * m->data[5] - m->data[1] * m->data[4];
-    float32_t d1 = m->data[0] * m->data[6] - m->data[2] * m->data[4];
-    float32_t d2 = m->data[0] * m->data[7] - m->data[3] * m->data[4];
-    float32_t d3 = m->data[1] * m->data[6] - m->data[2] * m->data[5];
-    float32_t d4 = m->data[1] * m->data[7] - m->data[3] * m->data[5];
-    float32_t d5 = m->data[2] * m->data[7] - m->data[3] * m->data[6];
-    float32_t d6 = m->data[8] * m->data[13] - m->data[9] * m->data[12];
-    float32_t d7 = m->data[8] * m->data[14] - m->data[10] * m->data[12];
-    float32_t d8 = m->data[8] * m->data[15] - m->data[11] * m->data[12];
-    float32_t d9 = m->data[9] * m->data[14] - m->data[10] * m->data[13];
-    float32_t d10 = m->data[9] * m->data[15] - m->data[11] * m->data[13];
-    float32_t d11 = m->data[10] * m->data[15] - m->data[11] * m->data[14];
+    float32_t d0 = p_m->data[0] * p_m->data[5] - p_m->data[1] * p_m->data[4];
+    float32_t d1 = p_m->data[0] * p_m->data[6] - p_m->data[2] * p_m->data[4];
+    float32_t d2 = p_m->data[0] * p_m->data[7] - p_m->data[3] * p_m->data[4];
+    float32_t d3 = p_m->data[1] * p_m->data[6] - p_m->data[2] * p_m->data[5];
+    float32_t d4 = p_m->data[1] * p_m->data[7] - p_m->data[3] * p_m->data[5];
+    float32_t d5 = p_m->data[2] * p_m->data[7] - p_m->data[3] * p_m->data[6];
+    float32_t d6 = p_m->data[8] * p_m->data[13] - p_m->data[9] * p_m->data[12];
+    float32_t d7 = p_m->data[8] * p_m->data[14] - p_m->data[10] * p_m->data[12];
+    float32_t d8 = p_m->data[8] * p_m->data[15] - p_m->data[11] * p_m->data[12];
+    float32_t d9 = p_m->data[9] * p_m->data[14] - p_m->data[10] * p_m->data[13];
+    float32_t d10 = p_m->data[9] * p_m->data[15] - p_m->data[11] * p_m->data[13];
+    float32_t d11 = p_m->data[10] * p_m->data[15] - p_m->data[11] * p_m->data[14];
     float32_t determinant = d0 * d11 - d1 * d10 + d2 * d9 + d3 * d8 - d4 * d7 + d5 * d6;
 
-    if (determinant == 0.0f) return m;
+    if (determinant == 0.0f) return p_m;
 
     determinant = 1.0f / determinant;
-    p_out->data[0] = (m->data[5] * d11 - m->data[6] * d10 + m->data[7] * d9) * determinant;
-    p_out->data[1] = (m->data[2] * d10 - m->data[1] * d11 - m->data[3] * d9) * determinant;
-    p_out->data[2] = (m->data[13] * d5 - m->data[14] * d4 + m->data[15] * d3) * determinant;
-    p_out->data[3] = (m->data[10] * d4 - m->data[9] * d5 - m->data[11] * d3) * determinant;
-    p_out->data[4] = (m->data[6] * d8 - m->data[4] * d11 - m->data[7] * d7) * determinant;
-    p_out->data[5] = (m->data[0] * d11 - m->data[2] * d8 + m->data[3] * d7) * determinant;
-    p_out->data[6] = (m->data[14] * d2 - m->data[12] * d5 - m->data[15] * d1) * determinant;
-    p_out->data[7] = (m->data[8] * d5 - m->data[10] * d2 + m->data[11] * d1) * determinant;
-    p_out->data[8] = (m->data[4] * d10 - m->data[5] * d8 + m->data[7] * d6) * determinant;
-    p_out->data[9] = (m->data[1] * d8 - m->data[0] * d10 - m->data[3] * d6) * determinant;
-    p_out->data[10] = (m->data[12] * d4 - m->data[13] * d2 + m->data[15] * d0) * determinant;
-    p_out->data[11] = (m->data[9] * d2 - m->data[8] * d4 - m->data[11] * d0) * determinant;
-    p_out->data[12] = (m->data[5] * d7 - m->data[4] * d9 - m->data[6] * d6) * determinant;
-    p_out->data[13] = (m->data[0] * d9 - m->data[1] * d7 + m->data[2] * d6) * determinant;
-    p_out->data[14] = (m->data[13] * d1 - m->data[12] * d3 - m->data[14] * d0) * determinant;
-    p_out->data[15] = (m->data[8] * d3 - m->data[9] * d1 + m->data[10] * d0) * determinant;
+    p_out->data[0] = (p_m->data[5] * d11 - p_m->data[6] * d10 + p_m->data[7] * d9) * determinant;
+    p_out->data[1] = (p_m->data[2] * d10 - p_m->data[1] * d11 - p_m->data[3] * d9) * determinant;
+    p_out->data[2] = (p_m->data[13] * d5 - p_m->data[14] * d4 + p_m->data[15] * d3) * determinant;
+    p_out->data[3] = (p_m->data[10] * d4 - p_m->data[9] * d5 - p_m->data[11] * d3) * determinant;
+    p_out->data[4] = (p_m->data[6] * d8 - p_m->data[4] * d11 - p_m->data[7] * d7) * determinant;
+    p_out->data[5] = (p_m->data[0] * d11 - p_m->data[2] * d8 + p_m->data[3] * d7) * determinant;
+    p_out->data[6] = (p_m->data[14] * d2 - p_m->data[12] * d5 - p_m->data[15] * d1) * determinant;
+    p_out->data[7] = (p_m->data[8] * d5 - p_m->data[10] * d2 + p_m->data[11] * d1) * determinant;
+    p_out->data[8] = (p_m->data[4] * d10 - p_m->data[5] * d8 + p_m->data[7] * d6) * determinant;
+    p_out->data[9] = (p_m->data[1] * d8 - p_m->data[0] * d10 - p_m->data[3] * d6) * determinant;
+    p_out->data[10] = (p_m->data[12] * d4 - p_m->data[13] * d2 + p_m->data[15] * d0) * determinant;
+    p_out->data[11] = (p_m->data[9] * d2 - p_m->data[8] * d4 - p_m->data[11] * d0) * determinant;
+    p_out->data[12] = (p_m->data[5] * d7 - p_m->data[4] * d9 - p_m->data[6] * d6) * determinant;
+    p_out->data[13] = (p_m->data[0] * d9 - p_m->data[1] * d7 + p_m->data[2] * d6) * determinant;
+    p_out->data[14] = (p_m->data[13] * d1 - p_m->data[12] * d3 - p_m->data[14] * d0) * determinant;
+    p_out->data[15] = (p_m->data[8] * d3 - p_m->data[9] * d1 + p_m->data[10] * d0) * determinant;
     return p_out;
 }
-struct mat4* mat4_rotate_x(struct mat4* p_out, struct mat4* m, float32_t radian)
+struct mat4* mat4_rotate_x(struct mat4* p_out, struct mat4* p_m, float32_t radian)
 {
     float32_t sn = sinf(radian);
     float32_t cn = cosf(radian);
-    p_out->data[0] = m->data[0];
-    p_out->data[1] = m->data[1];
-    p_out->data[2] = m->data[2];
-    p_out->data[3] = m->data[3];
-    p_out->data[12] = m->data[12];
-    p_out->data[13] = m->data[13];
-    p_out->data[14] = m->data[14];
-    p_out->data[15] = m->data[15];
-    p_out->data[4] = m->data[4] * cn + m->data[8] * sn;
-    p_out->data[5] = m->data[5] * cn + m->data[9] * sn;
-    p_out->data[6] = m->data[6] * cn + m->data[10] * sn;
-    p_out->data[7] = m->data[7] * cn + m->data[11] * sn;
-    p_out->data[8] = m->data[8] * cn - m->data[4] * sn;
-    p_out->data[9] = m->data[9] * cn - m->data[5] * sn;
-    p_out->data[10] = m->data[10] * cn - m->data[6] * sn;
-    p_out->data[11] = m->data[11] * cn - m->data[7] * sn;
+    p_out->data[0] = p_m->data[0];
+    p_out->data[1] = p_m->data[1];
+    p_out->data[2] = p_m->data[2];
+    p_out->data[3] = p_m->data[3];
+    p_out->data[12] = p_m->data[12];
+    p_out->data[13] = p_m->data[13];
+    p_out->data[14] = p_m->data[14];
+    p_out->data[15] = p_m->data[15];
+    p_out->data[4] = p_m->data[4] * cn + p_m->data[8] * sn;
+    p_out->data[5] = p_m->data[5] * cn + p_m->data[9] * sn;
+    p_out->data[6] = p_m->data[6] * cn + p_m->data[10] * sn;
+    p_out->data[7] = p_m->data[7] * cn + p_m->data[11] * sn;
+    p_out->data[8] = p_m->data[8] * cn - p_m->data[4] * sn;
+    p_out->data[9] = p_m->data[9] * cn - p_m->data[5] * sn;
+    p_out->data[10] = p_m->data[10] * cn - p_m->data[6] * sn;
+    p_out->data[11] = p_m->data[11] * cn - p_m->data[7] * sn;
     return p_out;
 }
-struct mat4* mat4_rotate_y(struct mat4* p_out, struct mat4* m, float32_t radian)
+struct mat4* mat4_rotate_y(struct mat4* p_out, struct mat4* p_m, float32_t radian)
 {
     float32_t sn = sinf(radian);
     float32_t cn = cosf(radian);
-    p_out->data[0] = m->data[0] * cn - m->data[8] * sn;
-    p_out->data[1] = m->data[1] * cn - m->data[9] * sn;
-    p_out->data[2] = m->data[2] * cn - m->data[10] * sn;
-    p_out->data[3] = m->data[3] * cn - m->data[11] * sn;
-    p_out->data[4] = m->data[4];
-    p_out->data[5] = m->data[5];
-    p_out->data[6] = m->data[6];
-    p_out->data[7] = m->data[7];
-    p_out->data[8] = m->data[0] * sn + m->data[8] * cn;
-    p_out->data[9] = m->data[1] * sn + m->data[9] * cn;
-    p_out->data[10] = m->data[2] * sn + m->data[10] * cn;
-    p_out->data[11] = m->data[3] * sn + m->data[11] * cn;
-    p_out->data[12] = m->data[12];
-    p_out->data[13] = m->data[13];
-    p_out->data[14] = m->data[14];
-    p_out->data[15] = m->data[15];
+    p_out->data[0] = p_m->data[0] * cn - p_m->data[8] * sn;
+    p_out->data[1] = p_m->data[1] * cn - p_m->data[9] * sn;
+    p_out->data[2] = p_m->data[2] * cn - p_m->data[10] * sn;
+    p_out->data[3] = p_m->data[3] * cn - p_m->data[11] * sn;
+    p_out->data[4] = p_m->data[4];
+    p_out->data[5] = p_m->data[5];
+    p_out->data[6] = p_m->data[6];
+    p_out->data[7] = p_m->data[7];
+    p_out->data[8] = p_m->data[0] * sn + p_m->data[8] * cn;
+    p_out->data[9] = p_m->data[1] * sn + p_m->data[9] * cn;
+    p_out->data[10] = p_m->data[2] * sn + p_m->data[10] * cn;
+    p_out->data[11] = p_m->data[3] * sn + p_m->data[11] * cn;
+    p_out->data[12] = p_m->data[12];
+    p_out->data[13] = p_m->data[13];
+    p_out->data[14] = p_m->data[14];
+    p_out->data[15] = p_m->data[15];
     return p_out;
 }
-struct mat4* mat4_rotate_z(struct mat4* p_out, struct mat4* m, float32_t radian)
+struct mat4* mat4_rotate_z(struct mat4* p_out, struct mat4* p_m, float32_t radian)
 {
     float32_t sn = sinf(radian);
     float32_t cn = cosf(radian);
-    p_out->data[0] = m->data[0] * cn + m->data[4] * sn;
-    p_out->data[1] = m->data[1] * cn + m->data[5] * sn;
-    p_out->data[2] = m->data[2] * cn + m->data[6] * sn;
-    p_out->data[3] = m->data[3] * cn + m->data[7] * sn;
-    p_out->data[4] = m->data[4] * cn - m->data[0] * sn;
-    p_out->data[5] = m->data[5] * cn - m->data[1] * sn;
-    p_out->data[6] = m->data[6] * cn - m->data[2] * sn;
-    p_out->data[7] = m->data[7] * cn - m->data[3] * sn;
-    p_out->data[8] = m->data[8];
-    p_out->data[9] = m->data[9];
-    p_out->data[10] = m->data[10];
-    p_out->data[11] = m->data[11];
-    p_out->data[12] = m->data[12];
-    p_out->data[13] = m->data[13];
-    p_out->data[14] = m->data[14];
-    p_out->data[15] = m->data[15];
+    p_out->data[0] = p_m->data[0] * cn + p_m->data[4] * sn;
+    p_out->data[1] = p_m->data[1] * cn + p_m->data[5] * sn;
+    p_out->data[2] = p_m->data[2] * cn + p_m->data[6] * sn;
+    p_out->data[3] = p_m->data[3] * cn + p_m->data[7] * sn;
+    p_out->data[4] = p_m->data[4] * cn - p_m->data[0] * sn;
+    p_out->data[5] = p_m->data[5] * cn - p_m->data[1] * sn;
+    p_out->data[6] = p_m->data[6] * cn - p_m->data[2] * sn;
+    p_out->data[7] = p_m->data[7] * cn - p_m->data[3] * sn;
+    p_out->data[8] = p_m->data[8];
+    p_out->data[9] = p_m->data[9];
+    p_out->data[10] = p_m->data[10];
+    p_out->data[11] = p_m->data[11];
+    p_out->data[12] = p_m->data[12];
+    p_out->data[13] = p_m->data[13];
+    p_out->data[14] = p_m->data[14];
+    p_out->data[15] = p_m->data[15];
     return p_out;
 }
-struct mat4* mat4_rotate(struct mat4* p_out, struct mat4* m, struct vec3* axis, float32_t radian)
+struct mat4* mat4_rotate(struct mat4* p_out, struct mat4* p_m, struct vec3* axis, float32_t radian)
 {
-    float32_t length = vec3_length(*axis);
+    float32_t length = vec3_length(axis);
 
     if (fabsf(length) < 0.0000001f) return NULL;
 
@@ -401,62 +396,62 @@ struct mat4* mat4_rotate(struct mat4* p_out, struct mat4* m, struct vec3* axis, 
     float32_t d5 = axis->z * axis->y * theta + axis->x * sn;
     float32_t d6 = axis->x * axis->z * theta + axis->y * sn;
     float32_t d7 = axis->y * axis->z * theta - axis->x * sn;
-    p_out->data[0] = m->data[0] * d0 + m->data[4] * d1 + m->data[8] * d2;
-    p_out->data[1] = m->data[1] * d0 + m->data[5] * d1 + m->data[9] * d2;
-    p_out->data[2] = m->data[2] * d0 + m->data[6] * d1 + m->data[10] * d2;
-    p_out->data[3] = m->data[3] * d0 + m->data[7] * d1 + m->data[11] * d2;
-    p_out->data[4] = m->data[0] * d3 + m->data[4] * d4 + m->data[8] * d5;
-    p_out->data[5] = m->data[1] * d3 + m->data[5] * d4 + m->data[9] * d5;
-    p_out->data[6] = m->data[2] * d3 + m->data[6] * d4 + m->data[10] * d5;
-    p_out->data[7] = m->data[3] * d3 + m->data[7] * d4 + m->data[11] * d5;
-    p_out->data[8] = m->data[0] * d6 + m->data[4] * d7 + m->data[8] * d8;
-    p_out->data[9] = m->data[1] * d6 + m->data[5] * d7 + m->data[9] * d8;
-    p_out->data[10] = m->data[2] * d6 + m->data[6] * d7 + m->data[10] * d8;
-    p_out->data[11] = m->data[3] * d6 + m->data[7] * d7 + m->data[11] * d8;
-    p_out->data[12] = m->data[12];
-    p_out->data[13] = m->data[13];
-    p_out->data[14] = m->data[14];
-    p_out->data[15] = m->data[15];
+    p_out->data[0] = p_m->data[0] * d0 + p_m->data[4] * d1 + p_m->data[8] * d2;
+    p_out->data[1] = p_m->data[1] * d0 + p_m->data[5] * d1 + p_m->data[9] * d2;
+    p_out->data[2] = p_m->data[2] * d0 + p_m->data[6] * d1 + p_m->data[10] * d2;
+    p_out->data[3] = p_m->data[3] * d0 + p_m->data[7] * d1 + p_m->data[11] * d2;
+    p_out->data[4] = p_m->data[0] * d3 + p_m->data[4] * d4 + p_m->data[8] * d5;
+    p_out->data[5] = p_m->data[1] * d3 + p_m->data[5] * d4 + p_m->data[9] * d5;
+    p_out->data[6] = p_m->data[2] * d3 + p_m->data[6] * d4 + p_m->data[10] * d5;
+    p_out->data[7] = p_m->data[3] * d3 + p_m->data[7] * d4 + p_m->data[11] * d5;
+    p_out->data[8] = p_m->data[0] * d6 + p_m->data[4] * d7 + p_m->data[8] * d8;
+    p_out->data[9] = p_m->data[1] * d6 + p_m->data[5] * d7 + p_m->data[9] * d8;
+    p_out->data[10] = p_m->data[2] * d6 + p_m->data[6] * d7 + p_m->data[10] * d8;
+    p_out->data[11] = p_m->data[3] * d6 + p_m->data[7] * d7 + p_m->data[11] * d8;
+    p_out->data[12] = p_m->data[12];
+    p_out->data[13] = p_m->data[13];
+    p_out->data[14] = p_m->data[14];
+    p_out->data[15] = p_m->data[15];
     return p_out;
 }
-struct mat4* mat4_scale(struct mat4* p_out, struct mat4* m, struct vec3* scale)
+struct mat4* mat4_scale(struct mat4* p_out, struct mat4* p_m, struct vec3* scale)
 {
-    p_out->data[0] = m->data[0] * scale->x;
-    p_out->data[1] = m->data[1] * scale->x;
-    p_out->data[2] = m->data[2] * scale->x;
-    p_out->data[3] = m->data[3] * scale->x;
-    p_out->data[4] = m->data[4] * scale->y;
-    p_out->data[5] = m->data[5] * scale->y;
-    p_out->data[6] = m->data[6] * scale->y;
-    p_out->data[7] = m->data[7] * scale->y;
-    p_out->data[8] = m->data[8] * scale->z;
-    p_out->data[9] = m->data[9] * scale->z;
-    p_out->data[10] = m->data[10] * scale->z;
-    p_out->data[11] = m->data[11] * scale->z;
-    p_out->data[12] = m->data[12];
-    p_out->data[13] = m->data[13];
-    p_out->data[14] = m->data[14];
-    p_out->data[15] = m->data[15];
+    p_out->data[0] = p_m->data[0] * scale->x;
+    p_out->data[1] = p_m->data[1] * scale->x;
+    p_out->data[2] = p_m->data[2] * scale->x;
+    p_out->data[3] = p_m->data[3] * scale->x;
+    p_out->data[4] = p_m->data[4] * scale->y;
+    p_out->data[5] = p_m->data[5] * scale->y;
+    p_out->data[6] = p_m->data[6] * scale->y;
+    p_out->data[7] = p_m->data[7] * scale->y;
+    p_out->data[8] = p_m->data[8] * scale->z;
+    p_out->data[9] = p_m->data[9] * scale->z;
+    p_out->data[10] = p_m->data[10] * scale->z;
+    p_out->data[11] = p_m->data[11] * scale->z;
+    p_out->data[12] = p_m->data[12];
+    p_out->data[13] = p_m->data[13];
+    p_out->data[14] = p_m->data[14];
+    p_out->data[15] = p_m->data[15];
     return p_out;
 }
-struct mat4* mat4_translate(struct mat4* p_out, struct mat4* m, struct vec3* translate)
+struct mat4* mat4_translate(struct mat4* p_out, struct mat4* p_m, struct vec3* translate)
 {
-    p_out->data[0] = m->data[0];
-    p_out->data[1] = m->data[1];
-    p_out->data[2] = m->data[2];
-    p_out->data[3] = m->data[3];
-    p_out->data[4] = m->data[4];
-    p_out->data[5] = m->data[5];
-    p_out->data[6] = m->data[6];
-    p_out->data[7] = m->data[7];
-    p_out->data[8] = m->data[8];
-    p_out->data[9] = m->data[9];
-    p_out->data[10] = m->data[10];
-    p_out->data[11] = m->data[11];
-    p_out->data[12] = m->data[0] * translate->x + m->data[4] * translate->y + m->data[8] * translate->z + m->data[12];
-    p_out->data[13] = m->data[1] * translate->x + m->data[5] * translate->y + m->data[9] * translate->z + m->data[13];
-    p_out->data[14] = m->data[2] * translate->x + m->data[6] * translate->y + m->data[10] * translate->z + m->data[14];
-    p_out->data[15] = m->data[3] * translate->x + m->data[7] * translate->y + m->data[11] * translate->z + m->data[15];
+    p_out->data[0] = p_m->data[0];
+    p_out->data[1] = p_m->data[1];
+    p_out->data[2] = p_m->data[2];
+    p_out->data[3] = p_m->data[3];
+    p_out->data[4] = p_m->data[4];
+    p_out->data[5] = p_m->data[5];
+    p_out->data[6] = p_m->data[6];
+    p_out->data[7] = p_m->data[7];
+    p_out->data[8] = p_m->data[8];
+    p_out->data[9] = p_m->data[9];
+    p_out->data[10] = p_m->data[10];
+    p_out->data[11] = p_m->data[11];
+    p_out->data[12] = p_m->data[0] * translate->x + p_m->data[4] * translate->y + p_m->data[8] * translate->z + p_m->data[12];
+    p_out->data[13] = p_m->data[1] * translate->x + p_m->data[5] * translate->y + p_m->data[9] * translate->z + p_m->data[13];
+    p_out->data[14] = p_m->data[2] * translate->x + p_m->data[6] * translate->y + p_m->data[10] * translate->z + p_m->data[14];
+    p_out->data[15] = p_m->data[3] * translate->x + p_m->data[7] * translate->y + p_m->data[11] * translate->z + p_m->data[15];
     return p_out;
 }
 struct mat4* mat4_frustum(struct mat4* p_out, float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t frustum_near, float32_t frustum_far)
@@ -596,317 +591,292 @@ struct mat4* mat4_look_at(struct mat4* p_out, struct vec3* eye, struct vec3* cen
 }
 
 /* vec2 */
-struct vec2 vec2_add(struct vec2* v0, struct vec2* v1)
+struct vec2* vec2_add(struct vec2* p_out, struct vec2* p_v0, struct vec2* p_v1)
 {
-    struct vec2 v;
-    v.x = v0->x + v1->x;
-    v.y = v0->y + v1->y;
-    return v;
+    p_out->x = p_v0->x + p_v1->x;
+    p_out->y = p_v0->y + p_v1->y;
+    return p_out;
 }
-struct vec2 vec2_sub(struct vec2* v0, struct vec2* v1)
+struct vec2* vec2_sub(struct vec2* p_out, struct vec2* p_v0, struct vec2* p_v1)
 {
-    struct vec2 v;
-    v.x = v0.x - v1->x;
-    v.y = v0.y - v1->y;
-    return v;
+    p_out->x = p_v0->x - p_v1->x;
+    p_out->y = p_v0->y - p_v1->y;
+    return p_out;
 }
-struct vec2 vec2_mul(struct vec2* v0, struct vec2* v1)
+struct vec2* vec2_mul(struct vec2* p_out, struct vec2* p_v0, struct vec2* p_v1)
 {
-    struct vec2 v;
-    v.x = v0.x * v1->x;
-    v.y = v0.y * v1->y;
-    return v;
+    p_out->x = p_v0->x * p_v1->x;
+    p_out->y = p_v0->y * p_v1->y;
+    return p_out;
 }
-struct vec2 vec2_invert(struct vec2* v)
+struct vec2* vec2_invert(struct vec2* p_out, struct vec2* p_v)
 {
-    struct vec2 o;
-    o.x = 1.0f / v.x;
-    o.y = 1.0f / v.y;
-    return o;
+    p_out->x = 1.0f / p_v->x;
+    p_out->y = 1.0f / p_v->y;
+    return p_out;
 }
-struct vec2 vec2_negate(struct vec2* v)
+struct vec2* vec2_negate(struct vec2* p_out, struct vec2* p_v)
 {
-    struct vec2 o;
-    o.x = v.x * -1.0f;
-    o.y = v.y * -1.0f;
-    return o;
+    p_out->x = p_v->x * -1.0f;
+    p_out->y = p_v->y * -1.0f;
+    return p_out;
 }
-struct vec2 vec2_normalize(struct vec2* v)
+struct vec2* vec2_normalize(struct vec2* p_out, struct vec2* p_v)
 {
-    struct vec2 o = v;
-    float32_t l = v.x * v.x + v.y * v.y;
+    float32_t l = p_v->x * p_v->x + p_v->y * p_v->y;
     if (l > 0.0f)
     {
         l = 1.0f / sqrtf(l);
-        o.x = v.x * l;
-        o.y = v.y * l;
+        p_out->x = p_v->x * l;
+        p_out->y = p_v->y * l;
     }
-    return o;
+    return p_out;
 }
-int32_t vec2_equal(struct vec2* v0, struct vec2* v1)
+int32_t vec2_equal(struct vec2* p_v0, struct vec2* p_v1)
 {
-    return (v0.x == v1->x && v0.y == v1->y);
+    return (p_v0->x == p_v1->x && p_v0->y == p_v1->y);
 }
-struct vec3 vec2_cross(struct vec2* v0, struct vec2* v1)
+struct vec3* vec2_cross(struct vec3* p_out, struct vec2* p_v0, struct vec2* p_v1)
 {
-    struct vec3 v;
-    v.x = 0;
-    v.y = 0;
-    v.z = v0.x * v1->y - v0.y * v1->x;
-    return v;
+    p_out->x = 0;
+    p_out->y = 0;
+    p_out->z = p_v0->x * p_v1->y - p_v0->y * p_v1->x;
+    return p_out;
 }
-float32_t vec2_distance(struct vec2* v0, struct vec2* v1)
+float32_t vec2_distance(struct vec2* p_v0, struct vec2* p_v1)
 {
-    float32_t x = v0.x - v1->x;
-    float32_t y = v0.y - v1->y;
+    float32_t x = p_v0->x - p_v1->x;
+    float32_t y = p_v0->y - p_v1->y;
     return sqrtf(x * x + y * y);
 }
-float32_t vec2_dot(struct vec2* v0, struct vec2* v1)
+float32_t vec2_dot(struct vec2* p_v0, struct vec2* p_v1)
 {
-    return v0.x * v1->x + v0.y * v1->y;
+    return p_v0->x * p_v1->x + p_v0->y * p_v1->y;
 }
-float32_t vec2_length(struct vec2* v)
+float32_t vec2_length(struct vec2* p_v)
 {
-    return sqrtf(v.x * v.x + v.y * v.y);
+    return sqrtf(p_v->x * p_v->x + p_v->y * p_v->y);
 }
-float32_t vec2_length2(struct vec2* v)
+float32_t vec2_length2(struct vec2* p_v)
 {
-    return (v.x * v.x + v.y * v.y);
+    return (p_v->x * p_v->x + p_v->y * p_v->y);
 }
-float32_t vec2_distance2(struct vec2* v0, struct vec2* v1)
+float32_t vec2_distance2(struct vec2* p_v0, struct vec2* p_v1)
 {
-    float32_t x = v0.x - v1->x;
-    float32_t y = v0.y - v1->y;
+    float32_t x = p_v0->x - p_v1->x;
+    float32_t y = p_v0->y - p_v1->y;
     return (x * x + y * y);
 }
 
 /* vec3 */
-struct vec3 vec3_add(struct vec3* v0, struct vec3* v1)
+struct vec3* vec3_add(struct vec3* p_out, struct vec3* p_v0, struct vec3* p_v1)
 {
-    struct vec3 v;
-    v.x = v0.x + v1->x;
-    v.y = v0.y + v1->y;
-    v.z = v0.z + v1->z;
-    return v;
+    p_out->x = p_v0->x + p_v1->x;
+    p_out->y = p_v0->y + p_v1->y;
+    p_out->z = p_v0->z + p_v1->z;
+    return p_out;
 }
-struct vec3 vec3_sub(struct vec3* v0, struct vec3* v1)
+struct vec3* vec3_sub(struct vec3* p_out, struct vec3* p_v0, struct vec3* p_v1)
 {
-    struct vec3 v;
-    v.x = v0.x - v1->x;
-    v.y = v0.y - v1->y;
-    v.z = v0.z - v1->z;
-    return v;
+    p_out->x = p_v0->x - p_v1->x;
+    p_out->y = p_v0->y - p_v1->y;
+    p_out->z = p_v0->z - p_v1->z;
+    return p_out;
 }
-struct vec3 vec3_mul(struct vec3* v0, struct vec3* v1)
+struct vec3* vec3_mul(struct vec3* p_out, struct vec3* p_v0, struct vec3* p_v1)
 {
-    struct vec3 v;
-    v.x = v0.x * v1->x;
-    v.y = v0.y * v1->y;
-    v.z = v0.z * v1->z;
-    return v;
+    p_out->x = p_v0->x * p_v1->x;
+    p_out->y = p_v0->y * p_v1->y;
+    p_out->z = p_v0->z * p_v1->z;
+    return p_out;
 }
-struct vec3 vec3_invert(struct vec3* v)
+struct vec3* vec3_invert(struct vec3* p_out, struct vec3* p_v)
 {
-    struct vec3 o;
-    o.x = 1.0f / v.x;
-    o.y = 1.0f / v.y;
-    o.z = 1.0f / v.z;
-    return o;
+    p_out->x = 1.0f / p_v->x;
+    p_out->y = 1.0f / p_v->y;
+    p_out->z = 1.0f / p_v->z;
+    return p_out;
 }
-struct vec3 vec3_negate(struct vec3* v)
+struct vec3* vec3_negate(struct vec3* p_out, struct vec3* p_v)
 {
-    struct vec3 o;
-    o.x = -1.0f * v.x;
-    o.y = -1.0f * v.y;
-    o.z = -1.0f * v.z;
-    return o;
+    p_out->x = -1.0f * p_v->x;
+    p_out->y = -1.0f * p_v->y;
+    p_out->z = -1.0f * p_v->z;
+    return p_out;
 }
-struct vec3 vec3_normalize(struct vec3* v)
+struct vec3* vec3_normalize(struct vec3* p_out, struct vec3* p_v)
 {
-    struct vec3 o = v;
-    float32_t x = v.x;
-    float32_t y = v.y;
-    float32_t z = v.z;
+    float32_t x = p_v->x;
+    float32_t y = p_v->y;
+    float32_t z = p_v->z;
     float32_t l = x * x + y * y + z * z;
     if (l > 0.0f)
     {
         l = 1.0f / sqrtf(l);
-        o.x = x * l;
-        o.y = y * l;
-        o.z = z * l;
+        p_out->x = x * l;
+        p_out->y = y * l;
+        p_out->z = z * l;
     }
-    return o;
+    return p_out;
 }
-int32_t vec3_equal(struct vec3* v0, struct vec3* v1)
+int32_t vec3_equal(struct vec3* p_v0, struct vec3* p_v1)
 {
-    return (v0.x == v1->x && v0.y == v1->y && v0.z == v1->z);
+    return (p_v0->x == p_v1->x && p_v0->y == p_v1->y && p_v0->z == p_v1->z);
 }
-struct vec3 vec3_cross(struct vec3* v0, struct vec3* v1)
+struct vec3* vec3_cross(struct vec3* p_out, struct vec3* p_v0, struct vec3* p_v1)
 {
-    struct vec3 v;
-    float32_t lx = v0.x;
-    float32_t ly = v0.y;
-    float32_t lz = v0.z;
-    float32_t rx = v1->x;
-    float32_t ry = v1->y;
-    float32_t rz = v1->z;
+    float32_t lx = p_v0->x;
+    float32_t ly = p_v0->y;
+    float32_t lz = p_v0->z;
+    float32_t rx = p_v1->x;
+    float32_t ry = p_v1->y;
+    float32_t rz = p_v1->z;
 
-    v.x = ly * rz - lz * ry;
-    v.y = lz * rx - lx * rz;
-    v.z = lx * ry - ly * rx;
+    p_out->x = ly * rz - lz * ry;
+    p_out->y = lz * rx - lx * rz;
+    p_out->z = lx * ry - ly * rx;
 
-    return v;
+    return p_out;
 }
-float32_t vec3_distance(struct vec3* v0, struct vec3* v1)
+float32_t vec3_distance(struct vec3* p_v0, struct vec3* p_v1)
 {
-    float32_t x = v0.x - v1->x;
-    float32_t y = v0.y - v1->y;
-    float32_t z = v0.z - v1->z;
+    float32_t x = p_v0->x - p_v1->x;
+    float32_t y = p_v0->y - p_v1->y;
+    float32_t z = p_v0->z - p_v1->z;
 
     return sqrtf(x * x + y * y + z * z);
 }
-float32_t vec3_dot(struct vec3* v0, struct vec3* v1)
+float32_t vec3_dot(struct vec3* p_v0, struct vec3* p_v1)
 {
-    return v0.x * v1->x + v0.y * v1->y + v0.z * v1->z;
+    return p_v0->x * p_v1->x + p_v0->y * p_v1->y + p_v0->z * p_v1->z;
 }
-float32_t vec3_length(struct vec3* v)
+float32_t vec3_length(struct vec3* p_v)
 {
-    float32_t x = v.x;
-    float32_t y = v.y;
-    float32_t z = v.z;
+    float32_t x = p_v->x;
+    float32_t y = p_v->y;
+    float32_t z = p_v->z;
     return sqrtf(x * x + y * y + z * z);
 }
-float32_t vec3_length2(struct vec3* v)
+float32_t vec3_length2(struct vec3* p_v)
 {
-    float32_t x = v.x;
-    float32_t y = v.y;
-    float32_t z = v.z;
+    float32_t x = p_v->x;
+    float32_t y = p_v->y;
+    float32_t z = p_v->z;
     return (x * x + y * y + z * z);
 }
-float32_t vec3_distance2(struct vec3* v0, struct vec3* v1)
+float32_t vec3_distance2(struct vec3* p_v0, struct vec3* p_v1)
 {
-    float32_t x = v0.x - v1->x;
-    float32_t y = v0.y - v1->y;
-    float32_t z = v0.z - v1->z;
+    float32_t x = p_v0->x - p_v1->x;
+    float32_t y = p_v0->y - p_v1->y;
+    float32_t z = p_v0->z - p_v1->z;
 
     return (x * x + y * y + z * z);
 }
 
 /* quat */
-struct quat quat_identity()
+struct quat* quat_identity(struct quat* p_out)
 {
-    struct quat q;
-    q.x = 0;
-    q.y = 0;
-    q.z = 0;
-    q.w = 1;
-    return q;
+    p_out->x = 0;
+    p_out->y = 0;
+    p_out->z = 0;
+    p_out->w = 1;
+    return p_out;
 }
-struct quat quat_add(struct quat q0, struct quat q1)
+struct quat* quat_add(struct quat* p_out, struct quat* p_q0, struct quat* p_q1)
 {
-    struct quat q;
-    q.w = q0.w + q1.w;
-    q.x = q0.x + q1.x;
-    q.y = q0.y + q1.y;
-    q.z = q0.z + q1.z;
-    return q;
+    p_out->w = p_q0->w + p_q1->w;
+    p_out->x = p_q0->x + p_q1->x;
+    p_out->y = p_q0->y + p_q1->y;
+    p_out->z = p_q0->z + p_q1->z;
+    return p_out;
 }
-struct quat quat_mul(struct quat q0, struct quat q1)
+struct quat* quat_mul(struct quat* p_out, struct quat* p_q0, struct quat* p_q1)
 {
-    struct quat q;
-    q.x = q0.x * q1.w + q0.w * q1.x + q0.y * q1.z - q0.z * q1.y;
-    q.y = q0.y * q1.w + q0.w * q1.y + q0.z * q1.x - q0.x * q1.z;
-    q.z = q0.z * q1.w + q0.w * q1.z + q0.x * q1.y - q0.y * q1.x;
-    q.w = q0.w * q1.w - q0.x * q1.x - q0.y * q1.y - q0.z * q1.z;
-    return q;
+    p_out->x = p_q0->x * p_q1->w + p_q0->w * p_q1->x + p_q0->y * p_q1->z - p_q0->z * p_q1->y;
+    p_out->y = p_q0->y * p_q1->w + p_q0->w * p_q1->y + p_q0->z * p_q1->x - p_q0->x * p_q1->z;
+    p_out->z = p_q0->z * p_q1->w + p_q0->w * p_q1->z + p_q0->x * p_q1->y - p_q0->y * p_q1->x;
+    p_out->w = p_q0->w * p_q1->w - p_q0->x * p_q1->x - p_q0->y * p_q1->y - p_q0->z * p_q1->z;
+    return p_out;
 }
-struct quat quat_set_axis_angle(struct vec3 axis, float32_t radian)
+struct quat* quat_set_axis_angle(struct quat* p_out, struct vec3* axis, float32_t radian)
 {
-    struct quat q;
     float32_t sn = sinf(radian * 0.5f);
-    q.x = sn * axis.x;
-    q.y = sn * axis.y;
-    q.z = sn * axis.z;
-    q.w = cosf(radian * 0.5f);
-    return q;
+    p_out->x = sn * axis->x;
+    p_out->y = sn * axis->y;
+    p_out->z = sn * axis->z;
+    p_out->w = cosf(radian * 0.5f);
+    return p_out;
 }
-struct quat quat_rotate_x(struct quat q, float32_t radian)
+struct quat* quat_rotate_x(struct quat* p_out, struct quat* p_q, float32_t radian)
 {
-    struct quat o;
     float32_t sn = sinf(radian * 0.5f);
     float32_t cn = cosf(radian * 0.5f);
-    o.x = q.x * sn + q.w * cn;
-    o.y = q.y * sn + q.z * cn;
-    o.z = q.z * sn - q.y * cn;
-    o.w = q.w * sn - q.x * cn;
-    return o;
+    p_out->x = p_q->x * sn + p_q->w * cn;
+    p_out->y = p_q->y * sn + p_q->z * cn;
+    p_out->z = p_q->z * sn - p_q->y * cn;
+    p_out->w = p_q->w * sn - p_q->x * cn;
+    return p_out;
 }
-struct quat quat_rotate_y(struct quat q, float32_t radian)
+struct quat* quat_rotate_y(struct quat* p_out, struct quat* p_q, float32_t radian)
 {
-    struct quat o;
     float32_t sn = sinf(radian * 0.5f);
     float32_t cn = cosf(radian * 0.5f);
-    o.x = q.x * cn - q.z * sn;
-    o.y = q.y * cn + q.w * sn;
-    o.z = q.z * cn + q.x * sn;
-    o.w = q.w * cn - q.y * sn;
-    return o;
+    p_out->x = p_q->x * cn - p_q->z * sn;
+    p_out->y = p_q->y * cn + p_q->w * sn;
+    p_out->z = p_q->z * cn + p_q->x * sn;
+    p_out->w = p_q->w * cn - p_q->y * sn;
+    return p_out;
 }
-struct quat quat_rotate_z(struct quat q, float32_t radian)
+struct quat* quat_rotate_z(struct quat* p_out, struct quat* p_q, float32_t radian)
 {
-    struct quat o;
     float32_t sn = sinf(radian * 0.5f);
     float32_t cn = cosf(radian * 0.5f);
-    o.x = q.x * cn + q.y * sn;
-    o.y = q.y * cn - q.x * sn;
-    o.z = q.z * cn + q.w * sn;
-    o.w = q.w * cn - q.z * sn;
-    return o;
+    p_out->x = p_q->x * cn + p_q->y * sn;
+    p_out->y = p_q->y * cn - p_q->x * sn;
+    p_out->z = p_q->z * cn + p_q->w * sn;
+    p_out->w = p_q->w * cn - p_q->z * sn;
+    return p_out;
 }
-struct quat quat_calcw(struct quat q)
+struct quat* quat_calcw(struct quat* p_out, struct quat* p_q)
 {
-    struct quat o;
-    o.x = q.x;
-    o.y = q.y;
-    o.z = q.z;
-    o.w = sqrtf(fabsf(1.0f - q.x * q.x - q.y * q.y - q.z * q.z));
-    return o;
+    p_out->x = p_q->x;
+    p_out->y = p_q->y;
+    p_out->z = p_q->z;
+    p_out->w = sqrtf(fabsf(1.0f - p_q->x * p_q->x - p_q->y * p_q->y - p_q->z * p_q->z));
+    return p_out;
 }
-struct quat quat_invert(struct quat q)
+struct quat* quat_invert(struct quat* p_out, struct quat* p_q)
 {
-    struct quat o;
-    float32_t dot = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
+    float32_t dot = p_q->x * p_q->x + p_q->y * p_q->y + p_q->z * p_q->z + p_q->w * p_q->w;
     if (dot) dot = 1.0f / dot;
-    o.x = -q.x * dot;
-    o.y = -q.y * dot;
-    o.z = -q.z * dot;
-    o.w = q.w * dot;
-    return o;
+    p_out->x = -p_q->x * dot;
+    p_out->y = -p_q->y * dot;
+    p_out->z = -p_q->z * dot;
+    p_out->w = p_q->w * dot;
+    return p_out;
 }
-struct quat quat_conjugate(struct quat q)
+struct quat* quat_conjugate(struct quat* p_out, struct quat* p_q)
 {
-    struct quat o;
-    o.x = -q.x;
-    o.y = -q.y;
-    o.z = -q.z;
-    o.w = q.w;
-    return o;
+    p_out->x = -p_q->x;
+    p_out->y = -p_q->y;
+    p_out->z = -p_q->z;
+    p_out->w = p_q->w;
+    return p_out;
 }
-struct mat4 quat_to_mat4(struct quat q)
+struct mat4* quat_to_mat4(struct mat4* p_out, struct quat* p_q)
 {
-    struct mat4 m;
-    float32_t x2 = q.x + q.x;
-    float32_t y2 = q.y + q.y;
-    float32_t z2 = q.z + q.z;
-    float32_t xx = q.x * x2;
-    float32_t yx = q.y * x2;
-    float32_t yy = q.y * y2;
-    float32_t zx = q.z * x2;
-    float32_t zy = q.z * y2;
-    float32_t zz = q.z * z2;
-    float32_t wx = q.w * x2;
-    float32_t wy = q.w * y2;
-    float32_t wz = q.w * z2;
+    float32_t x2 = p_q->x + p_q->x;
+    float32_t y2 = p_q->y + p_q->y;
+    float32_t z2 = p_q->z + p_q->z;
+    float32_t xx = p_q->x * x2;
+    float32_t yx = p_q->y * x2;
+    float32_t yy = p_q->y * y2;
+    float32_t zx = p_q->z * x2;
+    float32_t zy = p_q->z * y2;
+    float32_t zz = p_q->z * z2;
+    float32_t wx = p_q->w * x2;
+    float32_t wy = p_q->w * y2;
+    float32_t wz = p_q->w * z2;
 
     p_out->data[0] = 1.0f - yy - zz;
     p_out->data[1] = yx + wz;
@@ -924,17 +894,17 @@ struct mat4 quat_to_mat4(struct quat q)
     p_out->data[13] = 0.0f;
     p_out->data[14] = 0.0f;
     p_out->data[15] = 1.0f;
-    return m;
+    return p_out;
 }
-float32_t quat_get_axis_angle(struct vec3* p_out_axis, struct quat q)
+float32_t quat_get_axis_angle(struct vec3* p_out_axis, struct quat* p_q)
 {
-    float32_t radian = acosf(q.w) * 2.0f;
+    float32_t radian = acosf(p_q->w) * 2.0f;
     float32_t sn = sinf(radian * 0.5f);
     if (sn != 0.0f)
     {
-        p_out_axis->x = q.x / sn;
-        p_out_axis->y = q.y / sn;
-        p_out_axis->z = q.z / sn;
+        p_out_axis->x = p_q->x / sn;
+        p_out_axis->y = p_q->y / sn;
+        p_out_axis->z = p_q->z / sn;
     }
     else
     {

@@ -6,8 +6,10 @@ static camera_t g_CameraOrigin;
 
 void camera_init()
 {
-    mat4_identity();
-    mat4_identity()
+    mat4_identity(&g_Camera.view);
+    mat4_identity(&g_Camera.projection);
+    mat4_identity(&g_CameraOrigin.view);
+    mat4_identity(&g_CameraOrigin.projection);
 }
 camera_t* camera_get();
 mat4_t camera_get_mvp(mat4_t* p_model);
