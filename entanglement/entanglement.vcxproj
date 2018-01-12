@@ -146,7 +146,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="code\unity.c" />
-    <ClCompile Include="code\utils\camera.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\alloc.h" />
