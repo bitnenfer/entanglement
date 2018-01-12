@@ -522,24 +522,24 @@ struct mat4* mat4_ortho(struct mat4* p_out, float32_t left, float32_t right, flo
     p_out->data[15] = 1.0f;
     return p_out;
 }
-struct mat4* mat4_look_at(struct mat4* p_out, struct vec3* eye, struct vec3* center, struct vec3* up)
+struct mat4* mat4_look_at(struct mat4* p_out, struct vec3* p_eye, struct vec3* p_center, struct vec3* p_up)
 {
-    if (fabsf(eye->x - center->x) < 0.0000001f &&
-        fabsf(eye->y - center->y) < 0.0000001f &&
-        fabsf(eye->z - center->z) < 0.0000001f )
+    if (fabsf(p_eye->x - p_center->x) < 0.0000001f &&
+        fabsf(p_eye->y - p_center->y) < 0.0000001f &&
+        fabsf(p_eye->z - p_center->z) < 0.0000001f )
     {
         return mat4_identity(p_out);
     }
-    float32_t z0 = eye->x - center->x;
-    float32_t z1 = eye->y - center->y;
-    float32_t z2 = eye->z - center->z;
+    float32_t z0 = p_eye->x - p_center->x;
+    float32_t z1 = p_eye->y - p_center->y;
+    float32_t z2 = p_eye->z - p_center->z;
     float32_t len = 1.0f / sqrtf(z0 * z0 + z1 * z1 + z2 * z2);
     z0 *= len;
     z1 *= len;
     z2 *= len;
-    float32_t x0 = up->y * z2 - up->z * z1;
-    float32_t x1 = up->z * z0 - up->x * z2;
-    float32_t x2 = up->x * z1 - up->y * z0;
+    float32_t x0 = p_up->y * z2 - p_up->z * z1;
+    float32_t x1 = p_up->z * z0 - p_up->x * z2;
+    float32_t x2 = p_up->x * z1 - p_up->y * z0;
     len = sqrtf(x0 * x0 + x1 * x1 + x2 * x2);
     if (!len)
     {
@@ -583,9 +583,9 @@ struct mat4* mat4_look_at(struct mat4* p_out, struct vec3* eye, struct vec3* cen
     p_out->data[9] = y2;
     p_out->data[10] = z2;
     p_out->data[11] = 0.0f;
-    p_out->data[12] = -(x0 * eye->x + x1 * eye->y + x2 * eye->z);
-    p_out->data[13] = -(y0 * eye->x + y1 * eye->y + y2 * eye->z);
-    p_out->data[14] = -(z0 * eye->x + z1 * eye->y + z2 * eye->z);
+    p_out->data[12] = -(x0 * p_eye->x + x1 * p_eye->y + x2 * p_eye->z);
+    p_out->data[13] = -(y0 * p_eye->x + y1 * p_eye->y + y2 * p_eye->z);
+    p_out->data[14] = -(z0 * p_eye->x + z1 * p_eye->y + z2 * p_eye->z);
     p_out->data[15] = 1.0f;
     return p_out;
 }

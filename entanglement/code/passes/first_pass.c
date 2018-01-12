@@ -3,7 +3,10 @@
 
 void first_pass_create()
 {
+    vec3_t camera_pos = { 0, 0, -7 };
     glClearColor(0, 1, 0, 1);
+    camera_set_perspective(3.14f / 4.0f, CONFIG_ASPECT, 0.01f, 1000.0f);
+    camera_set_position(&camera_pos);
     debug_print("first pass create\n");
 }
 

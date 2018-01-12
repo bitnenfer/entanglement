@@ -7,6 +7,7 @@
 #include "boot.h"
 
 #include "passes/first_pass.h"
+#include "utils/camera.h"
 
 #include <assert.h>
 
@@ -20,6 +21,7 @@ void game_swap_state(state_t* p_next_state)
 
 void start_game()
 {
+    camera_init();
     game_swap_state(&g_FirstPassState);
 }
 

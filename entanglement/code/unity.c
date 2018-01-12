@@ -15,6 +15,7 @@
 #include "loader.c"
 #include "alloc.c"
 #include "game.c"
+#include "utils/camera.c"
 
 /* Passes */
 #include "passes/first_pass.c"

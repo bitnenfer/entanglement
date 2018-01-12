@@ -1,6 +1,6 @@
 #include  "camera.h"
 
-static const vec3_t k_UpVector = { 0.0f, 1.0f, 0.0f };
+static vec3_t k_UpVector = { 0.0f, 1.0f, 0.0f };
 static camera_t g_Camera;
 static camera_t g_CameraOrigin;
 
@@ -46,7 +46,6 @@ void camera_look_at(vec3_t* p_point)
 }
 void camera_set_rotation(vec3_t* p_rotation)
 {
-    mat4_t rotation;
     mat4_rotate_x(&g_Camera.view, &g_CameraOrigin.view, p_rotation->x);
     mat4_rotate_y(&g_Camera.view, &g_Camera.view, p_rotation->y);
     mat4_rotate_z(&g_Camera.view, &g_Camera.view, p_rotation->z);
