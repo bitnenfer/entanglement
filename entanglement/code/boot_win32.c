@@ -12,13 +12,13 @@ __declspec(dllexport) unsigned long AmdPowerXpressRequestHighPerformance = 0x000
 #include <Windows.h>
 #include <windowsx.h>
 
-HMODULE g_OpenGL32Lib = NULL;
-HMODULE g_GDILib = NULL;
+HMODULE gOpenGL32Lib = NULL;
+HMODULE gGDILib = NULL;
 
 /* Input */
-int32_t g_MouseVisible = 1;
-char g_LastChar = -1;
-uint32_t k_KeyCodeMap[(int32_t)KEYCODE_LENGTH] = {
+int32_t gMouseVisible = 1;
+char gLastChar = -1;
+uint32_t kKeyCodeMap[(int32_t)KEY_LENGTH] = {
     0xC1, 0xC2, 0x6B, 0xF6, 0x08, 0x03, 0x0C, 0xF7, 0x6E, 0x6F, 0xF9, 0x1B, 0x2B, 0xF8, 0xE6, 0xE3,
     0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46,
     0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56,
@@ -33,19 +33,19 @@ uint32_t k_KeyCodeMap[(int32_t)KEYCODE_LENGTH] = {
     0x21, 0x02, 0xA3, 0x27, 0xA5, 0xA1, 0x5C, 0x91, 0x5F, 0x2C, 0x26, 0xAE, 0xAD, 0xAF, 0x05, 0x06,
     0x11, 0x10, 0x12
 };
-int32_t g_KeyDown[(int32_t)KEYCODE_LENGTH] = { 0 };
-int32_t g_KeyHit[(int32_t)KEYCODE_LENGTH] = { 0 };
-int32_t g_MouseX = 0;
-int32_t g_MouseY = 0;
-float32_t g_MouseWheel = 0.0f;
-int32_t g_MouseButtonDown[3] = { 0 };
-int32_t g_MouseButtonHit[3] = { 0 };
+int32_t gKeyDown[(int32_t)KEY_LENGTH] = { 0 };
+int32_t gKeyHit[(int32_t)KEY_LENGTH] = { 0 };
+int32_t gMouseX = 0;
+int32_t gMouseY = 0;
+float32_t gMouseWheel = 0.0f;
+int32_t gMouseButtonDown[3] = { 0 };
+int32_t gMouseButtonHit[3] = { 0 };
 
 /* Window */
-HWND g_WindowHandle = NULL;
-HDC g_WindowDeviceContext = NULL;
-int g_WindowExit = 0;
-HGLRC g_OpenGLContext = NULL;
+HWND gWindowHandle = NULL;
+HDC gWindowDeviceContext = NULL;
+int gWindowExit = 0;
+HGLRC gOpenGLContext = NULL;
 
 /* WGL typedefs */
 typedef BOOL(APIENTRY *PFNWGLCOPYCONTEXT)(HGLRC, HGLRC, UINT);
@@ -66,21 +66,21 @@ typedef int     (APIENTRY *PFNCHOOSEPIXELFORMAT)(HDC hdc, const PIXELFORMATDESCR
 typedef BOOL(APIENTRY *PFNSETPIXELFORMAT)(HDC hdc, int iPixelFormat, const PIXELFORMATDESCRIPTOR *ppfd);
 
 /* WGL functions */
-PFNWGLGETSWAPINTERVALEXTPROC wgl_GetSwapIntervalEXT = NULL;
-PFNWGLSWAPINTERVALEXTPROC wgl_SwapIntervalEXT = NULL;
-PFNWGLCREATECONTEXT wgl_CreateContext = NULL;
-PFNWGLDELETECONTEXT wgl_DeleteContext = NULL;
-PFNWGLMAKECURRENT wgl_MakeCurrent = NULL;
-PFNWGLGETPROCADDRESS wgl_GetProcAddress = NULL;
-PFNWGLCREATECONTEXTATTRIBSARBPROC wgl_CreateContextAttribsARB = NULL;
-PFNCHOOSEPIXELFORMAT gdi_ChoosePixelFormat = NULL;
-PFNSETPIXELFORMAT gdi_SetPixelFormat = NULL;
+PFNWGLGETSWAPINTERVALEXTPROC fpWglGetSwapIntervalEXT = NULL;
+PFNWGLSWAPINTERVALEXTPROC fpWglSwapIntervalEXT = NULL;
+PFNWGLCREATECONTEXT fpWglCreateContext = NULL;
+PFNWGLDELETECONTEXT fpWglDeleteContext = NULL;
+PFNWGLMAKECURRENT fpWglMakeCurrent = NULL;
+PFNWGLGETPROCADDRESS fpWglGetProcAddress = NULL;
+PFNWGLCREATECONTEXTATTRIBSARBPROC fpWglCreateContextAttribsARB = NULL;
+PFNCHOOSEPIXELFORMAT fpGdiChoosePixelFormat = NULL;
+PFNSETPIXELFORMAT fpGdiSetPixelFormat = NULL;
 
 /* GDI */
 typedef HGDIOBJ(WINAPI *PFNGETSTOCKOBJECT)(_In_ int i);
 typedef BOOL(WINAPI *PFNSWAPBUFFERS)(HDC);
-PFNGETSTOCKOBJECT    gdi_GetStockObject;
-PFNSWAPBUFFERS       gdi_SwapBuffers;
+PFNGETSTOCKOBJECT    fpGdiGetStockObject;
+PFNSWAPBUFFERS       fpGdiSwapBuffers;
 
 static LRESULT CALLBACK window_process(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -104,28 +104,28 @@ static LRESULT CALLBACK window_process(HWND hWnd, UINT message, WPARAM wParam, L
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
 }
-void initalize_game(int argc, const char* p_argv[])
+void ldGameInit(int argc, const char* p_argv[])
 {
     /* Initialize Memory Allocators */
-    initalize_alloc();
+    ldInitMem();
 
     /* Load Libraries */
     {
-        g_GDILib = LoadLibraryA("Gdi32.dll");
-        assert(g_GDILib != NULL);
+        gGDILib = LoadLibraryA("Gdi32.dll");
+        assert(gGDILib != NULL);
 
-        gdi_GetStockObject = (PFNGETSTOCKOBJECT)GetProcAddress(g_GDILib, "GetStockObject");
-        gdi_SwapBuffers = (PFNSWAPBUFFERS)GetProcAddress(g_GDILib, "SwapBuffers");
-        gdi_ChoosePixelFormat = (PFNCHOOSEPIXELFORMAT)GetProcAddress(g_GDILib, "ChoosePixelFormat");
-        gdi_SetPixelFormat = (PFNSETPIXELFORMAT)GetProcAddress(g_GDILib, "SetPixelFormat");
+        fpGdiGetStockObject = (PFNGETSTOCKOBJECT)GetProcAddress(gGDILib, "GetStockObject");
+        fpGdiSwapBuffers = (PFNSWAPBUFFERS)GetProcAddress(gGDILib, "SwapBuffers");
+        fpGdiChoosePixelFormat = (PFNCHOOSEPIXELFORMAT)GetProcAddress(gGDILib, "ChoosePixelFormat");
+        fpGdiSetPixelFormat = (PFNSETPIXELFORMAT)GetProcAddress(gGDILib, "SetPixelFormat");
 
-        g_OpenGL32Lib = LoadLibrary("opengl32.dll");
-        assert(g_OpenGL32Lib != NULL);
+        gOpenGL32Lib = LoadLibrary("opengl32.dll");
+        assert(gOpenGL32Lib != NULL);
 
-        wgl_CreateContext = (PFNWGLCREATECONTEXT)GetProcAddress(g_OpenGL32Lib, "wglCreateContext");
-        wgl_DeleteContext = (PFNWGLDELETECONTEXT)GetProcAddress(g_OpenGL32Lib, "wglDeleteContext");
-        wgl_MakeCurrent = (PFNWGLMAKECURRENT)GetProcAddress(g_OpenGL32Lib, "wglMakeCurrent");
-        wgl_GetProcAddress = (PFNWGLGETPROCADDRESS)GetProcAddress(g_OpenGL32Lib, "wglGetProcAddress");
+        fpWglCreateContext = (PFNWGLCREATECONTEXT)GetProcAddress(gOpenGL32Lib, "wglCreateContext");
+        fpWglDeleteContext = (PFNWGLDELETECONTEXT)GetProcAddress(gOpenGL32Lib, "wglDeleteContext");
+        fpWglMakeCurrent = (PFNWGLMAKECURRENT)GetProcAddress(gOpenGL32Lib, "wglMakeCurrent");
+        fpWglGetProcAddress = (PFNWGLGETPROCADDRESS)GetProcAddress(gOpenGL32Lib, "wglGetProcAddress");
 
     }
 
@@ -135,7 +135,7 @@ void initalize_game(int argc, const char* p_argv[])
         HWND wnd_handle;
         HINSTANCE mod_instance;
         DWORD style = WS_VISIBLE | WS_CAPTION | WS_SYSMENU;
-        RECT full_screen = { 0, 0, CONFIG_WIDTH, CONFIG_HEIGHT };
+        RECT full_screen = { 0, 0, LD_CONFIG_WIDTH, LD_CONFIG_HEIGHT };
 
         mod_instance = GetModuleHandle(NULL);
         assert(mod_instance != NULL);
@@ -147,22 +147,22 @@ void initalize_game(int argc, const char* p_argv[])
         wnd_class.hInstance = mod_instance;
         wnd_class.hIcon = LoadIcon(NULL, IDI_APPLICATION);
         wnd_class.hCursor = LoadCursor(NULL, IDC_ARROW);
-        wnd_class.hbrBackground = (HBRUSH)gdi_GetStockObject(BLACK_BRUSH);
+        wnd_class.hbrBackground = (HBRUSH)fpGdiGetStockObject(BLACK_BRUSH);
         wnd_class.lpszMenuName = NULL;
         wnd_class.lpszClassName = "WindowClass0";
         RegisterClass(&wnd_class);
         AdjustWindowRect(&full_screen, style, 0);
         wnd_handle = CreateWindow(
-            "WindowClass0", CONFIG_TITLE,
+            "WindowClass0", LD_CONFIG_TITLE,
             style,
             CW_USEDEFAULT, CW_USEDEFAULT,
             full_screen.right - full_screen.left, full_screen.bottom - full_screen.top,
             NULL, NULL, mod_instance, NULL
         );
 
-        g_WindowHandle = wnd_handle;
-        g_WindowDeviceContext = GetDC(wnd_handle);
-        g_WindowExit = 0;
+        gWindowHandle = wnd_handle;
+        gWindowDeviceContext = GetDC(wnd_handle);
+        gWindowExit = 0;
     }
 
     /* Initialize OpenGL */
@@ -175,160 +175,160 @@ void initalize_game(int argc, const char* p_argv[])
         pixel_format_desc.cColorBits = 24;
         pixel_format_desc.cDepthBits = 16;
 
-        int32_t pixel_format = gdi_ChoosePixelFormat(g_WindowDeviceContext, &pixel_format_desc);
-        gdi_SetPixelFormat(g_WindowDeviceContext, pixel_format, &pixel_format_desc);
-        g_OpenGLContext = wgl_CreateContext(g_WindowDeviceContext);
-        wgl_MakeCurrent(g_WindowDeviceContext, g_OpenGLContext);
-        assert(g_OpenGLContext);
+        int32_t pixel_format = fpGdiChoosePixelFormat(gWindowDeviceContext, &pixel_format_desc);
+        fpGdiSetPixelFormat(gWindowDeviceContext, pixel_format, &pixel_format_desc);
+        gOpenGLContext = fpWglCreateContext(gWindowDeviceContext);
+        fpWglMakeCurrent(gWindowDeviceContext, gOpenGLContext);
+        assert(gOpenGLContext);
 
-        wgl_GetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)wgl_GetProcAddress("wglGetSwapIntervalEXT");
-        wgl_SwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wgl_GetProcAddress("wglSwapIntervalEXT");
+        fpWglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)fpWglGetProcAddress("wglGetSwapIntervalEXT");
+        fpWglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)fpWglGetProcAddress("wglSwapIntervalEXT");
 
         /* Load OpenGL Functions */
-        glGetError = (PFNGLGETERROR)GetProcAddress(g_OpenGL32Lib, "glGetError");
-        glViewport = (PFNGLVIEWPORTPROC)GetProcAddress(g_OpenGL32Lib, "glViewport");
-        glEnable = (PFNGLENABLEPROC)GetProcAddress(g_OpenGL32Lib, "glEnable");
-        glBlendFunc = (PFNGLBLENDFUNCPROC)GetProcAddress(g_OpenGL32Lib, "glBlendFunc");
-        glClear = (PFNGLCLEARPROC)GetProcAddress(g_OpenGL32Lib, "glClear");
-        glClearColor = (PFNGLCLEARCOLORPROC)GetProcAddress(g_OpenGL32Lib, "glClearColor");
-        glCullFace = (PFNGLCULLFACEPROC)GetProcAddress(g_OpenGL32Lib, "glCullFace");
-        glDeleteTextures = (PFNGLDELETETEXTURESPROC)GetProcAddress(g_OpenGL32Lib, "glDeleteTextures");
-        glDepthFunc = (PFNGLDEPTHFUNCPROC)GetProcAddress(g_OpenGL32Lib, "glDepthFunc");
-        glDepthMask = (PFNGLDEPTHMASKPROC)GetProcAddress(g_OpenGL32Lib, "glDepthMask");
-        glDepthRange = (PFNGLDEPTHRANGEPROC)GetProcAddress(g_OpenGL32Lib, "glDepthRange");
-        glDisable = (PFNGLDISABLEPROC)GetProcAddress(g_OpenGL32Lib, "glDisable");
-        glDrawArrays = (PFNGLDRAWARRAYS)GetProcAddress(g_OpenGL32Lib, "glDrawArrays");
-        glDrawElements = (PFNGLDRAWELEMENTS)GetProcAddress(g_OpenGL32Lib, "glDrawElements");
-        glGenTextures = (PFNGLGENTEXTURES)GetProcAddress(g_OpenGL32Lib, "glGenTextures");
-        glTexEnvf = (PFNGLTEXENVFPROC)GetProcAddress(g_OpenGL32Lib, "glTexEnvf");
-        glTexEnvfv = (PFNGLTEXENVFVPROC)GetProcAddress(g_OpenGL32Lib, "glTexEnvfv");
-        glTexEnvi = (PFNGLTEXENVIPROC)GetProcAddress(g_OpenGL32Lib, "glTexEnvi");
-        glTexEnviv = (PFNGLTEXENVIVPROC)GetProcAddress(g_OpenGL32Lib, "glTexEnviv");
-        glTexGend = (PFNGLTEXGENDPROC)GetProcAddress(g_OpenGL32Lib, "glTexGend");
-        glTexGendv = (PFNGLTEXGENDVPROC)GetProcAddress(g_OpenGL32Lib, "glTexGendv");
-        glTexGenf = (PFNGLTEXGENFPROC)GetProcAddress(g_OpenGL32Lib, "glTexGenf");
-        glTexGenfv = (PFNGLTEXGENFVPROC)GetProcAddress(g_OpenGL32Lib, "glTexGenfv");
-        glTexGeni = (PFNGLTEXGENIPROC)GetProcAddress(g_OpenGL32Lib, "glTexGeni");
-        glTexGeniv = (PFNGLTEXGENIVPROC)GetProcAddress(g_OpenGL32Lib, "glTexGeniv");
-        glTexImage1D = (PFNGLTEXIMAGE1DPROC)GetProcAddress(g_OpenGL32Lib, "glTexImage1D");
-        glTexImage2D = (PFNGLTEXIMAGE2DPROC)GetProcAddress(g_OpenGL32Lib, "glTexImage2D");
-        glTexParameterf = (PFNGLTEXPARAMETERFPROC)GetProcAddress(g_OpenGL32Lib, "glTexParameterf");
-        glTexParameterfv = (PFNGLTEXPARAMETERFVPROC)GetProcAddress(g_OpenGL32Lib, "glTexParameterfv");
-        glTexParameteri = (PFNGLTEXPARAMETERIPROC)GetProcAddress(g_OpenGL32Lib, "glTexParameteri");
-        glTexParameteriv = (PFNGLTEXPARAMETERIVPROC)GetProcAddress(g_OpenGL32Lib, "glTexParameteriv");
-        glTexSubImage1D = (PFNGLTEXSUBIMAGE1DPROC)GetProcAddress(g_OpenGL32Lib, "glTexSubImage1D");
-        glTexSubImage2D = (PFNGLTEXSUBIMAGE2DPROC)GetProcAddress(g_OpenGL32Lib, "glTexSubImage2D");
-        glScissor = (PFNGLSCISSORPROC)GetProcAddress(g_OpenGL32Lib, "glScissor");
-        glSelectBuffer = (PFNGLSELECTBUFFERPROC)GetProcAddress(g_OpenGL32Lib, "glSelectBuffer");
-        glStencilFunc = (PFNGLSTENCILFUNCPROC)GetProcAddress(g_OpenGL32Lib, "glStencilFunc");
-        glStencilMask = (PFNGLSTENCILMASKPROC)GetProcAddress(g_OpenGL32Lib, "glStencilMask");
-        glStencilOp = (PFNGLSTENCILOPPROC)GetProcAddress(g_OpenGL32Lib, "glStencilOp");
-        glClearDepth = (PFNGLCLEARDEPTHPROC)GetProcAddress(g_OpenGL32Lib, "glClearDepth");
-        glClearStencil = (PFNGLCLEARSTENCILPROC)GetProcAddress(g_OpenGL32Lib, "glClearStencil");
-        glBindTexture = (PFNGLBINDTEXTUREPROC)GetProcAddress(g_OpenGL32Lib, "glBindTexture");
-        glLogicOp = (PFNGLLOGICOP)GetProcAddress(g_OpenGL32Lib, "glLogicOp");
+        glGetError = (PFNGLGETERROR)GetProcAddress(gOpenGL32Lib, "glGetError");
+        glViewport = (PFNGLVIEWPORTPROC)GetProcAddress(gOpenGL32Lib, "glViewport");
+        glEnable = (PFNGLENABLEPROC)GetProcAddress(gOpenGL32Lib, "glEnable");
+        glBlendFunc = (PFNGLBLENDFUNCPROC)GetProcAddress(gOpenGL32Lib, "glBlendFunc");
+        glClear = (PFNGLCLEARPROC)GetProcAddress(gOpenGL32Lib, "glClear");
+        glClearColor = (PFNGLCLEARCOLORPROC)GetProcAddress(gOpenGL32Lib, "glClearColor");
+        glCullFace = (PFNGLCULLFACEPROC)GetProcAddress(gOpenGL32Lib, "glCullFace");
+        glDeleteTextures = (PFNGLDELETETEXTURESPROC)GetProcAddress(gOpenGL32Lib, "glDeleteTextures");
+        glDepthFunc = (PFNGLDEPTHFUNCPROC)GetProcAddress(gOpenGL32Lib, "glDepthFunc");
+        glDepthMask = (PFNGLDEPTHMASKPROC)GetProcAddress(gOpenGL32Lib, "glDepthMask");
+        glDepthRange = (PFNGLDEPTHRANGEPROC)GetProcAddress(gOpenGL32Lib, "glDepthRange");
+        glDisable = (PFNGLDISABLEPROC)GetProcAddress(gOpenGL32Lib, "glDisable");
+        glDrawArrays = (PFNGLDRAWARRAYS)GetProcAddress(gOpenGL32Lib, "glDrawArrays");
+        glDrawElements = (PFNGLDRAWELEMENTS)GetProcAddress(gOpenGL32Lib, "glDrawElements");
+        glGenTextures = (PFNGLGENTEXTURES)GetProcAddress(gOpenGL32Lib, "glGenTextures");
+        glTexEnvf = (PFNGLTEXENVFPROC)GetProcAddress(gOpenGL32Lib, "glTexEnvf");
+        glTexEnvfv = (PFNGLTEXENVFVPROC)GetProcAddress(gOpenGL32Lib, "glTexEnvfv");
+        glTexEnvi = (PFNGLTEXENVIPROC)GetProcAddress(gOpenGL32Lib, "glTexEnvi");
+        glTexEnviv = (PFNGLTEXENVIVPROC)GetProcAddress(gOpenGL32Lib, "glTexEnviv");
+        glTexGend = (PFNGLTEXGENDPROC)GetProcAddress(gOpenGL32Lib, "glTexGend");
+        glTexGendv = (PFNGLTEXGENDVPROC)GetProcAddress(gOpenGL32Lib, "glTexGendv");
+        glTexGenf = (PFNGLTEXGENFPROC)GetProcAddress(gOpenGL32Lib, "glTexGenf");
+        glTexGenfv = (PFNGLTEXGENFVPROC)GetProcAddress(gOpenGL32Lib, "glTexGenfv");
+        glTexGeni = (PFNGLTEXGENIPROC)GetProcAddress(gOpenGL32Lib, "glTexGeni");
+        glTexGeniv = (PFNGLTEXGENIVPROC)GetProcAddress(gOpenGL32Lib, "glTexGeniv");
+        glTexImage1D = (PFNGLTEXIMAGE1DPROC)GetProcAddress(gOpenGL32Lib, "glTexImage1D");
+        glTexImage2D = (PFNGLTEXIMAGE2DPROC)GetProcAddress(gOpenGL32Lib, "glTexImage2D");
+        glTexParameterf = (PFNGLTEXPARAMETERFPROC)GetProcAddress(gOpenGL32Lib, "glTexParameterf");
+        glTexParameterfv = (PFNGLTEXPARAMETERFVPROC)GetProcAddress(gOpenGL32Lib, "glTexParameterfv");
+        glTexParameteri = (PFNGLTEXPARAMETERIPROC)GetProcAddress(gOpenGL32Lib, "glTexParameteri");
+        glTexParameteriv = (PFNGLTEXPARAMETERIVPROC)GetProcAddress(gOpenGL32Lib, "glTexParameteriv");
+        glTexSubImage1D = (PFNGLTEXSUBIMAGE1DPROC)GetProcAddress(gOpenGL32Lib, "glTexSubImage1D");
+        glTexSubImage2D = (PFNGLTEXSUBIMAGE2DPROC)GetProcAddress(gOpenGL32Lib, "glTexSubImage2D");
+        glScissor = (PFNGLSCISSORPROC)GetProcAddress(gOpenGL32Lib, "glScissor");
+        glSelectBuffer = (PFNGLSELECTBUFFERPROC)GetProcAddress(gOpenGL32Lib, "glSelectBuffer");
+        glStencilFunc = (PFNGLSTENCILFUNCPROC)GetProcAddress(gOpenGL32Lib, "glStencilFunc");
+        glStencilMask = (PFNGLSTENCILMASKPROC)GetProcAddress(gOpenGL32Lib, "glStencilMask");
+        glStencilOp = (PFNGLSTENCILOPPROC)GetProcAddress(gOpenGL32Lib, "glStencilOp");
+        glClearDepth = (PFNGLCLEARDEPTHPROC)GetProcAddress(gOpenGL32Lib, "glClearDepth");
+        glClearStencil = (PFNGLCLEARSTENCILPROC)GetProcAddress(gOpenGL32Lib, "glClearStencil");
+        glBindTexture = (PFNGLBINDTEXTUREPROC)GetProcAddress(gOpenGL32Lib, "glBindTexture");
+        glLogicOp = (PFNGLLOGICOP)GetProcAddress(gOpenGL32Lib, "glLogicOp");
 
-        glCreateShader = (PFNGLCREATESHADERPROC)wgl_GetProcAddress("glCreateShader");
-        glShaderSource = (PFNGLSHADERSOURCEPROC)wgl_GetProcAddress("glShaderSource");
-        glBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC)wgl_GetProcAddress("glBindAttribLocation");
-        glCompileShader = (PFNGLCOMPILESHADERPROC)wgl_GetProcAddress("glCompileShader");
-        glGetShaderiv = (PFNGLGETSHADERIVPROC)wgl_GetProcAddress("glGetShaderiv");
-        glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)wgl_GetProcAddress("glGetShaderInfoLog");
-        glCreateProgram = (PFNGLCREATEPROGRAMPROC)wgl_GetProcAddress("glCreateProgram");
-        glAttachShader = (PFNGLATTACHSHADERPROC)wgl_GetProcAddress("glAttachShader");
-        glLinkProgram = (PFNGLLINKPROGRAMPROC)wgl_GetProcAddress("glLinkProgram");
-        glGetProgramiv = (PFNGLGETPROGRAMIVNVPROC)wgl_GetProcAddress("glGetProgramiv");
-        glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)wgl_GetProcAddress("glGetProgramInfoLog");
-        glUseProgram = (PFNGLUSEPROGRAMPROC)wgl_GetProcAddress("glUseProgram");
-        glDeleteProgram = (PFNGLDELETEPROGRAMPROC)wgl_GetProcAddress("glDeleteProgram");
-        glDeleteShader = (PFNGLDELETESHADERPROC)wgl_GetProcAddress("glDeleteShader");
-        glGetAttribLocation = (PFNGLGETATTRIBLOCATIONPROC)wgl_GetProcAddress("glGetAttribLocation");
-        glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)wgl_GetProcAddress("glGetUniformLocation");
-        glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)wgl_GetProcAddress("glEnableVertexAttribArray");
-        glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)wgl_GetProcAddress("glVertexAttribPointer");
-        glUniform1f = (PFNGLUNIFORM1FPROC)wgl_GetProcAddress("glUniform1f");
-        glUniform1fv = (PFNGLUNIFORM1FVPROC)wgl_GetProcAddress("glUniform1fv");
-        glUniform1i = (PFNGLUNIFORM1IPROC)wgl_GetProcAddress("glUniform1i");
-        glUniform1iv = (PFNGLUNIFORM1IVPROC)wgl_GetProcAddress("glUniform1iv");
-        glUniform2f = (PFNGLUNIFORM2FPROC)wgl_GetProcAddress("glUniform2f");
-        glUniform2fv = (PFNGLUNIFORM2FVPROC)wgl_GetProcAddress("glUniform2fv");
-        glUniform2i = (PFNGLUNIFORM2IPROC)wgl_GetProcAddress("glUniform2i");
-        glUniform2iv = (PFNGLUNIFORM2IVPROC)wgl_GetProcAddress("glUniform2iv");
-        glUniform3f = (PFNGLUNIFORM3FPROC)wgl_GetProcAddress("glUniform3f");
-        glUniform3fv = (PFNGLUNIFORM3FVPROC)wgl_GetProcAddress("glUniform3fv");
-        glUniform3i = (PFNGLUNIFORM3IPROC)wgl_GetProcAddress("glUniform3i");
-        glUniform3iv = (PFNGLUNIFORM3IVPROC)wgl_GetProcAddress("glUniform3iv");
-        glUniform4f = (PFNGLUNIFORM4FPROC)wgl_GetProcAddress("glUniform4f");
-        glUniform4fv = (PFNGLUNIFORM4FVPROC)wgl_GetProcAddress("glUniform4fv");
-        glUniform4i = (PFNGLUNIFORM4IPROC)wgl_GetProcAddress("glUniform4i");
-        glUniform4iv = (PFNGLUNIFORM4IVPROC)wgl_GetProcAddress("glUniform4iv");
-        glUniformMatrix2fv = (PFNGLUNIFORMMATRIX2FVPROC)wgl_GetProcAddress("glUniformMatrix2fv");
-        glUniformMatrix3fv = (PFNGLUNIFORMMATRIX3FVPROC)wgl_GetProcAddress("glUniformMatrix3fv");
-        glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)wgl_GetProcAddress("glUniformMatrix4fv");
-        glValidateProgram = (PFNGLVALIDATEPROGRAMPROC)wgl_GetProcAddress("glValidateProgram");
-        glIsProgram = (PFNGLISPROGRAMPROC)wgl_GetProcAddress("glIsProgram");
-        glIsShader = (PFNGLISSHADERPROC)wgl_GetProcAddress("glIsShader");
-        glActiveTexture = (PFNGLACTIVETEXTUREPROC)wgl_GetProcAddress("glActiveTexture");
-        glGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC)wgl_GetProcAddress("glGenFramebuffers");
-        glGenRenderbuffers = (PFNGLGENRENDERBUFFERSPROC)wgl_GetProcAddress("glGenRenderbuffers");
-        glBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC)wgl_GetProcAddress("glBindFramebuffer");
-        glBindRenderbuffer = (PFNGLBINDRENDERBUFFERPROC)wgl_GetProcAddress("glBindRenderbuffer");
-        glFramebufferTexture2D = (PFNGLFRAMEBUFFERTEXTURE2DPROC)wgl_GetProcAddress("glFramebufferTexture2D");
-        glDeleteFramebuffers = (PFNGLDELETEFRAMEBUFFERSPROC)wgl_GetProcAddress("glDeleteFramebuffers");
-        glDeleteRenderbuffers = (PFNGLDELETERENDERBUFFERSPROC)wgl_GetProcAddress("glDeleteRenderbuffers");
-        glGenBuffers = (PFNGLGENBUFFERSPROC)wgl_GetProcAddress("glGenBuffers");
-        glBindBuffer = (PFNGLBINDBUFFERPROC)wgl_GetProcAddress("glBindBuffer");
-        glBufferData = (PFNGLBUFFERDATAPROC)wgl_GetProcAddress("glBufferData");
-        glBufferSubData = (PFNGLBUFFERSUBDATAPROC)wgl_GetProcAddress("glBufferSubData");
-        glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)wgl_GetProcAddress("glDeleteBuffers");
-        glDrawElementsBaseVertex = (PFNGLDRAWELEMENTSBASEVERTEXPROC)wgl_GetProcAddress("glDrawElementsBaseVertex");
-        glBlendFuncSeparate = (PFNGLBLENDFUNCSEPARATEPROC)wgl_GetProcAddress("glBlendFuncSeparate");
-        glBlendEquationSeparate = (PFNGLBLENDEQUATIONSEPARATEPROC)wgl_GetProcAddress("glBlendEquationSeparate");
-        glGetUniformBlockIndex = (PFNGLGETUNIFORMBLOCKINDEXPROC)wgl_GetProcAddress("glGetUniformBlockIndex");
-        glBindBufferBase = (PFNGLBINDBUFFERBASEPROC)wgl_GetProcAddress("glBindBufferBase");
-        glUniformBlockBinding = (PFNGLUNIFORMBLOCKBINDINGPROC)wgl_GetProcAddress("glUniformBlockBinding");
-        glGenVertexArrays = (PFNGLGENVERTEXARRAYSPROC)wgl_GetProcAddress("glGenVertexArrays");
-        glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)wgl_GetProcAddress("glDeleteVertexArrays");
-        glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)wgl_GetProcAddress("glBindVertexArray");
+        glCreateShader = (PFNGLCREATESHADERPROC)fpWglGetProcAddress("glCreateShader");
+        glShaderSource = (PFNGLSHADERSOURCEPROC)fpWglGetProcAddress("glShaderSource");
+        glBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC)fpWglGetProcAddress("glBindAttribLocation");
+        glCompileShader = (PFNGLCOMPILESHADERPROC)fpWglGetProcAddress("glCompileShader");
+        glGetShaderiv = (PFNGLGETSHADERIVPROC)fpWglGetProcAddress("glGetShaderiv");
+        glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)fpWglGetProcAddress("glGetShaderInfoLog");
+        glCreateProgram = (PFNGLCREATEPROGRAMPROC)fpWglGetProcAddress("glCreateProgram");
+        glAttachShader = (PFNGLATTACHSHADERPROC)fpWglGetProcAddress("glAttachShader");
+        glLinkProgram = (PFNGLLINKPROGRAMPROC)fpWglGetProcAddress("glLinkProgram");
+        glGetProgramiv = (PFNGLGETPROGRAMIVNVPROC)fpWglGetProcAddress("glGetProgramiv");
+        glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)fpWglGetProcAddress("glGetProgramInfoLog");
+        glUseProgram = (PFNGLUSEPROGRAMPROC)fpWglGetProcAddress("glUseProgram");
+        glDeleteProgram = (PFNGLDELETEPROGRAMPROC)fpWglGetProcAddress("glDeleteProgram");
+        glDeleteShader = (PFNGLDELETESHADERPROC)fpWglGetProcAddress("glDeleteShader");
+        glGetAttribLocation = (PFNGLGETATTRIBLOCATIONPROC)fpWglGetProcAddress("glGetAttribLocation");
+        glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)fpWglGetProcAddress("glGetUniformLocation");
+        glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)fpWglGetProcAddress("glEnableVertexAttribArray");
+        glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)fpWglGetProcAddress("glVertexAttribPointer");
+        glUniform1f = (PFNGLUNIFORM1FPROC)fpWglGetProcAddress("glUniform1f");
+        glUniform1fv = (PFNGLUNIFORM1FVPROC)fpWglGetProcAddress("glUniform1fv");
+        glUniform1i = (PFNGLUNIFORM1IPROC)fpWglGetProcAddress("glUniform1i");
+        glUniform1iv = (PFNGLUNIFORM1IVPROC)fpWglGetProcAddress("glUniform1iv");
+        glUniform2f = (PFNGLUNIFORM2FPROC)fpWglGetProcAddress("glUniform2f");
+        glUniform2fv = (PFNGLUNIFORM2FVPROC)fpWglGetProcAddress("glUniform2fv");
+        glUniform2i = (PFNGLUNIFORM2IPROC)fpWglGetProcAddress("glUniform2i");
+        glUniform2iv = (PFNGLUNIFORM2IVPROC)fpWglGetProcAddress("glUniform2iv");
+        glUniform3f = (PFNGLUNIFORM3FPROC)fpWglGetProcAddress("glUniform3f");
+        glUniform3fv = (PFNGLUNIFORM3FVPROC)fpWglGetProcAddress("glUniform3fv");
+        glUniform3i = (PFNGLUNIFORM3IPROC)fpWglGetProcAddress("glUniform3i");
+        glUniform3iv = (PFNGLUNIFORM3IVPROC)fpWglGetProcAddress("glUniform3iv");
+        glUniform4f = (PFNGLUNIFORM4FPROC)fpWglGetProcAddress("glUniform4f");
+        glUniform4fv = (PFNGLUNIFORM4FVPROC)fpWglGetProcAddress("glUniform4fv");
+        glUniform4i = (PFNGLUNIFORM4IPROC)fpWglGetProcAddress("glUniform4i");
+        glUniform4iv = (PFNGLUNIFORM4IVPROC)fpWglGetProcAddress("glUniform4iv");
+        glUniformMatrix2fv = (PFNGLUNIFORMMATRIX2FVPROC)fpWglGetProcAddress("glUniformMatrix2fv");
+        glUniformMatrix3fv = (PFNGLUNIFORMMATRIX3FVPROC)fpWglGetProcAddress("glUniformMatrix3fv");
+        glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)fpWglGetProcAddress("glUniformMatrix4fv");
+        glValidateProgram = (PFNGLVALIDATEPROGRAMPROC)fpWglGetProcAddress("glValidateProgram");
+        glIsProgram = (PFNGLISPROGRAMPROC)fpWglGetProcAddress("glIsProgram");
+        glIsShader = (PFNGLISSHADERPROC)fpWglGetProcAddress("glIsShader");
+        glActiveTexture = (PFNGLACTIVETEXTUREPROC)fpWglGetProcAddress("glActiveTexture");
+        glGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC)fpWglGetProcAddress("glGenFramebuffers");
+        glGenRenderbuffers = (PFNGLGENRENDERBUFFERSPROC)fpWglGetProcAddress("glGenRenderbuffers");
+        glBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC)fpWglGetProcAddress("glBindFramebuffer");
+        glBindRenderbuffer = (PFNGLBINDRENDERBUFFERPROC)fpWglGetProcAddress("glBindRenderbuffer");
+        glFramebufferTexture2D = (PFNGLFRAMEBUFFERTEXTURE2DPROC)fpWglGetProcAddress("glFramebufferTexture2D");
+        glDeleteFramebuffers = (PFNGLDELETEFRAMEBUFFERSPROC)fpWglGetProcAddress("glDeleteFramebuffers");
+        glDeleteRenderbuffers = (PFNGLDELETERENDERBUFFERSPROC)fpWglGetProcAddress("glDeleteRenderbuffers");
+        glGenBuffers = (PFNGLGENBUFFERSPROC)fpWglGetProcAddress("glGenBuffers");
+        glBindBuffer = (PFNGLBINDBUFFERPROC)fpWglGetProcAddress("glBindBuffer");
+        glBufferData = (PFNGLBUFFERDATAPROC)fpWglGetProcAddress("glBufferData");
+        glBufferSubData = (PFNGLBUFFERSUBDATAPROC)fpWglGetProcAddress("glBufferSubData");
+        glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)fpWglGetProcAddress("glDeleteBuffers");
+        glDrawElementsBaseVertex = (PFNGLDRAWELEMENTSBASEVERTEXPROC)fpWglGetProcAddress("glDrawElementsBaseVertex");
+        glBlendFuncSeparate = (PFNGLBLENDFUNCSEPARATEPROC)fpWglGetProcAddress("glBlendFuncSeparate");
+        glBlendEquationSeparate = (PFNGLBLENDEQUATIONSEPARATEPROC)fpWglGetProcAddress("glBlendEquationSeparate");
+        glGetUniformBlockIndex = (PFNGLGETUNIFORMBLOCKINDEXPROC)fpWglGetProcAddress("glGetUniformBlockIndex");
+        glBindBufferBase = (PFNGLBINDBUFFERBASEPROC)fpWglGetProcAddress("glBindBufferBase");
+        glUniformBlockBinding = (PFNGLUNIFORMBLOCKBINDINGPROC)fpWglGetProcAddress("glUniformBlockBinding");
+        glGenVertexArrays = (PFNGLGENVERTEXARRAYSPROC)fpWglGetProcAddress("glGenVertexArrays");
+        glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)fpWglGetProcAddress("glDeleteVertexArrays");
+        glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)fpWglGetProcAddress("glBindVertexArray");
 
-        if (wgl_SwapIntervalEXT) wgl_SwapIntervalEXT(CONFIG_SWAP_INTERVAL);
+        if (fpWglSwapIntervalEXT) fpWglSwapIntervalEXT(LD_CONFIG_SWAP_INTERVAL);
 
     }
 }
-void run_game()
+void ldGameRun()
 {
-    start_game();
-    while (!g_WindowExit)
+    ldGameStart();
+    while (!gWindowExit)
     {
-        poll_events();
-        update_game(0.16f);
-        render_game();
-        swap_buffers();
+        ldPollEvents();
+        ldGameUpdate(0.16f);
+        ldGameRender();
+        ldSwapBuffer();
     }
 }
-void shutdown_game()
+void ldGameShutdown()
 {
-    CloseWindow(g_WindowHandle);
-    DestroyWindow(g_WindowHandle);
-    FreeLibrary(g_GDILib);
-    FreeLibrary(g_OpenGL32Lib);
-    shutdown_alloc();
+    CloseWindow(gWindowHandle);
+    DestroyWindow(gWindowHandle);
+    FreeLibrary(gGDILib);
+    FreeLibrary(gOpenGL32Lib);
+    ldShutdownMem();
 }
-void swap_buffers()
+void ldSwapBuffer()
 {
-    gdi_SwapBuffers(g_WindowDeviceContext);
+    fpGdiSwapBuffers(gWindowDeviceContext);
 }
-void poll_events()
+void ldPollEvents()
 {
     MSG msg;
 
-    g_MouseButtonHit[0] = 0;
-    g_MouseButtonHit[1] = 0;
-    g_MouseButtonHit[2] = 0;
+    gMouseButtonHit[0] = 0;
+    gMouseButtonHit[1] = 0;
+    gMouseButtonHit[2] = 0;
 
-    for (int32_t index = 0; index < KEYCODE_LENGTH; ++index)
+    for (int32_t index = 0; index < KEY_LENGTH; ++index)
     {
-        g_KeyHit[index] = 0;
+        gKeyHit[index] = 0;
     }
 
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -344,90 +344,90 @@ void poll_events()
             {
                 break;
             }
-            g_LastChar = (char)msg.wParam;
+            gLastChar = (char)msg.wParam;
             break;
         }
         case WM_MOUSEMOVE:
         {
-            g_MouseX = GET_X_LPARAM(msg.lParam);
-            g_MouseY = GET_Y_LPARAM(msg.lParam);
+            gMouseX = GET_X_LPARAM(msg.lParam);
+            gMouseY = GET_Y_LPARAM(msg.lParam);
             break;
         }
         case WM_MOUSEWHEEL:
         {
-            g_MouseX = GET_X_LPARAM(msg.lParam);
-            g_MouseY = GET_Y_LPARAM(msg.lParam);
-            g_MouseWheel = GET_WHEEL_DELTA_WPARAM(msg.wParam) > 0 ? +1.0f : -1.0f;
+            gMouseX = GET_X_LPARAM(msg.lParam);
+            gMouseY = GET_Y_LPARAM(msg.lParam);
+            gMouseWheel = GET_WHEEL_DELTA_WPARAM(msg.wParam) > 0 ? +1.0f : -1.0f;
             break;
         }
         case WM_LBUTTONDOWN:
         {
-            g_MouseX = GET_X_LPARAM(msg.lParam);
-            g_MouseY = GET_Y_LPARAM(msg.lParam);
-            if (!g_MouseButtonDown[MOUSE_BUTTON_LEFT])
+            gMouseX = GET_X_LPARAM(msg.lParam);
+            gMouseY = GET_Y_LPARAM(msg.lParam);
+            if (!gMouseButtonDown[MOUSE_BUTTON_LEFT])
             {
-                g_MouseButtonHit[MOUSE_BUTTON_LEFT] = 1;
+                gMouseButtonHit[MOUSE_BUTTON_LEFT] = 1;
             }
-            g_MouseButtonDown[MOUSE_BUTTON_LEFT] = 1;
+            gMouseButtonDown[MOUSE_BUTTON_LEFT] = 1;
             break;
         }
         case WM_RBUTTONDOWN:
         {
-            g_MouseX = GET_X_LPARAM(msg.lParam);
-            g_MouseY = GET_Y_LPARAM(msg.lParam);
-            if (!g_MouseButtonDown[MOUSE_BUTTON_RIGHT])
+            gMouseX = GET_X_LPARAM(msg.lParam);
+            gMouseY = GET_Y_LPARAM(msg.lParam);
+            if (!gMouseButtonDown[MOUSE_BUTTON_RIGHT])
             {
-                g_MouseButtonHit[MOUSE_BUTTON_RIGHT] = 1;
+                gMouseButtonHit[MOUSE_BUTTON_RIGHT] = 1;
             }
-            g_MouseButtonDown[MOUSE_BUTTON_RIGHT] = 1;
+            gMouseButtonDown[MOUSE_BUTTON_RIGHT] = 1;
             break;
         }
         case WM_MBUTTONDOWN:
         {
-            g_MouseX = GET_X_LPARAM(msg.lParam);
-            g_MouseY = GET_Y_LPARAM(msg.lParam);
-            if (!g_MouseButtonDown[MOUSE_BUTTON_MIDDLE])
+            gMouseX = GET_X_LPARAM(msg.lParam);
+            gMouseY = GET_Y_LPARAM(msg.lParam);
+            if (!gMouseButtonDown[MOUSE_BUTTON_MIDDLE])
             {
-                g_MouseButtonHit[MOUSE_BUTTON_MIDDLE] = 1;
+                gMouseButtonHit[MOUSE_BUTTON_MIDDLE] = 1;
             }
-            g_MouseButtonDown[MOUSE_BUTTON_MIDDLE] = 1;
+            gMouseButtonDown[MOUSE_BUTTON_MIDDLE] = 1;
             break;
         }
         case WM_LBUTTONUP:
         {
-            g_MouseX = GET_X_LPARAM(msg.lParam);
-            g_MouseY = GET_Y_LPARAM(msg.lParam);
-            g_MouseButtonDown[MOUSE_BUTTON_LEFT] = 0;
-            g_MouseButtonHit[MOUSE_BUTTON_LEFT] = 0;
+            gMouseX = GET_X_LPARAM(msg.lParam);
+            gMouseY = GET_Y_LPARAM(msg.lParam);
+            gMouseButtonDown[MOUSE_BUTTON_LEFT] = 0;
+            gMouseButtonHit[MOUSE_BUTTON_LEFT] = 0;
             break;
         }
         case WM_RBUTTONUP:
         {
-            g_MouseX = GET_X_LPARAM(msg.lParam);
-            g_MouseY = GET_Y_LPARAM(msg.lParam);
-            g_MouseButtonDown[MOUSE_BUTTON_RIGHT] = 0;
-            g_MouseButtonHit[MOUSE_BUTTON_RIGHT] = 0;
+            gMouseX = GET_X_LPARAM(msg.lParam);
+            gMouseY = GET_Y_LPARAM(msg.lParam);
+            gMouseButtonDown[MOUSE_BUTTON_RIGHT] = 0;
+            gMouseButtonHit[MOUSE_BUTTON_RIGHT] = 0;
             break;
         }
         case WM_MBUTTONUP:
         {
-            g_MouseX = GET_X_LPARAM(msg.lParam);
-            g_MouseY = GET_Y_LPARAM(msg.lParam);
-            g_MouseButtonDown[MOUSE_BUTTON_MIDDLE] = 0;
-            g_MouseButtonHit[MOUSE_BUTTON_MIDDLE] = 0;
+            gMouseX = GET_X_LPARAM(msg.lParam);
+            gMouseY = GET_Y_LPARAM(msg.lParam);
+            gMouseButtonDown[MOUSE_BUTTON_MIDDLE] = 0;
+            gMouseButtonHit[MOUSE_BUTTON_MIDDLE] = 0;
             break;
         }
         case WM_KEYDOWN:
         {
-            for (int32_t index = 0; index < KEYCODE_LENGTH; ++index)
+            for (int32_t index = 0; index < KEY_LENGTH; ++index)
             {
-                if (k_KeyCodeMap[index] == msg.wParam)
+                if (kKeyCodeMap[index] == msg.wParam)
                 {
-                    if (!g_KeyDown[index])
+                    if (!gKeyDown[index])
                     {
-                        g_KeyHit[index] = 1;
+                        gKeyHit[index] = 1;
                     }
-                    g_KeyDown[index] = 1;
+                    gKeyDown[index] = 1;
                     break;
                 }
             }
@@ -435,19 +435,19 @@ void poll_events()
         }
         case WM_KEYUP:
         {
-            for (int32_t index = 0; index < KEYCODE_LENGTH; ++index)
+            for (int32_t index = 0; index < KEY_LENGTH; ++index)
             {
-                if (k_KeyCodeMap[index] == msg.wParam)
+                if (kKeyCodeMap[index] == msg.wParam)
                 {
-                    g_KeyDown[index] = 0;
-                    g_KeyHit[index] = 0;
+                    gKeyDown[index] = 0;
+                    gKeyHit[index] = 0;
                     break;
                 }
             }
             break;
         }
         case WM_QUIT:
-            g_WindowExit = 1;
+            gWindowExit = 1;
             break;
         default:
             DispatchMessage(&msg);
@@ -455,45 +455,50 @@ void poll_events()
         }
     }
 }
-int32_t is_key_down(enum key_code key)
+int32_t ldIsKeyDown(enum key_code key)
 {
-    return g_KeyDown[key];
+    return gKeyDown[key];
 }
-int32_t is_key_hit(enum key_code key)
+int32_t ldIsKeyHit(enum key_code key)
 {
-    return g_KeyHit[key];
+    return gKeyHit[key];
 }
-int32_t is_mouse_down(enum mouse_button button)
+int32_t ldIsMouseDown(enum mouse_button button)
 {
-    return g_MouseButtonDown[button];
+    return gMouseButtonDown[button];
 }
-int32_t is_mouse_hit(enum mouse_button button)
+int32_t ldIsMouseHit(enum mouse_button button)
 {
-    return g_MouseButtonHit[button];
+    return gMouseButtonHit[button];
 }
-float32_t mouse_x()
+float32_t ldMouseX()
 {
-    return (float32_t)g_MouseX;
+    return (float32_t)gMouseX;
 }
-float32_t mouse_y()
+float32_t ldMouseY()
 {
-    return (float32_t)g_MouseY;
+    return (float32_t)gMouseY;
 }
-float32_t mouse_wheel()
+float32_t ldMouseWheel()
 {
-    return g_MouseWheel;
+    return gMouseWheel;
 }
-void quit_game()
+void ldGameQuit()
 {
-    g_WindowExit = 1;
+    gWindowExit = 1;
 }
-void debug_print(const char* p_fmt, ...)
+void ldDebugPrint(const char* p_fmt, ...)
 {
-    static char printf_buffer[1024] = { 0 };
+    static char printfBuffer[1024] = { 0 };
     int32_t len;
     va_list args;
     va_start(args, p_fmt);
-    len = vsprintf_s(printf_buffer, 1024, p_fmt, args);
+    len = vsprintf_s(printfBuffer, 1024, p_fmt, args);
     va_end(args);
-    OutputDebugStringA(printf_buffer);
+    OutputDebugStringA(printfBuffer);
+}
+
+void ldExit(int result)
+{
+    exit(result);
 }

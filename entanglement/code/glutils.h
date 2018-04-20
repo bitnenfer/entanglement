@@ -1,72 +1,72 @@
-#ifndef _GLUTILS_H_
-#define _GLUTILS_H_
+#ifndef _GLLD_UTILS_H_
+#define _GLLD_UTILS_H_
 
 #include "opengl.h"
 
-static FORCEINLINE GLuint glu_create_program(const char* p_vshader, const char* p_fshader)
+static LD_FORCEINLINE GLuint ldGfxCreateProgram(const char* pVShader, const char* pFShader)
 {
-    GLint shader_ok;
+    GLint shaderOk;
     GLuint program = glCreateProgram();
     GLuint vshader = glCreateShader(GL_VERTEX_SHADER);
     GLuint fshader = glCreateShader(GL_FRAGMENT_SHADER);
 
-    glShaderSource(vshader, 1, &p_vshader, NULL);
-    glShaderSource(fshader, 1, &p_fshader, NULL);
+    glShaderSource(vshader, 1, &pVShader, NULL);
+    glShaderSource(fshader, 1, &pFShader, NULL);
     glCompileShader(vshader);
     glCompileShader(fshader);
 
-    glGetShaderiv(vshader, GL_COMPILE_STATUS, &shader_ok);
-    if (shader_ok == GL_FALSE)
+    glGetShaderiv(vshader, GL_COMPILE_STATUS, &shaderOk);
+    if (shaderOk == GL_FALSE)
     {
         GLsizei length;
-        char* p_buffer_info_log = (char*)scratch_alloc(1024, 4);
-        glGetShaderInfoLog(vshader, 1024, &length, p_buffer_info_log);
-        debug_print("Vertex Shader Error\n\n%s\n\n", p_buffer_info_log);
-        debug_print("Shader Source:\n%s\n", p_vshader);
-        exit(-1);
+        char* pBufferInfoLog = (char*)ldScratchMalloc(1024, 4);
+        glGetShaderInfoLog(vshader, 1024, &length, pBufferInfoLog);
+        ldDebugPrint("Vertex Shader Error\n\n%s\n\n", pBufferInfoLog);
+        ldDebugPrint("Shader Source:\n%s\n", pVShader);
+        ldExit(-1);
     }
 
-    glGetShaderiv(fshader, GL_COMPILE_STATUS, &shader_ok);
-    if (shader_ok == GL_FALSE)
+    glGetShaderiv(fshader, GL_COMPILE_STATUS, &shaderOk);
+    if (shaderOk == GL_FALSE)
     {
         GLsizei length;
-        char* p_buffer_info_log = (char*)scratch_alloc(1024, 4);
-        glGetShaderInfoLog(fshader, 1024, &length, p_buffer_info_log);
-        debug_print("Fragment Shader Error\n\n%s\n\n", p_buffer_info_log);
-        debug_print("Shader Source:\n%s\n", p_fshader);
-        exit(-1);
+        char* pBufferInfoLog = (char*)ldScratchMalloc(1024, 4);
+        glGetShaderInfoLog(fshader, 1024, &length, pBufferInfoLog);
+        ldDebugPrint("Fragment Shader Error\n\n%s\n\n", pBufferInfoLog);
+        ldDebugPrint("Shader Source:\n%s\n", pFShader);
+        ldExit(-1);
     }
 
     glAttachShader(program, vshader);
     glAttachShader(program, fshader);
     glLinkProgram(program);
-    glGetProgramiv(program, GL_LINK_STATUS, &shader_ok);
-    if (shader_ok == GL_FALSE)
+    glGetProgramiv(program, GL_LINK_STATUS, &shaderOk);
+    if (shaderOk == GL_FALSE)
     {
         GLsizei length;
-        char* p_buffer_info_log = (char*)scratch_alloc(1024, 4);
-        glGetProgramInfoLog(vshader, 1024, &length, p_buffer_info_log);
-        debug_print("Program Link Error: %s", p_buffer_info_log);
-        exit(-1);
+        char* pBufferInfoLog = (char*)ldScratchMalloc(1024, 4);
+        glGetProgramInfoLog(vshader, 1024, &length, pBufferInfoLog);
+        ldDebugPrint("Program Link Error: %s", pBufferInfoLog);
+        ldExit(-1);
     }
 
     return program;
 }
 
-static FORCEINLINE GLuint glu_create_vertex_buffer(const void* p_data, size_t size, GLenum usage)
+static LD_FORCEINLINE GLuint ldGfxCreateVertexBuffer(const void* pData, size_t size, GLenum usage)
 {
     GLuint vbo;
 
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, size, p_data, usage);
+    glBufferData(GL_ARRAY_BUFFER, size, pData, usage);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     return vbo;
 }
 
-static FORCEINLINE void glu_bind_vertex_buffer(GLuint vbo)
+static LD_FORCEINLINE void ldGfxBindVertexBuffer(GLuint vbo)
 {
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 }
-#endif // !_GL_UTILS_H_
+#endif // !_GL_LD_UTILS_H_

@@ -8,81 +8,81 @@
 
 struct file_binary
 {
-    enum load_alloc_type load_type;
+    enum load_alloc_type loadType;
     size_t size;
 };
 
-struct file_binary* file_binary_load(const char* p_path, enum load_alloc_type load_type)
+struct file_binary* ldFileBinaryLoad(const char* pPath, enum load_alloc_type loadType)
 {
-    FILE* p_file;
+    FILE* pFile;
     size_t size;
-    p_file = fopen(p_path, "r");
-    if (p_file == NULL) return NULL;
+    pFile = fopen(pPath, "r");
+    if (pFile == NULL) return NULL;
 
-    fseek(p_file, 0, SEEK_END);
-    size = ftell(p_file);
-    rewind(p_file);
+    fseek(pFile, 0, SEEK_END);
+    size = ftell(pFile);
+    rewind(pFile);
 
-    void* p_buff;
-    if (load_type == LOAD_PERSIST)
+    void* pBuffer;
+    if (loadType == LOAD_PERSIST)
     {
-        p_buff = page_alloc(sizeof(struct file_binary) + size);
+        pBuffer = ldPageMalloc(sizeof(struct file_binary) + size);
     }
     else
     {
-        p_buff = scratch_alloc(sizeof(struct file_binary) + size, 4);
+        pBuffer = ldScratchMalloc(sizeof(struct file_binary) + size, 4);
     }
-    fread(UTILS_FORWARD_POINTER(p_buff, sizeof(struct file_binary)), size, 1, p_file);
-    struct file_binary* p_filebin = (struct file_binary*)p_buff;
-    p_filebin->load_type = load_type;
-    p_filebin->size = size;
+    fread(LD_UTILS_FORWARD_POINTER(pBuffer, sizeof(struct file_binary)), size, 1, pFile);
+    struct file_binary* pFilebin = (struct file_binary*)pBuffer;
+    pFilebin->loadType = loadType;
+    pFilebin->size = size;
 
-    return p_filebin;
+    return pFilebin;
 }
 
-struct file_binary* file_binary_load_with_header(const char* p_path, enum load_alloc_type load_type, const void* p_header, size_t header_size)
+struct file_binary* ldFileBinaryLoadWithHeader(const char* pPath, enum load_alloc_type loadType, const void* pHeader, size_t headerSize)
 {
-    FILE* p_file;
+    FILE* pFile;
     size_t size;
-    p_file = fopen(p_path, "r");
-    if (p_file == NULL) return NULL;
+    pFile = fopen(pPath, "r");
+    if (pFile == NULL) return NULL;
 
-    fseek(p_file, 0, SEEK_END);
-    size = ftell(p_file);
-    rewind(p_file);
+    fseek(pFile, 0, SEEK_END);
+    size = ftell(pFile);
+    rewind(pFile);
 
-    void* p_buff;
-    if (load_type == LOAD_PERSIST)
+    void* pBuffer;
+    if (loadType == LOAD_PERSIST)
     {
-        p_buff = page_alloc(sizeof(struct file_binary) + size + header_size);
+        pBuffer = ldPageMalloc(sizeof(struct file_binary) + size + headerSize);
     }
     else
     {
-        p_buff = scratch_alloc(sizeof(struct file_binary) + size + header_size, 4);
+        pBuffer = ldScratchMalloc(sizeof(struct file_binary) + size + headerSize, 4);
     }
-    memcpy(UTILS_FORWARD_POINTER(p_buff, sizeof(struct file_binary)), p_header, header_size);
-    fread(UTILS_FORWARD_POINTER(p_buff, sizeof(struct file_binary) + header_size), size, 1, p_file);
-    struct file_binary* p_filebin = (struct file_binary*)p_buff;
-    p_filebin->load_type = load_type;
-    p_filebin->size = size;
+    memcpy(LD_UTILS_FORWARD_POINTER(pBuffer, sizeof(struct file_binary)), pHeader, headerSize);
+    fread(LD_UTILS_FORWARD_POINTER(pBuffer, sizeof(struct file_binary) + headerSize), size, 1, pFile);
+    struct file_binary* pFilebin = (struct file_binary*)pBuffer;
+    pFilebin->loadType = loadType;
+    pFilebin->size = size;
 
-    return p_filebin;
+    return pFilebin;
 }
 
-void file_binary_unload(struct file_binary* p_bin)
+void ldFileBinaryUnload(struct file_binary* pFileBinary)
 {
-    if (p_bin->load_type == LOAD_PERSIST)
+    if (pFileBinary->loadType == LOAD_PERSIST)
     {
-        page_free(p_bin);
+        ldPageFree(pFileBinary);
     }
 }
 
-size_t file_binary_get_size(const struct file_binary* p_bin)
+size_t ldFileBinaryGetSize(const struct file_binary* pFileBinary)
 {
-    return p_bin->size;
+    return pFileBinary->size;
 }
 
-const void* file_binary_get_data(struct file_binary* p_bin)
+const void* ldFileBinaryGetData(struct file_binary* pFileBinary)
 {
-    return (const void*)UTILS_FORWARD_POINTER(p_bin, sizeof(struct file_binary));
+    return (const void*)LD_UTILS_FORWARD_POINTER(pFileBinary, sizeof(struct file_binary));
 }

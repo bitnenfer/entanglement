@@ -5,14 +5,14 @@
 
 struct state
 {
-    void(*fp_create)();
-    void(*fp_update)(float32_t);
-    void(*fp_render)();
-    void(*fp_destroy)();
+    void(*fpCreate)();
+    void(*fpUpdate)(float32_t);
+    void(*fpRender)();
+    void(*fpDestroy)();
 };
 
 typedef struct state state_t;
 
-void game_swap_state(state_t* p_next_state);
+extern void ldGameSwapState(state_t* pNextState);
 
 #endif // !_GAME_H_

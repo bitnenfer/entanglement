@@ -5,28 +5,28 @@
 #include "config.h"
 #include "platform.h"
 
-static void initalize_game(int argc, const char* p_argv[]);
-static void run_game();
-static void start_game();
-static void update_game(float32_t delta);
-static void render_game();
-static void shutdown_game();
-static void swap_buffers();
-static void poll_events();
-static int32_t is_key_down(enum key_code key);
-static int32_t is_key_hit(enum key_code key);
-static int32_t is_mouse_down(enum mouse_button button);
-static int32_t is_mouse_hit(enum mouse_button button);
-static float32_t mouse_x();
-static float32_t mouse_y();
-static float32_t mouse_wheel();
-static void quit_game();
+static void ldGameInit(int argc, const char* p_argv[]);
+static void ldGameRun();
+static void ldGameStart();
+static void ldGameUpdate(float32_t delta);
+static void ldGameRender();
+static void ldGameShutdown();
+static void ldSwapBuffer();
+static void ldPollEvents();
+static int32_t ldIsKeyDown(enum key_code key);
+static int32_t ldIsKeyHit(enum key_code key);
+static int32_t ldIsMouseDown(enum mouse_button button);
+static int32_t ldIsMouseHit(enum mouse_button button);
+static float32_t ldMouseX();
+static float32_t ldMouseY();
+static float32_t ldMouseWheel();
+static void ldGameQuit();
 
 int main(int argc, const char* p_argv[])
 {
-    initalize_game(argc, p_argv);
-    run_game();
-    shutdown_game();
+    ldGameInit(argc, p_argv);
+    ldGameRun();
+    ldGameShutdown();
     return 0;
 }
 

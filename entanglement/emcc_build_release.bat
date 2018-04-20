@@ -11,7 +11,7 @@ if %errorlevel% == 1 (
 set CC=emcc
 set CONFIG=Release
 set CONFIG_FLAG=RELEASE
-set SAMPLE_OUTPUT_DIR=C:\xampp\htdocs\entanglement\%CONFIG%\
+set SAMPLE_OUTPUT_DIR=C:\xampp\htdocs\LD41\%CONFIG%\
 set FLAGS_WASM=^
  --shell-file tools\shell.html^
  -o3^

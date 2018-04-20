@@ -6,7 +6,7 @@
 
 #include "platform.h"
 
-#if defined(PLATFORM_WINDOWS)
+#if defined(LD_PLATFORM_WINDOWS)
 #include "config.h"
 #include "types.h"
 
@@ -637,7 +637,7 @@
 #define GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS 0x8A31
 #define GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS 0x8A32
 #define GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS 0x8A33
-#define GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT 0x8A34
+#define GL_UNIFORM_BUFFER_OFFSET_LD_ALIGNMENT 0x8A34
 #define GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH 0x8A35
 #define GL_ACTIVE_UNIFORM_BLOCKS          0x8A36
 #define GL_UNIFORM_TYPE                   0x8A37
@@ -862,7 +862,7 @@
 #define GL_PACK_COMPRESSED_BLOCK_DEPTH    0x912D
 #define GL_PACK_COMPRESSED_BLOCK_SIZE     0x912E
 #define GL_NUM_SAMPLE_COUNTS              0x9380
-#define GL_MIN_MAP_BUFFER_ALIGNMENT       0x90BC
+#define GL_MIN_MAP_BUFFER_LD_ALIGNMENT       0x90BC
 #define GL_ATOMIC_COUNTER_BUFFER          0x92C0
 #define GL_ATOMIC_COUNTER_BUFFER_BINDING  0x92C1
 #define GL_ATOMIC_COUNTER_BUFFER_START    0x92C2
@@ -1199,13 +1199,13 @@
 #define GL_MAX_COMBINED_SHADER_STORAGE_BLOCKS 0x90DC
 #define GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS 0x90DD
 #define GL_MAX_SHADER_STORAGE_BLOCK_SIZE  0x90DE
-#define GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT 0x90DF
+#define GL_SHADER_STORAGE_BUFFER_OFFSET_LD_ALIGNMENT 0x90DF
 #define GL_SHADER_STORAGE_BARRIER_BIT     0x00002000
 #define GL_MAX_COMBINED_SHADER_OUTPUT_RESOURCES 0x8F39
 #define GL_DEPTH_STENCIL_TEXTURE_MODE     0x90EA
 #define GL_TEXTURE_BUFFER_OFFSET          0x919D
 #define GL_TEXTURE_BUFFER_SIZE            0x919E
-#define GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT 0x919F
+#define GL_TEXTURE_BUFFER_OFFSET_LD_ALIGNMENT 0x919F
 #define GL_TEXTURE_VIEW_MIN_LEVEL         0x82DB
 #define GL_TEXTURE_VIEW_NUM_LEVELS        0x82DC
 #define GL_TEXTURE_VIEW_MIN_LAYER         0x82DD
@@ -1363,8 +1363,8 @@
 #define GL_POINT_SMOOTH_HINT              0x0C51
 #define GL_LINE_SMOOTH_HINT               0x0C52
 #define GL_POLYGON_SMOOTH_HINT            0x0C53
-#define GL_UNPACK_ALIGNMENT               0x0CF5
-#define GL_PACK_ALIGNMENT                 0x0D05
+#define GL_UNPACK_LD_ALIGNMENT               0x0CF5
+#define GL_PACK_LD_ALIGNMENT                 0x0D05
 #define GL_MAX_LIGHTS                     0x0D31
 #define GL_MAX_TEXTURE_SIZE               0x0D33
 #define GL_MAX_MODELVIEW_STACK_DEPTH      0x0D36
@@ -1426,8 +1426,8 @@
 #define GL_LUMINANCE                      0x1909
 #define GL_LUMINANCE_ALPHA                0x190A
 #define GL_COLOR_INDEX                    0x1900
-#define GL_UNPACK_ALIGNMENT               0x0CF5
-#define GL_PACK_ALIGNMENT                 0x0D05
+#define GL_UNPACK_LD_ALIGNMENT               0x0CF5
+#define GL_PACK_LD_ALIGNMENT                 0x0D05
 #define GL_COLOR                          0x1800
 #define GL_FLAT                           0x1D00
 #define GL_SMOOTH                         0x1D01
@@ -1744,34 +1744,34 @@ PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate = NULL;
 PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparate = NULL;
 PFNGLDRAWELEMENTSBASEVERTEXPROC glDrawElementsBaseVertex = NULL;
 
-static const char k_ShaderHeader[] = "#version 120\n";
-static const size_t k_ShaderHeaderSize = sizeof(k_ShaderHeader) - 1;
+static const char kShaderHeader[] = "#version 120\n";
+static const size_t kShaderHeaderSize = sizeof(kShaderHeader) - 1;
 
-#elif defined(PLATFORM_WEB)
+#elif defined(LD_PLATFORM_WEB)
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
 #define __debugbreak()
 
-static const char k_ShaderHeader[] = "precision mediump float;\n";
-static const size_t k_ShaderHeaderSize = sizeof(k_ShaderHeader) - 1;
+static const char kShaderHeader[] = "precision mediump float;\n";
+static const size_t kShaderHeaderSize = sizeof(kShaderHeader) - 1;
 
 #endif
 
-#if defined(_DEBUG)
-#define OPENGL_ERROR_CHECK() { \
+#if defined(LD_PLATFORM_DEBUG)
+#define LD_OPENGL_ERROR_CHECK() { \
 	GLenum error = glGetError();\
 	if (error != GL_NO_ERROR)\
     {\
-        debug_print("OpenGL Error. Error Code: 0x%X\n", error);\
+        ldDebugPrint("OpenGL Error. Error Code: 0x%X\n", error);\
         __debugbreak();\
         exit(-1);\
     }\
 }
 
 #else
-#define OPENGL_ERROR_CHECK()
+#define LD_OPENGL_ERROR_CHECK()
 #endif
 
 #endif // !_OPENGL32_H_

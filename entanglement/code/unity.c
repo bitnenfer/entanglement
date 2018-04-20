@@ -15,7 +15,6 @@
 #include "loader.c"
 #include "alloc.c"
 #include "game.c"
-#include "utils/camera.c"
 
 /* Passes */
 #include "passes/first_pass.c"
@@ -25,7 +24,7 @@
 /* =================================== */
 /* Platform Specific Compilation Units */
 /* =================================== */
-#if defined(PLATFORM_WINDOWS)
+#if defined(LD_PLATFORM_WINDOWS)
 
 /* =================================== */
 /* Windows Platform                    */
@@ -35,7 +34,7 @@
 #include "alloc_win32.c"
 
 /* =================================== */
-#elif defined(PLATFORM_WEB)
+#elif defined(LD_PLATFORM_WEB)
 
 /* =================================== */
 /* Web Platform                        */

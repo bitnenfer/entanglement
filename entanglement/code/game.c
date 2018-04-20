@@ -7,52 +7,50 @@
 #include "boot.h"
 
 #include "passes/first_pass.h"
-#include "utils/camera.h"
 
 #include <assert.h>
 
-state_t* g_pCurrentState = NULL;
-state_t* g_pNextState = NULL;
+state_t* pCurrentState = NULL;
+state_t* pNextState = NULL;
 
-void game_swap_state(state_t* p_next_state)
+void ldGameSwapState(state_t* pNext)
 {
-    g_pNextState = p_next_state;
+    pNextState = pNext;
 }
 
-void start_game()
+void ldGameStart()
 {
-    camera_init();
-    game_swap_state(&g_FirstPassState);
+    ldGameSwapState(&gFirstPassState);
 }
 
 /* Should update at 0.16ms */
-void update_game(float32_t delta)
+void ldGameUpdate(float32_t delta)
 {
-    if (g_pNextState != NULL)
+    if (pNextState != NULL)
     {
-        if (g_pCurrentState != NULL && g_pCurrentState->fp_destroy != NULL)
+        if (pCurrentState != NULL && pCurrentState->fpDestroy != NULL)
         {
-            g_pCurrentState->fp_destroy();
+            pCurrentState->fpDestroy();
         }
 
-        g_pNextState->fp_create();
-        g_pCurrentState = g_pNextState;
-        g_pNextState = NULL;
+        pNextState->fpCreate();
+        pCurrentState = pNextState;
+        pNextState = NULL;
     }
 
-    if (g_pCurrentState != NULL && g_pCurrentState->fp_update)
+    if (pCurrentState != NULL && pCurrentState->fpUpdate)
     {
-        g_pCurrentState->fp_update(delta);
+        pCurrentState->fpUpdate(delta);
     }
 
-    scratch_clear();
+    ldScratchReset();
 }
 
-void render_game()
+void ldGameRender()
 {
-    if (g_pCurrentState != NULL && g_pCurrentState->fp_render)
+    if (pCurrentState != NULL && pCurrentState->fpRender)
     {
-        g_pCurrentState->fp_render();
+        pCurrentState->fpRender();
     }
 }
 

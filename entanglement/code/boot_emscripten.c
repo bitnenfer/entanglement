@@ -14,7 +14,7 @@
 
 
 /* Input */
-static const char* k_KeyCodeMap[(int32_t)KEYCODE_LENGTH] = {
+static const char* k_KeyCodeMap[(int32_t)KEY_LENGTH] = {
     "" /* GK_KEY_ABNT_C1 */ ,
     "" /* GK_KEY_ABNT_C2 */ ,
     "" /* GK_KEY_ADD */ ,
@@ -211,29 +211,29 @@ static const char* k_KeyCodeMap[(int32_t)KEYCODE_LENGTH] = {
     "ShiftLeft" /* GK_KEY_SHIFT */ ,
     "AltLeft" /* GK_KEY_ALT */
 };
-int32_t g_MouseVisible = 1;
-char g_LastChar = -1;
-int32_t g_LastCharAvailable = 0;
-int32_t g_KeyDown[(int32_t)KEYCODE_LENGTH] = { 0 };
-int32_t g_KeyHit[(int32_t)KEYCODE_LENGTH] = { 0 };
-int32_t g_MouseX = 0;
-int32_t g_MouseY = 0;
-float32_t g_MouseWheel = 0.0f;
-int32_t g_MouseButtonDown[3] = { 0 };
-int32_t g_MouseButtonHit[3] = { 0 };
+int32_t gMouseVisible = 1;
+char gLastChar = -1;
+int32_t gLastCharAvailable = 0;
+int32_t gKeyDown[(int32_t)KEY_LENGTH] = { 0 };
+int32_t gKeyHit[(int32_t)KEY_LENGTH] = { 0 };
+int32_t gMouseX = 0;
+int32_t gMouseY = 0;
+float32_t gMouseWheel = 0.0f;
+int32_t gMouseButtonDown[3] = { 0 };
+int32_t gMouseButtonHit[3] = { 0 };
 
 /* Window */
-int32_t g_WindowExit = 0;
-WRITE_EM(EMSCRIPTEN_WEBGL_CONTEXT_HANDLE g_OpenGLContext;);
+int32_t gWindowExit = 0;
+WRITE_EM(EMSCRIPTEN_WEBGL_CONTEXT_HANDLE gOpenGLContext;);
 
 WRITE_EM(static EM_BOOL emscripten_keyboard_input(int event_type, const EmscriptenKeyboardEvent* key_event, void* user_data));
 WRITE_EM(static EM_BOOL emscripten_mouse_input(int event_type, const EmscriptenMouseEvent* mouse_event, void* user_data));
 WRITE_EM(static EM_BOOL emscripten_mouse_wheel_input(int event_type, const EmscriptenWheelEvent* wheel_event, void* user_data));
 
-void initalize_game(int argc, const char* p_argv[])
+void ldGameInit(int argc, const char* p_argv[])
 {
     /* Initialize Memory Allocators */
-    initalize_alloc();
+    ldInitMem();
 
     /* Initialize Window */
     {
@@ -259,7 +259,7 @@ void initalize_game(int argc, const char* p_argv[])
                 Module.canvas = canvas;
                 document.body.appendChild(canvas);
 
-#if defined(PLATFORM_DEBUG)
+#if defined(LD_PLATFORM_DEBUG)
                 window.outputLog = document.createElement('pre');
                 window.outputLog.id = 'gunk_outputlog';
                 window.outputLog.style.width = $0 + 'px';
@@ -269,10 +269,10 @@ void initalize_game(int argc, const char* p_argv[])
                 window.outputLog.style.color = '#fff';
                 document.body.appendChild(window.outputLog);
 #endif
-            }, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_TITLE);
+            }, LD_CONFIG_WIDTH, LD_CONFIG_HEIGHT, LD_CONFIG_TITLE);
 
-        g_OpenGLContext = emscripten_webgl_create_context(NULL, &attribs);
-        assert(emscripten_webgl_make_context_current(g_OpenGLContext) == EMSCRIPTEN_RESULT_SUCCESS);
+        gOpenGLContext = emscripten_webgl_create_context(NULL, &attribs);
+        assert(emscripten_webgl_make_context_current(gOpenGLContext) == EMSCRIPTEN_RESULT_SUCCESS);
 
         );
 
@@ -302,32 +302,32 @@ WRITE_EM(EM_BOOL emscripten_keyboard_input(int event_type, const EmscriptenKeybo
     case EMSCRIPTEN_EVENT_KEYDOWN:
         if (key_event->key[1] == (char)0 || (backspace = strcmp(key_event->key, "Backspace") == 0))
         {
-            g_LastCharAvailable = 1;
+            gLastCharAvailable = 1;
             if (!backspace)
-                g_LastChar = (uint8_t)key_event->key[0];
+                gLastChar = (uint8_t)key_event->key[0];
             else
-                g_LastChar = 8;
+                gLastChar = 8;
         }
-        for (uint32_t index = 0; index < KEYCODE_LENGTH; ++index)
+        for (uint32_t index = 0; index < KEY_LENGTH; ++index)
         {
             if (strcmp(k_KeyCodeMap[index], code) == 0)
             {
-                if (!g_KeyDown[index])
+                if (!gKeyDown[index])
                 {
-                    g_KeyHit[index] = 1;
+                    gKeyHit[index] = 1;
                 }
-                g_KeyDown[index] = 1;
+                gKeyDown[index] = 1;
                 break;
             }
         }
         break;
     case EMSCRIPTEN_EVENT_KEYUP:
-        for (uint32_t index = 0; index < KEYCODE_LENGTH; ++index)
+        for (uint32_t index = 0; index < KEY_LENGTH; ++index)
         {
             if (strcmp(k_KeyCodeMap[index], code) == 0)
             {
-                g_KeyDown[index] = 0;
-                g_KeyHit[index] = 0;
+                gKeyDown[index] = 0;
+                gKeyHit[index] = 0;
                 break;
             }
         }
@@ -337,21 +337,21 @@ WRITE_EM(EM_BOOL emscripten_keyboard_input(int event_type, const EmscriptenKeybo
 })
 WRITE_EM(EM_BOOL emscripten_mouse_input(int event_type, const EmscriptenMouseEvent* mouse_event, void* user_data)
 {
-    g_MouseX = (float32_t)mouse_event->canvasX;
-    g_MouseY = (float32_t)mouse_event->canvasY;
+    gMouseX = (float32_t)mouse_event->canvasX;
+    gMouseY = (float32_t)mouse_event->canvasY;
 
     switch (event_type)
     {
     case EMSCRIPTEN_EVENT_MOUSEDOWN:
-        if (!g_MouseButtonDown[mouse_event->button])
+        if (!gMouseButtonDown[mouse_event->button])
         {
-            g_MouseButtonHit[mouse_event->button] = 1;
+            gMouseButtonHit[mouse_event->button] = 1;
         }
-        g_MouseButtonDown[mouse_event->button] = 1;
+        gMouseButtonDown[mouse_event->button] = 1;
         break;
     case EMSCRIPTEN_EVENT_MOUSEUP:
-        g_MouseButtonDown[mouse_event->button] = 0;
-        g_MouseButtonHit[mouse_event->button] = 0;
+        gMouseButtonDown[mouse_event->button] = 0;
+        gMouseButtonHit[mouse_event->button] = 0;
         break;
     }
 
@@ -359,84 +359,89 @@ WRITE_EM(EM_BOOL emscripten_mouse_input(int event_type, const EmscriptenMouseEve
 });
 WRITE_EM(EM_BOOL emscripten_mouse_wheel_input(int event_type, const EmscriptenWheelEvent* wheel_event, void* user_data)
 {
-    g_MouseWheel = wheel_event->deltaY < 0 ? +1.0f : -1.0f;
+    gMouseWheel = wheel_event->deltaY < 0 ? +1.0f : -1.0f;
     return 1;
 });
 
 void emscripten_loop()
 {
-    update_game(0.16f);
-    render_game();
+    ldGameUpdate(0.16f);
+    ldGameRender();
 
-    if (g_WindowExit)
+    if (gWindowExit)
     {
-        shutdown_alloc();
+        ldShutdownMem();
         WRITE_EM(emscripten_cancel_main_loop(););
     }
 
-    poll_events();
-    g_LastCharAvailable = 0;
+    ldPollEvents();
+    gLastCharAvailable = 0;
 }
 
-void run_game()
+void ldGameRun()
 {
-    start_game();
+    ldGameStart();
     WRITE_EM(emscripten_set_main_loop(&emscripten_loop, 0, 1););
 }
-void shutdown_game()
+void ldGameShutdown()
 {
 }
-void swap_buffers()
+void ldSwapBuffer()
 {
 }
-void poll_events()
+void ldPollEvents()
 {
-    g_MouseButtonHit[0] = 0;
-    g_MouseButtonHit[1] = 0;
-    g_MouseButtonHit[2] = 0;
+    gMouseButtonHit[0] = 0;
+    gMouseButtonHit[1] = 0;
+    gMouseButtonHit[2] = 0;
 
-    for (int32_t index = 0; index < KEYCODE_LENGTH; ++index)
+    for (int32_t index = 0; index < KEY_LENGTH; ++index)
     {
-        g_KeyHit[index] = 0;
+        gKeyHit[index] = 0;
     }
 }
-int32_t is_key_down(enum key_code key)
+int32_t ldIsKeyDown(enum key_code key)
 {
-    return g_KeyDown[key];
+    return gKeyDown[key];
 }
-int32_t is_key_hit(enum key_code key)
+int32_t ldIsKeyHit(enum key_code key)
 {
-    return g_KeyHit[key];
+    return gKeyHit[key];
 }
-int32_t is_mouse_down(enum mouse_button button)
+int32_t ldIsMouseDown(enum mouse_button button)
 {
-    return g_MouseButtonDown[button];
+    return gMouseButtonDown[button];
 }
-int32_t is_mouse_hit(enum mouse_button button)
+int32_t ldIsMouseHit(enum mouse_button button)
 {
-    return g_MouseButtonHit[button];
+    return gMouseButtonHit[button];
 }
 
-float32_t mouse_x()
+float32_t ldMouseX()
 {
-    return (float32_t)g_MouseX;
+    return (float32_t)gMouseX;
 }
-float32_t mouse_y()
+float32_t ldMouseY()
 {
-    return (float32_t)g_MouseY;
+    return (float32_t)gMouseY;
 }
-float32_t mouse_wheel()
+float32_t ldMouseWheel()
 {
-    return g_MouseWheel;
+    return gMouseWheel;
 }
-void quit_game()
+void ldGameQuit()
 {
-    g_WindowExit = 1;
+    gWindowExit = 1;
 }
-void debug_print(const char* p_fmt, ...)
+void ldDebugPrint(const char* p_fmt, ...)
 {
     va_list args;
     va_start(args, p_fmt);
     vprintf(p_fmt, args);
     va_end(args);
+}
+
+void ldExit(int result)
+{
+    WRITE_EM(emscripten_force_exit(-1));
 }
