@@ -17,7 +17,7 @@
 #include "game.c"
 
 /* Passes */
-#include "passes/first_pass.c"
+#include "game/init_scene.c"
 
 /* ======================== */
 
@@ -26,12 +26,19 @@
 /* =================================== */
 #if defined(LD_PLATFORM_WINDOWS)
 
+// Force Dedicated GPU usage
+__declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+__declspec(dllexport) unsigned long AmdPowerXpressRequestHighPerformance = 0x00000001;
+
 /* =================================== */
 /* Windows Platform                    */
 /* =================================== */
 
+#include "glad/glad.c"
 #include "boot_win32.c"
 #include "alloc_win32.c"
+#include "canvas_gl.c"
+#include "canvas.c"
 
 /* =================================== */
 #elif defined(LD_PLATFORM_WEB)
@@ -42,6 +49,8 @@
 
 #include "boot_emscripten.c"
 #include "alloc_emscripten.c"
+#include "canvas_gl.c"
+#include "canvas.c"
 
 /* =================================== */
 #endif

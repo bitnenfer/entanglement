@@ -2,6 +2,7 @@
 #define _MATH_H_
 
 #include "types.h"
+#include "platform.h"
 #include <math.h>
 
 struct quat
@@ -57,73 +58,73 @@ struct mat4
 };
 
 /* mat2d */
-struct mat2d* ldMat2dIdent(struct mat2d* pOut);
-struct mat2d* ldMat2dMul(struct mat2d* pOut, struct mat2d* pM0, struct mat2d* pM1);
-struct vec2* ldMat2DVec2Mul(struct vec2* pOut, struct mat2d* pM0, struct vec2* pV1);
-struct mat2d* ldMat2DTranslate(struct mat2d* pOut, struct mat2d* pM, float32_t x, float32_t y);
-struct mat2d* ldMat2DScale(struct mat2d* pOut, struct mat2d* pM, float32_t x, float32_t y);
-struct mat2d* ldMat2DRotate(struct mat2d* pOut, struct mat2d* pM, float32_t radian);
+struct mat2d* ldMat2dIdent(struct mat2d* LD_RESTRICT pOut);
+struct mat2d* ldMat2dMul(struct mat2d* LD_RESTRICT pOut, struct mat2d* LD_RESTRICT pM0, struct mat2d* LD_RESTRICT pM1);
+struct vec2* ldMat2DVec2Mul(struct vec2*  LD_RESTRICT pOut, struct mat2d* LD_RESTRICT pM0, struct vec2* LD_RESTRICT pV1);
+struct mat2d* ldMat2DTranslate(struct mat2d* LD_RESTRICT pOut, struct mat2d* LD_RESTRICT pM, float32_t x, float32_t y);
+struct mat2d* ldMat2DScale(struct mat2d* LD_RESTRICT pOut, struct mat2d* LD_RESTRICT pM, float32_t x, float32_t y);
+struct mat2d* ldMat2DRotate(struct mat2d* LD_RESTRICT pOut, struct mat2d* LD_RESTRICT pM, float32_t radian);
 
 /* mat4 */
-struct mat4* ldMat4Ident(struct mat4* pOut);
-struct mat4* ldMat4Mul(struct mat4* pOut, struct mat4* pM0, struct mat4* pM1);
-struct vec3* ldMat4Vec3Mul(struct vec3* pOut, struct mat4* pM0, struct vec3* pV1);
-struct mat4* ldMat4Transpose(struct mat4* pOut, struct mat4* pM);
-struct mat4* ldMat4Invert(struct mat4* pOut, struct mat4* pM);
-struct mat4* ldMat4RotateX(struct mat4* pOut, struct mat4* pM, float32_t radian);
-struct mat4* ldMat4RotateY(struct mat4* pOut, struct mat4* pM, float32_t radian);
-struct mat4* ldMat4RotateZ(struct mat4* pOut, struct mat4* pM, float32_t radian);
-struct mat4* ldMat4Rotate(struct mat4* pOut, struct mat4* pM, struct vec3* pAxis, float32_t radian);
-struct mat4* ldMat4Scale(struct mat4* pOut, struct mat4* pM, struct vec3* pScale);
-struct mat4* ldMat4Translate(struct mat4* pOut, struct mat4* pM, struct vec3* pTranslate);
-struct mat4* ldMat4Frustum(struct mat4* pOut, float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t frustumNear, float32_t frustumFar);
-struct mat4* ldMat4Perspective(struct mat4* pOut, float32_t fovY, float32_t aspect, float32_t perspNear, float32_t perspFar);
-struct mat4* ldMat4Orthographic(struct mat4* pOut, float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t orthoNear, float32_t orthoFar);
-struct mat4* ldMat4LookAt(struct mat4* pOut, struct vec3* pEye, struct vec3* pCenter, struct vec3* pUp);
+struct mat4* ldMat4Ident(struct mat4* LD_RESTRICT pOut);
+struct mat4* ldMat4Mul(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM0, struct mat4* LD_RESTRICT pM1);
+struct vec3* ldMat4Vec3Mul(struct vec3* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM0, struct vec3* LD_RESTRICT pV1);
+struct mat4* ldMat4Transpose(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM);
+struct mat4* ldMat4Invert(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM);
+struct mat4* ldMat4RotateX(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM, float32_t radian);
+struct mat4* ldMat4RotateY(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM, float32_t radian);
+struct mat4* ldMat4RotateZ(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM, float32_t radian);
+struct mat4* ldMat4Rotate(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM, struct vec3* LD_RESTRICT pAxis, float32_t radian);
+struct mat4* ldMat4Scale(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM, struct vec3* LD_RESTRICT pScale);
+struct mat4* ldMat4Translate(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM, struct vec3* LD_RESTRICT pTranslate);
+struct mat4* ldMat4Frustum(struct mat4* LD_RESTRICT pOut, float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t frustumNear, float32_t frustumFar);
+struct mat4* ldMat4Perspective(struct mat4* LD_RESTRICT pOut, float32_t fovY, float32_t aspect, float32_t perspNear, float32_t perspFar);
+struct mat4* ldMat4Orthographic(struct mat4* LD_RESTRICT pOut, float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t orthoNear, float32_t orthoFar);
+struct mat4* ldMat4LookAt(struct mat4* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pEye, struct vec3* LD_RESTRICT pCenter, struct vec3* LD_RESTRICT pUp);
 
 /* vec2 */
-struct vec2* ldVec2Add(struct vec2* pOut, struct vec2* pV0, struct vec2* pV1);
-struct vec2* ldVec2Sub(struct vec2* pOut, struct vec2* pV0, struct vec2* pV1);
-struct vec2* ldVec2Mul(struct vec2* pOut, struct vec2* pV0, struct vec2* pV1);
-struct vec2* ldVec2Invert(struct vec2* pOut, struct vec2* pV);
-struct vec2* ldVec2Negate(struct vec2* pOut, struct vec2* pV);
-struct vec2* ldVec2Normalize(struct vec2* pOut, struct vec2* pV);
-int32_t ldVec2Equal(struct vec2* pV0, struct vec2* pV1);
-struct vec3* ldVec2Cross(struct vec3* pOut, struct vec2* pV0, struct vec2* pV1);
-float32_t ldVec2Distance(struct vec2* pV0, struct vec2* pV1);
-float32_t ldVec2Dot(struct vec2* pV0, struct vec2* pV1);
-float32_t ldVec2Length(struct vec2* pV);
-float32_t ldVec2Length2(struct vec2* pV);
-float32_t ldVec2Distance2(struct vec2* pV0, struct vec2* pV1);
+struct vec2* ldVec2Add(struct vec2* LD_RESTRICT pOut, struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1);
+struct vec2* ldVec2Sub(struct vec2* LD_RESTRICT pOut, struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1);
+struct vec2* ldVec2Mul(struct vec2* LD_RESTRICT pOut, struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1);
+struct vec2* ldVec2Invert(struct vec2* LD_RESTRICT pOut, struct vec2* LD_RESTRICT pV);
+struct vec2* ldVec2Negate(struct vec2* LD_RESTRICT pOut, struct vec2* LD_RESTRICT pV);
+struct vec2* ldVec2Normalize(struct vec2* LD_RESTRICT pOut, struct vec2* LD_RESTRICT pV);
+int32_t ldVec2Equal(struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1);
+struct vec3* ldVec2Cross(struct vec3* LD_RESTRICT pOut, struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1);
+float32_t ldVec2Distance(struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1);
+float32_t ldVec2Dot(struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1);
+float32_t ldVec2Length(struct vec2* LD_RESTRICT pV);
+float32_t ldVec2Length2(struct vec2* LD_RESTRICT pV);
+float32_t ldVec2Distance2(struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1);
 
 /* vec3 */
-struct vec3* ldVec3Add(struct vec3* pOut, struct vec3* pV0, struct vec3* pV1);
-struct vec3* ldVec3Sub(struct vec3* pOut, struct vec3* pV0, struct vec3* pV1);
-struct vec3* ldVec3Mul(struct vec3* pOut, struct vec3* pV0, struct vec3* pV1);
-struct vec3* ldVec3Invert(struct vec3* pOut, struct vec3* pV);
-struct vec3* ldVec3Negate(struct vec3* pOut, struct vec3* pV);
-struct vec3* ldVec3Normalize(struct vec3* pOut, struct vec3* pV);
-int32_t ldVec3Equal(struct vec3* pV0, struct vec3* pV1);
-struct vec3* ldVec3Cross(struct vec3* pOut, struct vec3* pV0, struct vec3* pV1);
-float32_t ldVec3Distance(struct vec3* pV0, struct vec3* pV1);
-float32_t ldVec3Dot(struct vec3* pV0, struct vec3* pV1);
-float32_t ldVec3Length(struct vec3* pV);
-float32_t ldVec3Length2(struct vec3* pV);
-float32_t ldVec3Distance2(struct vec3* pV0, struct vec3* pV1);
+struct vec3* ldVec3Add(struct vec3* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1);
+struct vec3* ldVec3Sub(struct vec3* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1);
+struct vec3* ldVec3Mul(struct vec3* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1);
+struct vec3* ldVec3Invert(struct vec3* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pV);
+struct vec3* ldVec3Negate(struct vec3* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pV);
+struct vec3* ldVec3Normalize(struct vec3* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pV);
+int32_t ldVec3Equal(struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1);
+struct vec3* ldVec3Cross(struct vec3* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1);
+float32_t ldVec3Distance(struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1);
+float32_t ldVec3Dot(struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1);
+float32_t ldVec3Length(struct vec3* LD_RESTRICT pV);
+float32_t ldVec3Length2(struct vec3* LD_RESTRICT pV);
+float32_t ldVec3Distance2(struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1);
 
 /* quat */
-struct quat* ldQuatIdent(struct quat* pOut);
-struct quat* ldQuatAdd(struct quat* pOut, struct quat* pQ0, struct quat* pQ1);
-struct quat* ldQuatMul(struct quat* pOut, struct quat* pQ0, struct quat* pQ1);
-struct quat* ldQuatSetAxisAngle(struct quat* pOut, struct vec3* pAxis, float32_t radian);
-struct quat* ldQuatRotateX(struct quat* pOut, struct quat* pQ, float32_t radian);
-struct quat* ldQuatRotateY(struct quat* pOut, struct quat* pQ, float32_t radian);
-struct quat* ldQuatRotateZ(struct quat* pOut, struct quat* pQ, float32_t radian);
-struct quat* ldQuatCalcW(struct quat* pOut, struct quat* pQ);
-struct quat* ldQuatInvert(struct quat* pOut, struct quat* pQ);
-struct quat* ldQuatConjugate(struct quat* pOut, struct quat* pQ);
-struct mat4* ldQuatToMat4(struct mat4* pOut, struct quat* pQ);
-float32_t ldQuatGetAxisAngle(struct vec3* pOutAxis, struct quat* pQ);
+struct quat* ldQuatIdent(struct quat* LD_RESTRICT pOut);
+struct quat* ldQuatAdd(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ0, struct quat* LD_RESTRICT pQ1);
+struct quat* ldQuatMul(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ0, struct quat* LD_RESTRICT pQ1);
+struct quat* ldQuatSetAxisAngle(struct quat* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pAxis, float32_t radian);
+struct quat* ldQuatRotateX(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ, float32_t radian);
+struct quat* ldQuatRotateY(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ, float32_t radian);
+struct quat* ldQuatRotateZ(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ, float32_t radian);
+struct quat* ldQuatCalcW(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ);
+struct quat* ldQuatInvert(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ);
+struct quat* ldQuatConjugate(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ);
+struct mat4* ldQuatToMat4(struct mat4* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ);
+float32_t ldQuatGetAxisAngle(struct vec3* LD_RESTRICT pOutAxis, struct quat* LD_RESTRICT pQ);
 
 /* Definition */
 typedef struct quat quat_t;
@@ -133,7 +134,7 @@ typedef struct mat2d mat2d_t;
 typedef struct mat4 mat4_t;
 
 /* mat2d */
-struct mat2d* ldMat2dIdent(struct mat2d* pOut)
+struct mat2d* ldMat2dIdent(struct mat2d* LD_RESTRICT pOut)
 {
     pOut->data[0] = 1.0f;
     pOut->data[1] = 0.0f;
@@ -143,7 +144,7 @@ struct mat2d* ldMat2dIdent(struct mat2d* pOut)
     pOut->data[5] = 0.0f;
     return pOut;
 }
-struct mat2d* ldMat2dMul(struct mat2d* pOut, struct mat2d* pM0, struct mat2d* pM1)
+struct mat2d* ldMat2dMul(struct mat2d* LD_RESTRICT pOut, struct mat2d* LD_RESTRICT pM0, struct mat2d* LD_RESTRICT pM1)
 {
     const float32_t* matrixA = pM0->data;
     const float32_t* matrixB = pM1->data;
@@ -172,19 +173,19 @@ struct mat2d* ldMat2dMul(struct mat2d* pOut, struct mat2d* pM0, struct mat2d* pM
 
     return pOut;
 }
-struct vec2* ldMat2DVec2Mul(struct vec2* pOut, struct mat2d* pM0, struct vec2* pV1)
+struct vec2* ldMat2DVec2Mul(struct vec2* LD_RESTRICT pOut, struct mat2d* LD_RESTRICT pM0, struct vec2* LD_RESTRICT pV1)
 {
     pOut->x = pV1->x * pM0->a + pV1->y * pM0->c + pM0->tx;
     pOut->y = pV1->x * pM0->b + pV1->y * pM0->d + pM0->ty;
     return pOut;
 }
-struct mat2d* ldMat2DTranslate(struct mat2d* pOut, struct mat2d* pM, float32_t x, float32_t y)
+struct mat2d* ldMat2DTranslate(struct mat2d* LD_RESTRICT pOut, struct mat2d* LD_RESTRICT pM, float32_t x, float32_t y)
 {
     pOut->data[4] = pM->data[0] * x + pM->data[2] * y + pM->data[4];
     pOut->data[5] = pM->data[1] * x + pM->data[3] * y + pM->data[5];
     return pOut;
 }
-struct mat2d* ldMat2DScale(struct mat2d* pOut, struct mat2d* pM, float32_t x, float32_t y)
+struct mat2d* ldMat2DScale(struct mat2d* LD_RESTRICT pOut, struct mat2d* LD_RESTRICT pM, float32_t x, float32_t y)
 {
     pOut->data[0] = pM->data[0] * x;
     pOut->data[1] = pM->data[1] * x;
@@ -192,19 +193,19 @@ struct mat2d* ldMat2DScale(struct mat2d* pOut, struct mat2d* pM, float32_t x, fl
     pOut->data[3] = pM->data[3] * y;
     return pOut;
 }
-struct mat2d* ldMat2DRotate(struct mat2d* pOut, struct mat2d* pM, float32_t radian)
+struct mat2d* ldMat2DRotate(struct mat2d* LD_RESTRICT pOut, struct mat2d* LD_RESTRICT pM, float32_t radian)
 {
     float32_t sn = sinf(radian);
     float32_t cs = cosf(radian);
-    pOut->data[0] = cs * pM->data[0] + -sn * pM->data[2];
-    pOut->data[1] = cs * pM->data[1] + -sn * pM->data[3];
-    pOut->data[2] = sn * pM->data[0] + cs * pM->data[2];
-    pOut->data[3] = sn * pM->data[1] + cs * pM->data[3];
+    pOut->data[0] = cs * pM->data[0] + sn * pM->data[2];
+    pOut->data[1] = cs * pM->data[1] + sn * pM->data[3];
+    pOut->data[2] = -sn * pM->data[0] + cs * pM->data[2];
+    pOut->data[3] = -sn * pM->data[1] + cs * pM->data[3];
     return pOut;
 }
 
 /* mat4 */
-struct mat4* ldMat4Ident(struct mat4* pOut)
+struct mat4* ldMat4Ident(struct mat4* LD_RESTRICT pOut)
 {
     pOut->data[0] = 1.0f;
     pOut->data[1] = 0.0f;
@@ -224,7 +225,7 @@ struct mat4* ldMat4Ident(struct mat4* pOut)
     pOut->data[15] = 1.0f;
     return pOut;
 }
-struct mat4* ldMat4Mul(struct mat4* pOut, struct mat4* pM0, struct mat4* pM1)
+struct mat4* ldMat4Mul(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM0, struct mat4* LD_RESTRICT pM1)
 {
     pOut->data[0] = pM1->data[0] * pM0->data[0] + pM1->data[1] * pM0->data[4] + pM1->data[2] * pM0->data[8] + pM1->data[3] * pM0->data[12];
     pOut->data[1] = pM1->data[0] * pM0->data[1] + pM1->data[1] * pM0->data[5] + pM1->data[2] * pM0->data[9] + pM1->data[3] * pM0->data[13];
@@ -244,14 +245,14 @@ struct mat4* ldMat4Mul(struct mat4* pOut, struct mat4* pM0, struct mat4* pM1)
     pOut->data[15] = pM1->data[12] * pM0->data[3] + pM1->data[13] * pM0->data[7] + pM1->data[14] * pM0->data[11] + pM1->data[15] * pM0->data[15];
     return pOut;
 }
-struct vec3* ldMat4Vec3Mul(struct vec3* pOut, struct mat4* pM0, struct vec3* pV1)
+struct vec3* ldMat4Vec3Mul(struct vec3* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM0, struct vec3* LD_RESTRICT pV1)
 {
     pOut->x = pM0->data[0] * pV1->x + pM0->data[4] * pV1->y + pM0->data[8] * pV1->z + pM0->data[12];
     pOut->y = pM0->data[1] * pV1->x + pM0->data[5] * pV1->y + pM0->data[9] * pV1->z + pM0->data[13];
     pOut->z = pM0->data[2] * pV1->x + pM0->data[6] * pV1->y + pM0->data[10] * pV1->z + pM0->data[14];
     return pOut;
 }
-struct mat4* ldMat4Transpose(struct mat4* pOut, struct mat4* pM)
+struct mat4* ldMat4Transpose(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM)
 {
     pOut->data[0] = pM->data[0];
     pOut->data[1] = pM->data[4];
@@ -271,7 +272,7 @@ struct mat4* ldMat4Transpose(struct mat4* pOut, struct mat4* pM)
     pOut->data[15] = pM->data[15];
     return pOut;
 }
-struct mat4* ldMat4Invert(struct mat4* pOut, struct mat4* pM)
+struct mat4* ldMat4Invert(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM)
 {
     float32_t d0 = pM->data[0] * pM->data[5] - pM->data[1] * pM->data[4];
     float32_t d1 = pM->data[0] * pM->data[6] - pM->data[2] * pM->data[4];
@@ -308,7 +309,7 @@ struct mat4* ldMat4Invert(struct mat4* pOut, struct mat4* pM)
     pOut->data[15] = (pM->data[8] * d3 - pM->data[9] * d1 + pM->data[10] * d0) * determinant;
     return pOut;
 }
-struct mat4* ldMat4RotateX(struct mat4* pOut, struct mat4* pM, float32_t radian)
+struct mat4* ldMat4RotateX(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM, float32_t radian)
 {
     float32_t sn = sinf(radian);
     float32_t cn = cosf(radian);
@@ -330,7 +331,7 @@ struct mat4* ldMat4RotateX(struct mat4* pOut, struct mat4* pM, float32_t radian)
     pOut->data[11] = pM->data[11] * cn - pM->data[7] * sn;
     return pOut;
 }
-struct mat4* ldMat4RotateY(struct mat4* pOut, struct mat4* pM, float32_t radian)
+struct mat4* ldMat4RotateY(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM, float32_t radian)
 {
     float32_t sn = sinf(radian);
     float32_t cn = cosf(radian);
@@ -352,7 +353,7 @@ struct mat4* ldMat4RotateY(struct mat4* pOut, struct mat4* pM, float32_t radian)
     pOut->data[15] = pM->data[15];
     return pOut;
 }
-struct mat4* ldMat4RotateZ(struct mat4* pOut, struct mat4* pM, float32_t radian)
+struct mat4* ldMat4RotateZ(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM, float32_t radian)
 {
     float32_t sn = sinf(radian);
     float32_t cn = cosf(radian);
@@ -374,7 +375,7 @@ struct mat4* ldMat4RotateZ(struct mat4* pOut, struct mat4* pM, float32_t radian)
     pOut->data[15] = pM->data[15];
     return pOut;
 }
-struct mat4* ldMat4Rotate(struct mat4* pOut, struct mat4* pM, struct vec3* axis, float32_t radian)
+struct mat4* ldMat4Rotate(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM, struct vec3* LD_RESTRICT axis, float32_t radian)
 {
     float32_t length = ldVec3Length(axis);
 
@@ -414,7 +415,7 @@ struct mat4* ldMat4Rotate(struct mat4* pOut, struct mat4* pM, struct vec3* axis,
     pOut->data[15] = pM->data[15];
     return pOut;
 }
-struct mat4* ldMat4Scale(struct mat4* pOut, struct mat4* pM, struct vec3* scale)
+struct mat4* ldMat4Scale(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM, struct vec3* LD_RESTRICT scale)
 {
     pOut->data[0] = pM->data[0] * scale->x;
     pOut->data[1] = pM->data[1] * scale->x;
@@ -434,7 +435,7 @@ struct mat4* ldMat4Scale(struct mat4* pOut, struct mat4* pM, struct vec3* scale)
     pOut->data[15] = pM->data[15];
     return pOut;
 }
-struct mat4* ldMat4Translate(struct mat4* pOut, struct mat4* pM, struct vec3* translate)
+struct mat4* ldMat4Translate(struct mat4* LD_RESTRICT pOut, struct mat4* LD_RESTRICT pM, struct vec3* LD_RESTRICT translate)
 {
     pOut->data[0] = pM->data[0];
     pOut->data[1] = pM->data[1];
@@ -454,7 +455,7 @@ struct mat4* ldMat4Translate(struct mat4* pOut, struct mat4* pM, struct vec3* tr
     pOut->data[15] = pM->data[3] * translate->x + pM->data[7] * translate->y + pM->data[11] * translate->z + pM->data[15];
     return pOut;
 }
-struct mat4* ldMat4Frustum(struct mat4* pOut, float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t frustumNear, float32_t frustumFar)
+struct mat4* ldMat4Frustum(struct mat4* LD_RESTRICT pOut, float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t frustumNear, float32_t frustumFar)
 {
     float32_t rightLeft = 1.0f / (right - left);
     float32_t topBottom = 1.0f / (top - bottom);
@@ -477,7 +478,7 @@ struct mat4* ldMat4Frustum(struct mat4* pOut, float32_t left, float32_t right, f
     pOut->data[15] = 0.0f;
     return pOut;
 }
-struct mat4* ldMat4Perspective(struct mat4* pOut, float32_t fovY, float32_t aspect, float32_t perspNear, float32_t perspFar)
+struct mat4* ldMat4Perspective(struct mat4* LD_RESTRICT pOut, float32_t fovY, float32_t aspect, float32_t perspNear, float32_t perspFar)
 {
     float32_t fov = 1.0f / tanf(fovY / 2.0f);
     float32_t nearFar = 1.0f / (perspNear - perspFar);
@@ -499,7 +500,7 @@ struct mat4* ldMat4Perspective(struct mat4* pOut, float32_t fovY, float32_t aspe
     pOut->data[15] = 0.0f;
     return pOut;
 }
-struct mat4* ldMat4Orthographic(struct mat4* pOut, float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t orthoNear, float32_t orthoFar)
+struct mat4* ldMat4Orthographic(struct mat4* LD_RESTRICT pOut, float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t orthoNear, float32_t orthoFar)
 {
     float32_t leftRight = 1.0f / (left - right);
     float32_t bottomTop = 1.0f / (bottom - top);
@@ -522,7 +523,7 @@ struct mat4* ldMat4Orthographic(struct mat4* pOut, float32_t left, float32_t rig
     pOut->data[15] = 1.0f;
     return pOut;
 }
-struct mat4* ldMat4LookAt(struct mat4* pOut, struct vec3* pEye, struct vec3* pCenter, struct vec3* pUp)
+struct mat4* ldMat4LookAt(struct mat4* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pEye, struct vec3* LD_RESTRICT pCenter, struct vec3* LD_RESTRICT pUp)
 {
     if (fabsf(pEye->x - pCenter->x) < 0.0000001f &&
         fabsf(pEye->y - pCenter->y) < 0.0000001f &&
@@ -591,37 +592,37 @@ struct mat4* ldMat4LookAt(struct mat4* pOut, struct vec3* pEye, struct vec3* pCe
 }
 
 /* vec2 */
-struct vec2* ldVec2Add(struct vec2* pOut, struct vec2* pV0, struct vec2* pV1)
+struct vec2* ldVec2Add(struct vec2* LD_RESTRICT pOut, struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1)
 {
     pOut->x = pV0->x + pV1->x;
     pOut->y = pV0->y + pV1->y;
     return pOut;
 }
-struct vec2* ldVec2Sub(struct vec2* pOut, struct vec2* pV0, struct vec2* pV1)
+struct vec2* ldVec2Sub(struct vec2* LD_RESTRICT pOut, struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1)
 {
     pOut->x = pV0->x - pV1->x;
     pOut->y = pV0->y - pV1->y;
     return pOut;
 }
-struct vec2* ldVec2Mul(struct vec2* pOut, struct vec2* pV0, struct vec2* pV1)
+struct vec2* ldVec2Mul(struct vec2* LD_RESTRICT pOut, struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1)
 {
     pOut->x = pV0->x * pV1->x;
     pOut->y = pV0->y * pV1->y;
     return pOut;
 }
-struct vec2* ldVec2Invert(struct vec2* pOut, struct vec2* pV)
+struct vec2* ldVec2Invert(struct vec2* LD_RESTRICT pOut, struct vec2* LD_RESTRICT pV)
 {
     pOut->x = 1.0f / pV->x;
     pOut->y = 1.0f / pV->y;
     return pOut;
 }
-struct vec2* ldVec2Negate(struct vec2* pOut, struct vec2* pV)
+struct vec2* ldVec2Negate(struct vec2* LD_RESTRICT pOut, struct vec2* LD_RESTRICT pV)
 {
     pOut->x = pV->x * -1.0f;
     pOut->y = pV->y * -1.0f;
     return pOut;
 }
-struct vec2* ldVec2Normalize(struct vec2* pOut, struct vec2* pV)
+struct vec2* ldVec2Normalize(struct vec2* LD_RESTRICT pOut, struct vec2* LD_RESTRICT pV)
 {
     float32_t l = pV->x * pV->x + pV->y * pV->y;
     if (l > 0.0f)
@@ -632,36 +633,36 @@ struct vec2* ldVec2Normalize(struct vec2* pOut, struct vec2* pV)
     }
     return pOut;
 }
-int32_t ldVec2Equal(struct vec2* pV0, struct vec2* pV1)
+int32_t ldVec2Equal(struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1)
 {
     return (pV0->x == pV1->x && pV0->y == pV1->y);
 }
-struct vec3* ldVec2Cross(struct vec3* pOut, struct vec2* pV0, struct vec2* pV1)
+struct vec3* ldVec2Cross(struct vec3* LD_RESTRICT pOut, struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1)
 {
     pOut->x = 0;
     pOut->y = 0;
     pOut->z = pV0->x * pV1->y - pV0->y * pV1->x;
     return pOut;
 }
-float32_t ldVec2Distance(struct vec2* pV0, struct vec2* pV1)
+float32_t ldVec2Distance(struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1)
 {
     float32_t x = pV0->x - pV1->x;
     float32_t y = pV0->y - pV1->y;
     return sqrtf(x * x + y * y);
 }
-float32_t ldVec2Dot(struct vec2* pV0, struct vec2* pV1)
+float32_t ldVec2Dot(struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1)
 {
     return pV0->x * pV1->x + pV0->y * pV1->y;
 }
-float32_t ldVec2Length(struct vec2* pV)
+float32_t ldVec2Length(struct vec2* LD_RESTRICT pV)
 {
     return sqrtf(pV->x * pV->x + pV->y * pV->y);
 }
-float32_t ldVec2Length2(struct vec2* pV)
+float32_t ldVec2Length2(struct vec2* LD_RESTRICT pV)
 {
     return (pV->x * pV->x + pV->y * pV->y);
 }
-float32_t ldVec2Distance2(struct vec2* pV0, struct vec2* pV1)
+float32_t ldVec2Distance2(struct vec2* LD_RESTRICT pV0, struct vec2* LD_RESTRICT pV1)
 {
     float32_t x = pV0->x - pV1->x;
     float32_t y = pV0->y - pV1->y;
@@ -669,42 +670,42 @@ float32_t ldVec2Distance2(struct vec2* pV0, struct vec2* pV1)
 }
 
 /* vec3 */
-struct vec3* ldVec3Add(struct vec3* pOut, struct vec3* pV0, struct vec3* pV1)
+struct vec3* ldVec3Add(struct vec3* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1)
 {
     pOut->x = pV0->x + pV1->x;
     pOut->y = pV0->y + pV1->y;
     pOut->z = pV0->z + pV1->z;
     return pOut;
 }
-struct vec3* ldVec3Sub(struct vec3* pOut, struct vec3* pV0, struct vec3* pV1)
+struct vec3* ldVec3Sub(struct vec3* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1)
 {
     pOut->x = pV0->x - pV1->x;
     pOut->y = pV0->y - pV1->y;
     pOut->z = pV0->z - pV1->z;
     return pOut;
 }
-struct vec3* ldVec3Mul(struct vec3* pOut, struct vec3* pV0, struct vec3* pV1)
+struct vec3* ldVec3Mul(struct vec3* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1)
 {
     pOut->x = pV0->x * pV1->x;
     pOut->y = pV0->y * pV1->y;
     pOut->z = pV0->z * pV1->z;
     return pOut;
 }
-struct vec3* ldVec3Invert(struct vec3* pOut, struct vec3* pV)
+struct vec3* ldVec3Invert(struct vec3* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pV)
 {
     pOut->x = 1.0f / pV->x;
     pOut->y = 1.0f / pV->y;
     pOut->z = 1.0f / pV->z;
     return pOut;
 }
-struct vec3* ldVec3Negate(struct vec3* pOut, struct vec3* pV)
+struct vec3* ldVec3Negate(struct vec3* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pV)
 {
     pOut->x = -1.0f * pV->x;
     pOut->y = -1.0f * pV->y;
     pOut->z = -1.0f * pV->z;
     return pOut;
 }
-struct vec3* ldVec3Normalize(struct vec3* pOut, struct vec3* pV)
+struct vec3* ldVec3Normalize(struct vec3* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pV)
 {
     float32_t x = pV->x;
     float32_t y = pV->y;
@@ -719,11 +720,11 @@ struct vec3* ldVec3Normalize(struct vec3* pOut, struct vec3* pV)
     }
     return pOut;
 }
-int32_t ldVec3Equal(struct vec3* pV0, struct vec3* pV1)
+int32_t ldVec3Equal(struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1)
 {
     return (pV0->x == pV1->x && pV0->y == pV1->y && pV0->z == pV1->z);
 }
-struct vec3* ldVec3Cross(struct vec3* pOut, struct vec3* pV0, struct vec3* pV1)
+struct vec3* ldVec3Cross(struct vec3* LD_RESTRICT pOut, struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1)
 {
     float32_t lx = pV0->x;
     float32_t ly = pV0->y;
@@ -738,7 +739,7 @@ struct vec3* ldVec3Cross(struct vec3* pOut, struct vec3* pV0, struct vec3* pV1)
 
     return pOut;
 }
-float32_t ldVec3Distance(struct vec3* pV0, struct vec3* pV1)
+float32_t ldVec3Distance(struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1)
 {
     float32_t x = pV0->x - pV1->x;
     float32_t y = pV0->y - pV1->y;
@@ -746,25 +747,25 @@ float32_t ldVec3Distance(struct vec3* pV0, struct vec3* pV1)
 
     return sqrtf(x * x + y * y + z * z);
 }
-float32_t ldVec3Dot(struct vec3* pV0, struct vec3* pV1)
+float32_t ldVec3Dot(struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1)
 {
     return pV0->x * pV1->x + pV0->y * pV1->y + pV0->z * pV1->z;
 }
-float32_t ldVec3Length(struct vec3* pV)
+float32_t ldVec3Length(struct vec3* LD_RESTRICT pV)
 {
     float32_t x = pV->x;
     float32_t y = pV->y;
     float32_t z = pV->z;
     return sqrtf(x * x + y * y + z * z);
 }
-float32_t ldVec3Length2(struct vec3* pV)
+float32_t ldVec3Length2(struct vec3* LD_RESTRICT pV)
 {
     float32_t x = pV->x;
     float32_t y = pV->y;
     float32_t z = pV->z;
     return (x * x + y * y + z * z);
 }
-float32_t ldVec3Distance2(struct vec3* pV0, struct vec3* pV1)
+float32_t ldVec3Distance2(struct vec3* LD_RESTRICT pV0, struct vec3* LD_RESTRICT pV1)
 {
     float32_t x = pV0->x - pV1->x;
     float32_t y = pV0->y - pV1->y;
@@ -774,7 +775,7 @@ float32_t ldVec3Distance2(struct vec3* pV0, struct vec3* pV1)
 }
 
 /* quat */
-struct quat* ldQuatIdent(struct quat* pOut)
+struct quat* ldQuatIdent(struct quat* LD_RESTRICT pOut)
 {
     pOut->x = 0;
     pOut->y = 0;
@@ -782,7 +783,7 @@ struct quat* ldQuatIdent(struct quat* pOut)
     pOut->w = 1;
     return pOut;
 }
-struct quat* ldQuatAdd(struct quat* pOut, struct quat* pQ0, struct quat* pQ1)
+struct quat* ldQuatAdd(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ0, struct quat* LD_RESTRICT pQ1)
 {
     pOut->w = pQ0->w + pQ1->w;
     pOut->x = pQ0->x + pQ1->x;
@@ -790,7 +791,7 @@ struct quat* ldQuatAdd(struct quat* pOut, struct quat* pQ0, struct quat* pQ1)
     pOut->z = pQ0->z + pQ1->z;
     return pOut;
 }
-struct quat* ldQuatMul(struct quat* pOut, struct quat* pQ0, struct quat* pQ1)
+struct quat* ldQuatMul(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ0, struct quat* LD_RESTRICT pQ1)
 {
     pOut->x = pQ0->x * pQ1->w + pQ0->w * pQ1->x + pQ0->y * pQ1->z - pQ0->z * pQ1->y;
     pOut->y = pQ0->y * pQ1->w + pQ0->w * pQ1->y + pQ0->z * pQ1->x - pQ0->x * pQ1->z;
@@ -798,7 +799,7 @@ struct quat* ldQuatMul(struct quat* pOut, struct quat* pQ0, struct quat* pQ1)
     pOut->w = pQ0->w * pQ1->w - pQ0->x * pQ1->x - pQ0->y * pQ1->y - pQ0->z * pQ1->z;
     return pOut;
 }
-struct quat* ldQuatSetAxisAngle(struct quat* pOut, struct vec3* axis, float32_t radian)
+struct quat* ldQuatSetAxisAngle(struct quat* LD_RESTRICT pOut, struct vec3* LD_RESTRICT axis, float32_t radian)
 {
     float32_t sn = sinf(radian * 0.5f);
     pOut->x = sn * axis->x;
@@ -807,7 +808,7 @@ struct quat* ldQuatSetAxisAngle(struct quat* pOut, struct vec3* axis, float32_t 
     pOut->w = cosf(radian * 0.5f);
     return pOut;
 }
-struct quat* ldQuatRotateX(struct quat* pOut, struct quat* pQ, float32_t radian)
+struct quat* ldQuatRotateX(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ, float32_t radian)
 {
     float32_t sn = sinf(radian * 0.5f);
     float32_t cn = cosf(radian * 0.5f);
@@ -817,7 +818,7 @@ struct quat* ldQuatRotateX(struct quat* pOut, struct quat* pQ, float32_t radian)
     pOut->w = pQ->w * sn - pQ->x * cn;
     return pOut;
 }
-struct quat* ldQuatRotateY(struct quat* pOut, struct quat* pQ, float32_t radian)
+struct quat* ldQuatRotateY(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ, float32_t radian)
 {
     float32_t sn = sinf(radian * 0.5f);
     float32_t cn = cosf(radian * 0.5f);
@@ -827,7 +828,7 @@ struct quat* ldQuatRotateY(struct quat* pOut, struct quat* pQ, float32_t radian)
     pOut->w = pQ->w * cn - pQ->y * sn;
     return pOut;
 }
-struct quat* ldQuatRotateZ(struct quat* pOut, struct quat* pQ, float32_t radian)
+struct quat* ldQuatRotateZ(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ, float32_t radian)
 {
     float32_t sn = sinf(radian * 0.5f);
     float32_t cn = cosf(radian * 0.5f);
@@ -837,7 +838,7 @@ struct quat* ldQuatRotateZ(struct quat* pOut, struct quat* pQ, float32_t radian)
     pOut->w = pQ->w * cn - pQ->z * sn;
     return pOut;
 }
-struct quat* ldQuatCalcW(struct quat* pOut, struct quat* pQ)
+struct quat* ldQuatCalcW(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ)
 {
     pOut->x = pQ->x;
     pOut->y = pQ->y;
@@ -845,7 +846,7 @@ struct quat* ldQuatCalcW(struct quat* pOut, struct quat* pQ)
     pOut->w = sqrtf(fabsf(1.0f - pQ->x * pQ->x - pQ->y * pQ->y - pQ->z * pQ->z));
     return pOut;
 }
-struct quat* ldQuatInvert(struct quat* pOut, struct quat* pQ)
+struct quat* ldQuatInvert(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ)
 {
     float32_t dot = pQ->x * pQ->x + pQ->y * pQ->y + pQ->z * pQ->z + pQ->w * pQ->w;
     if (dot) dot = 1.0f / dot;
@@ -855,7 +856,7 @@ struct quat* ldQuatInvert(struct quat* pOut, struct quat* pQ)
     pOut->w = pQ->w * dot;
     return pOut;
 }
-struct quat* ldQuatConjugate(struct quat* pOut, struct quat* pQ)
+struct quat* ldQuatConjugate(struct quat* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ)
 {
     pOut->x = -pQ->x;
     pOut->y = -pQ->y;
@@ -863,7 +864,7 @@ struct quat* ldQuatConjugate(struct quat* pOut, struct quat* pQ)
     pOut->w = pQ->w;
     return pOut;
 }
-struct mat4* ldQuatToMat4(struct mat4* pOut, struct quat* pQ)
+struct mat4* ldQuatToMat4(struct mat4* LD_RESTRICT pOut, struct quat* LD_RESTRICT pQ)
 {
     float32_t x2 = pQ->x + pQ->x;
     float32_t y2 = pQ->y + pQ->y;
@@ -896,7 +897,7 @@ struct mat4* ldQuatToMat4(struct mat4* pOut, struct quat* pQ)
     pOut->data[15] = 1.0f;
     return pOut;
 }
-float32_t ldQuatGetAxisAngle(struct vec3* pOutAxis, struct quat* pQ)
+float32_t ldQuatGetAxisAngle(struct vec3* LD_RESTRICT pOutAxis, struct quat* LD_RESTRICT pQ)
 {
     float32_t radian = acosf(pQ->w) * 2.0f;
     float32_t sn = sinf(radian * 0.5f);

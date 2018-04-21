@@ -6,7 +6,7 @@
 #include "glutils.h"
 #include "boot.h"
 
-#include "passes/first_pass.h"
+#include "game/init_scene.h"
 
 #include <assert.h>
 
@@ -20,7 +20,8 @@ void ldGameSwapState(state_t* pNext)
 
 void ldGameStart()
 {
-    ldGameSwapState(&gFirstPassState);
+    // Change the initial state here
+    ldGameSwapState(&gInitScene);
 }
 
 /* Should update at 0.16ms */

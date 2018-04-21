@@ -57,14 +57,14 @@ static void* ldMemoryPoolAlloc(struct memory_pool* pPool)
     if (pPool->poolLength > 0)
     {
         pPointer = pPool->pPoolElements[--(pPool->poolLength)];
-#if defined(LD_PLATFORM_DEBUG)
+#if defined(LD_CONFIG_DEBUG)
         memset(pPointer, 0xAA, pPool->stride);
 #endif
     }
     else if (pPool->mainByteLength + pPool->stride < pPool->elementCapacity * pPool->stride)
     {
         pPointer = (void*)&pPool->pMainElements[(pPool->mainByteLength += pPool->stride)];
-#if defined(LD_PLATFORM_DEBUG)
+#if defined(LD_CONFIG_DEBUG)
         memset(pPointer, 0xAA, pPool->stride);
 #endif
     }
@@ -76,7 +76,7 @@ static void ldMemoryPoolFree(struct memory_pool* pPool, void* pPointer)
 {
     if (pPool->poolLength < pPool->elementCapacity)
     {
-#if defined(LD_PLATFORM_DEBUG)
+#if defined(LD_CONFIG_DEBUG)
         memset(pPointer, 0xDD, pPool->stride);
 #endif
         pPool->pPoolElements[pPool->poolLength++] = pPointer;
@@ -291,7 +291,7 @@ void* ldHeapMalloc(size_t size, size_t alignment)
                     gFreelistTail = NULL;
                 }
                 void* pAllocPointer = ALLOC_CHUNKTOMEM(pInfo);
-#if defined(LD_PLATFORM_DEBUG)
+#if defined(LD_CONFIG_DEBUG)
                 memset(pAllocPointer, 0xAA, pInfo->chunkSize);
 #endif
                 return pAllocPointer;
@@ -307,7 +307,7 @@ void* ldHeapMalloc(size_t size, size_t alignment)
         struct chunk_info* pInfo = ALLOC_MEMTOCHUNK(pNewPointer);
         pInfo->chunkSize = size;
         pInfo->pNext = NULL;
-#if defined(LD_PLATFORM_DEBUG)
+#if defined(LD_CONFIG_DEBUG)
         memset(pNewPointer, 0xAA, size);
 #endif
         gFreelistCurrent = LD_UTILS_FORWARD_POINTER(pNewPointer, size);
@@ -333,7 +333,7 @@ void ldHeapFree(void* pPointer)
             gFreelistHead = pInfo;
             gFreelistTail = gFreelistHead;
         }
-#if defined(LD_PLATFORM_DEBUG)
+#if defined(LD_CONFIG_DEBUG)
         memset(pPointer, 0xDD, pInfo->chunkSize);
 #endif
     }
@@ -345,7 +345,7 @@ void* ldScratchMalloc(size_t size, size_t alignment)
     if (LD_UTILS_IN_RANGE(LD_UTILS_FORWARD_POINTER(pNewPointer, size), gScratchBufferHead, LD_UTILS_FORWARD_POINTER(gScratchBufferHead, kScratchCapacity)))
     {
         gScratchBufferTail = LD_UTILS_FORWARD_POINTER(pNewPointer, size);
-#if defined(LD_PLATFORM_DEBUG)
+#if defined(LD_CONFIG_DEBUG)
         memset(pNewPointer, 0xAA, size);
 #endif
         return pNewPointer;

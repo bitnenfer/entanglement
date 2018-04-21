@@ -259,7 +259,7 @@ void ldGameInit(int argc, const char* p_argv[])
                 Module.canvas = canvas;
                 document.body.appendChild(canvas);
 
-#if defined(LD_PLATFORM_DEBUG)
+#if defined(LD_CONFIG_DEBUG)
                 window.outputLog = document.createElement('pre');
                 window.outputLog.id = 'gunk_outputlog';
                 window.outputLog.style.width = $0 + 'px';

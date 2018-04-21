@@ -2,6 +2,7 @@
 #define _LOADER_H_
 
 #include "types.h"
+#include "canvas.h"
 
 enum load_alloc_type
 {
@@ -17,5 +18,8 @@ struct file_binary* ldFileBinaryLoadWithHeader(const char* pPath, enum load_allo
 void ldFileBinaryUnload(struct file_binary* pFileBinary);
 size_t ldFileBinaryGetSize(const struct file_binary* pFileBinary);
 const void* ldFileBinaryGetData(struct file_binary* pFileBinary);
+int32_t ldFileBinaryToImage(image_t* pOut, file_binary_t* pFileBinary);
+int32_t ldLoadImage(const char* pPath, image_t* pOut);
+void ldDiscardImage(image_t* pOut);
 
 #endif // !_LOADER_H_

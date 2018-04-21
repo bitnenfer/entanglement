@@ -2,6 +2,7 @@
 #define _PLATFORM_H_
 
 #include "config.h"
+#include <inttypes.h>
 
 enum key_code
 {   
@@ -235,7 +236,7 @@ void ldExit(int result);
 #endif
 
 #if defined(_DEBUG) || defined(DEBUG)
-#define LD_PLATFORM_DEBUG 1
+#define LD_CONFIG_DEBUG 1
 #else
 #define LD_PLATFORM_RELEASE 1
 #endif
@@ -244,10 +245,25 @@ void ldExit(int result);
 #define LD_FORCEINLINE __forceinline
 #define LD_NOINLINE __declspec(LD_NOINLINE)
 #define LD_ALIGN(x) __declspec(LD_ALIGN(x))
+#define LD_RESTRICT __restrict
 #elif defined(__GNUC__) || defined(LD_PLATFORM_WEB)
 #define LD_FORCEINLINE inline __attribute__((always_inline))
 #define LD_NOINLINE __attribute__((LD_NOINLINE))
 #define LD_ALIGN(x) __attribute__((LD_ALIGNed(x))
+#define LD_RESTRICT __restrict__
 #endif
+
+enum blend_mode
+{
+    BLEND_INVALID = -1,
+    BLEND_NORMAL = 0,
+    BLEND_ADD = 1,
+    BLEND_MULTIPLY = 2,
+    BLEND_SCREEN = 3,
+    BLEND_NORMAL_NPM = 4,
+    BLEND_ADD_NPM = 5,
+    BLEND_MULTIPLY_NPM = 6,
+    BLEND_SCREEN_NPM = 7
+};
 
 #endif // !_PLATFORM_H_

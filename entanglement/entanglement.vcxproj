@@ -150,14 +150,17 @@
   <ItemGroup>
     <ClInclude Include="code\alloc.h" />
     <ClInclude Include="code\boot.h" />
+    <ClInclude Include="code\canvas.h" />
     <ClInclude Include="code\config.h" />
     <ClInclude Include="code\game.h" />
+    <ClInclude Include="code\game\init_scene.h" />
+    <ClInclude Include="code\glad\glad.h" />
     <ClInclude Include="code\glutils.h" />
     <ClInclude Include="code\loader.h" />
     <ClInclude Include="code\math.h" />
     <ClInclude Include="code\opengl.h" />
-    <ClInclude Include="code\passes\first_pass.h" />
     <ClInclude Include="code\platform.h" />
+    <ClInclude Include="code\stb_image.h" />
     <ClInclude Include="code\types.h" />
     <ClInclude Include="code\utils.h" />
   </ItemGroup>

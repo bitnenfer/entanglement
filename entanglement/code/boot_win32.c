@@ -1,7 +1,3 @@
-
-__declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
-__declspec(dllexport) unsigned long AmdPowerXpressRequestHighPerformance = 0x00000001;
-
 #include <assert.h>
 #include <stddef.h>
 #include <stdarg.h>
@@ -104,6 +100,19 @@ static LRESULT CALLBACK window_process(HWND hWnd, UINT message, WPARAM wParam, L
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
 }
+void* GLCoreGetProcAddress(const char* pFuncName)
+{
+    void* pProcAddress = fpWglGetProcAddress(pFuncName);
+    if (pProcAddress == NULL)
+    {
+        pProcAddress = GetProcAddress(gOpenGL32Lib, pFuncName);
+    }
+    if (pProcAddress == NULL)
+    {
+        ldDebugPrint("Failed to load OpenGL function %s\n", pFuncName);
+    }
+    return pProcAddress;
+}
 void ldGameInit(int argc, const char* p_argv[])
 {
     /* Initialize Memory Allocators */
@@ -181,116 +190,38 @@ void ldGameInit(int argc, const char* p_argv[])
         fpWglMakeCurrent(gWindowDeviceContext, gOpenGLContext);
         assert(gOpenGLContext);
 
+        fpWglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)fpWglGetProcAddress("wglCreateContextAttribsARB");
+
+        if (fpWglCreateContextAttribsARB != NULL)
+        {
+            const int32_t contextAttribList[] = {
+                0x2091, 4,
+                0x2092, 0,
+                0
+            };
+            HGLRC openglCore = fpWglCreateContextAttribsARB(gWindowDeviceContext, gOpenGLContext, contextAttribList);
+            if (!openglCore)
+            {
+                ldDebugPrint("Failed to create OpenGL Core Context\n");
+            }
+            else
+            {
+                ldDebugPrint("Loaded OpenGL Core Context Successfully\n");
+                fpWglMakeCurrent(gWindowDeviceContext, openglCore);
+                fpWglDeleteContext(gOpenGLContext);
+                gOpenGLContext = openglCore;
+            }
+        }
+        else
+        {
+            ldDebugPrint("Failed to create OpenGL Core Context. wglCreateContextAttribsARB = NULL\n");
+        }
+
         fpWglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)fpWglGetProcAddress("wglGetSwapIntervalEXT");
         fpWglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)fpWglGetProcAddress("wglSwapIntervalEXT");
 
         /* Load OpenGL Functions */
-        glGetError = (PFNGLGETERROR)GetProcAddress(gOpenGL32Lib, "glGetError");
-        glViewport = (PFNGLVIEWPORTPROC)GetProcAddress(gOpenGL32Lib, "glViewport");
-        glEnable = (PFNGLENABLEPROC)GetProcAddress(gOpenGL32Lib, "glEnable");
-        glBlendFunc = (PFNGLBLENDFUNCPROC)GetProcAddress(gOpenGL32Lib, "glBlendFunc");
-        glClear = (PFNGLCLEARPROC)GetProcAddress(gOpenGL32Lib, "glClear");
-        glClearColor = (PFNGLCLEARCOLORPROC)GetProcAddress(gOpenGL32Lib, "glClearColor");
-        glCullFace = (PFNGLCULLFACEPROC)GetProcAddress(gOpenGL32Lib, "glCullFace");
-        glDeleteTextures = (PFNGLDELETETEXTURESPROC)GetProcAddress(gOpenGL32Lib, "glDeleteTextures");
-        glDepthFunc = (PFNGLDEPTHFUNCPROC)GetProcAddress(gOpenGL32Lib, "glDepthFunc");
-        glDepthMask = (PFNGLDEPTHMASKPROC)GetProcAddress(gOpenGL32Lib, "glDepthMask");
-        glDepthRange = (PFNGLDEPTHRANGEPROC)GetProcAddress(gOpenGL32Lib, "glDepthRange");
-        glDisable = (PFNGLDISABLEPROC)GetProcAddress(gOpenGL32Lib, "glDisable");
-        glDrawArrays = (PFNGLDRAWARRAYS)GetProcAddress(gOpenGL32Lib, "glDrawArrays");
-        glDrawElements = (PFNGLDRAWELEMENTS)GetProcAddress(gOpenGL32Lib, "glDrawElements");
-        glGenTextures = (PFNGLGENTEXTURES)GetProcAddress(gOpenGL32Lib, "glGenTextures");
-        glTexEnvf = (PFNGLTEXENVFPROC)GetProcAddress(gOpenGL32Lib, "glTexEnvf");
-        glTexEnvfv = (PFNGLTEXENVFVPROC)GetProcAddress(gOpenGL32Lib, "glTexEnvfv");
-        glTexEnvi = (PFNGLTEXENVIPROC)GetProcAddress(gOpenGL32Lib, "glTexEnvi");
-        glTexEnviv = (PFNGLTEXENVIVPROC)GetProcAddress(gOpenGL32Lib, "glTexEnviv");
-        glTexGend = (PFNGLTEXGENDPROC)GetProcAddress(gOpenGL32Lib, "glTexGend");
-        glTexGendv = (PFNGLTEXGENDVPROC)GetProcAddress(gOpenGL32Lib, "glTexGendv");
-        glTexGenf = (PFNGLTEXGENFPROC)GetProcAddress(gOpenGL32Lib, "glTexGenf");
-        glTexGenfv = (PFNGLTEXGENFVPROC)GetProcAddress(gOpenGL32Lib, "glTexGenfv");
-        glTexGeni = (PFNGLTEXGENIPROC)GetProcAddress(gOpenGL32Lib, "glTexGeni");
-        glTexGeniv = (PFNGLTEXGENIVPROC)GetProcAddress(gOpenGL32Lib, "glTexGeniv");
-        glTexImage1D = (PFNGLTEXIMAGE1DPROC)GetProcAddress(gOpenGL32Lib, "glTexImage1D");
-        glTexImage2D = (PFNGLTEXIMAGE2DPROC)GetProcAddress(gOpenGL32Lib, "glTexImage2D");
-        glTexParameterf = (PFNGLTEXPARAMETERFPROC)GetProcAddress(gOpenGL32Lib, "glTexParameterf");
-        glTexParameterfv = (PFNGLTEXPARAMETERFVPROC)GetProcAddress(gOpenGL32Lib, "glTexParameterfv");
-        glTexParameteri = (PFNGLTEXPARAMETERIPROC)GetProcAddress(gOpenGL32Lib, "glTexParameteri");
-        glTexParameteriv = (PFNGLTEXPARAMETERIVPROC)GetProcAddress(gOpenGL32Lib, "glTexParameteriv");
-        glTexSubImage1D = (PFNGLTEXSUBIMAGE1DPROC)GetProcAddress(gOpenGL32Lib, "glTexSubImage1D");
-        glTexSubImage2D = (PFNGLTEXSUBIMAGE2DPROC)GetProcAddress(gOpenGL32Lib, "glTexSubImage2D");
-        glScissor = (PFNGLSCISSORPROC)GetProcAddress(gOpenGL32Lib, "glScissor");
-        glSelectBuffer = (PFNGLSELECTBUFFERPROC)GetProcAddress(gOpenGL32Lib, "glSelectBuffer");
-        glStencilFunc = (PFNGLSTENCILFUNCPROC)GetProcAddress(gOpenGL32Lib, "glStencilFunc");
-        glStencilMask = (PFNGLSTENCILMASKPROC)GetProcAddress(gOpenGL32Lib, "glStencilMask");
-        glStencilOp = (PFNGLSTENCILOPPROC)GetProcAddress(gOpenGL32Lib, "glStencilOp");
-        glClearDepth = (PFNGLCLEARDEPTHPROC)GetProcAddress(gOpenGL32Lib, "glClearDepth");
-        glClearStencil = (PFNGLCLEARSTENCILPROC)GetProcAddress(gOpenGL32Lib, "glClearStencil");
-        glBindTexture = (PFNGLBINDTEXTUREPROC)GetProcAddress(gOpenGL32Lib, "glBindTexture");
-        glLogicOp = (PFNGLLOGICOP)GetProcAddress(gOpenGL32Lib, "glLogicOp");
-
-        glCreateShader = (PFNGLCREATESHADERPROC)fpWglGetProcAddress("glCreateShader");
-        glShaderSource = (PFNGLSHADERSOURCEPROC)fpWglGetProcAddress("glShaderSource");
-        glBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC)fpWglGetProcAddress("glBindAttribLocation");
-        glCompileShader = (PFNGLCOMPILESHADERPROC)fpWglGetProcAddress("glCompileShader");
-        glGetShaderiv = (PFNGLGETSHADERIVPROC)fpWglGetProcAddress("glGetShaderiv");
-        glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)fpWglGetProcAddress("glGetShaderInfoLog");
-        glCreateProgram = (PFNGLCREATEPROGRAMPROC)fpWglGetProcAddress("glCreateProgram");
-        glAttachShader = (PFNGLATTACHSHADERPROC)fpWglGetProcAddress("glAttachShader");
-        glLinkProgram = (PFNGLLINKPROGRAMPROC)fpWglGetProcAddress("glLinkProgram");
-        glGetProgramiv = (PFNGLGETPROGRAMIVNVPROC)fpWglGetProcAddress("glGetProgramiv");
-        glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)fpWglGetProcAddress("glGetProgramInfoLog");
-        glUseProgram = (PFNGLUSEPROGRAMPROC)fpWglGetProcAddress("glUseProgram");
-        glDeleteProgram = (PFNGLDELETEPROGRAMPROC)fpWglGetProcAddress("glDeleteProgram");
-        glDeleteShader = (PFNGLDELETESHADERPROC)fpWglGetProcAddress("glDeleteShader");
-        glGetAttribLocation = (PFNGLGETATTRIBLOCATIONPROC)fpWglGetProcAddress("glGetAttribLocation");
-        glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)fpWglGetProcAddress("glGetUniformLocation");
-        glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)fpWglGetProcAddress("glEnableVertexAttribArray");
-        glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)fpWglGetProcAddress("glVertexAttribPointer");
-        glUniform1f = (PFNGLUNIFORM1FPROC)fpWglGetProcAddress("glUniform1f");
-        glUniform1fv = (PFNGLUNIFORM1FVPROC)fpWglGetProcAddress("glUniform1fv");
-        glUniform1i = (PFNGLUNIFORM1IPROC)fpWglGetProcAddress("glUniform1i");
-        glUniform1iv = (PFNGLUNIFORM1IVPROC)fpWglGetProcAddress("glUniform1iv");
-        glUniform2f = (PFNGLUNIFORM2FPROC)fpWglGetProcAddress("glUniform2f");
-        glUniform2fv = (PFNGLUNIFORM2FVPROC)fpWglGetProcAddress("glUniform2fv");
-        glUniform2i = (PFNGLUNIFORM2IPROC)fpWglGetProcAddress("glUniform2i");
-        glUniform2iv = (PFNGLUNIFORM2IVPROC)fpWglGetProcAddress("glUniform2iv");
-        glUniform3f = (PFNGLUNIFORM3FPROC)fpWglGetProcAddress("glUniform3f");
-        glUniform3fv = (PFNGLUNIFORM3FVPROC)fpWglGetProcAddress("glUniform3fv");
-        glUniform3i = (PFNGLUNIFORM3IPROC)fpWglGetProcAddress("glUniform3i");
-        glUniform3iv = (PFNGLUNIFORM3IVPROC)fpWglGetProcAddress("glUniform3iv");
-        glUniform4f = (PFNGLUNIFORM4FPROC)fpWglGetProcAddress("glUniform4f");
-        glUniform4fv = (PFNGLUNIFORM4FVPROC)fpWglGetProcAddress("glUniform4fv");
-        glUniform4i = (PFNGLUNIFORM4IPROC)fpWglGetProcAddress("glUniform4i");
-        glUniform4iv = (PFNGLUNIFORM4IVPROC)fpWglGetProcAddress("glUniform4iv");
-        glUniformMatrix2fv = (PFNGLUNIFORMMATRIX2FVPROC)fpWglGetProcAddress("glUniformMatrix2fv");
-        glUniformMatrix3fv = (PFNGLUNIFORMMATRIX3FVPROC)fpWglGetProcAddress("glUniformMatrix3fv");
-        glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)fpWglGetProcAddress("glUniformMatrix4fv");
-        glValidateProgram = (PFNGLVALIDATEPROGRAMPROC)fpWglGetProcAddress("glValidateProgram");
-        glIsProgram = (PFNGLISPROGRAMPROC)fpWglGetProcAddress("glIsProgram");
-        glIsShader = (PFNGLISSHADERPROC)fpWglGetProcAddress("glIsShader");
-        glActiveTexture = (PFNGLACTIVETEXTUREPROC)fpWglGetProcAddress("glActiveTexture");
-        glGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC)fpWglGetProcAddress("glGenFramebuffers");
-        glGenRenderbuffers = (PFNGLGENRENDERBUFFERSPROC)fpWglGetProcAddress("glGenRenderbuffers");
-        glBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC)fpWglGetProcAddress("glBindFramebuffer");
-        glBindRenderbuffer = (PFNGLBINDRENDERBUFFERPROC)fpWglGetProcAddress("glBindRenderbuffer");
-        glFramebufferTexture2D = (PFNGLFRAMEBUFFERTEXTURE2DPROC)fpWglGetProcAddress("glFramebufferTexture2D");
-        glDeleteFramebuffers = (PFNGLDELETEFRAMEBUFFERSPROC)fpWglGetProcAddress("glDeleteFramebuffers");
-        glDeleteRenderbuffers = (PFNGLDELETERENDERBUFFERSPROC)fpWglGetProcAddress("glDeleteRenderbuffers");
-        glGenBuffers = (PFNGLGENBUFFERSPROC)fpWglGetProcAddress("glGenBuffers");
-        glBindBuffer = (PFNGLBINDBUFFERPROC)fpWglGetProcAddress("glBindBuffer");
-        glBufferData = (PFNGLBUFFERDATAPROC)fpWglGetProcAddress("glBufferData");
-        glBufferSubData = (PFNGLBUFFERSUBDATAPROC)fpWglGetProcAddress("glBufferSubData");
-        glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)fpWglGetProcAddress("glDeleteBuffers");
-        glDrawElementsBaseVertex = (PFNGLDRAWELEMENTSBASEVERTEXPROC)fpWglGetProcAddress("glDrawElementsBaseVertex");
-        glBlendFuncSeparate = (PFNGLBLENDFUNCSEPARATEPROC)fpWglGetProcAddress("glBlendFuncSeparate");
-        glBlendEquationSeparate = (PFNGLBLENDEQUATIONSEPARATEPROC)fpWglGetProcAddress("glBlendEquationSeparate");
-        glGetUniformBlockIndex = (PFNGLGETUNIFORMBLOCKINDEXPROC)fpWglGetProcAddress("glGetUniformBlockIndex");
-        glBindBufferBase = (PFNGLBINDBUFFERBASEPROC)fpWglGetProcAddress("glBindBufferBase");
-        glUniformBlockBinding = (PFNGLUNIFORMBLOCKBINDINGPROC)fpWglGetProcAddress("glUniformBlockBinding");
-        glGenVertexArrays = (PFNGLGENVERTEXARRAYSPROC)fpWglGetProcAddress("glGenVertexArrays");
-        glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)fpWglGetProcAddress("glDeleteVertexArrays");
-        glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)fpWglGetProcAddress("glBindVertexArray");
-
+        gladLoadGLLoader((GLADloadproc)&GLCoreGetProcAddress);
         if (fpWglSwapIntervalEXT) fpWglSwapIntervalEXT(LD_CONFIG_SWAP_INTERVAL);
 
     }
@@ -489,13 +420,15 @@ void ldGameQuit()
 }
 void ldDebugPrint(const char* p_fmt, ...)
 {
-    static char printfBuffer[1024] = { 0 };
+#define BUFFER_SIZE (1024 * 4)
+    static char printfBuffer[BUFFER_SIZE] = { 0 };
     int32_t len;
     va_list args;
     va_start(args, p_fmt);
-    len = vsprintf_s(printfBuffer, 1024, p_fmt, args);
+    len = vsprintf_s(printfBuffer, BUFFER_SIZE, p_fmt, args);
     va_end(args);
     OutputDebugStringA(printfBuffer);
+#undef BUFFER_SIZE
 }
 
 void ldExit(int result)
