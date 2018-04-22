@@ -30,6 +30,7 @@ canvas_t* ldGfxCreateCanvas(float32_t width, float32_t height);
 void ldGfxDestroyCanvas(canvas_t* pCanvas);
 void ldGfxSetCanvas(canvas_t* pCanvas);
 void ldGfxCanvasBind();
+void ldGfxCanvasSetMaskColor(float32_t r, float32_t g, float32_t b);
 void ldGfxCanvasPushMatrix();
 void ldGfxCanvasPopMatrix();
 void ldGfxCanvasIdentity();

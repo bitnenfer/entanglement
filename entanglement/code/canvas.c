@@ -76,7 +76,8 @@ void ldGfxCanvasFillRect(float32_t x, float32_t y, float32_t width, float32_t he
     vec2_t p3 = { xw, y };
     vec2_t t0, t1, t2, t3;
     mat2d_t matrix = pCurrentCanvas->matrix;
-    uint32_t tint = 0xffffffff;
+    uint8_t ua = ((uint32_t)(pCurrentCanvas->alpha * 255.0f) | 0) & 0xFF;
+    uint32_t tint = ((ua << 24) | pCurrentCanvas->color) >>  0;
 
     ldMat2DVec2Mul(&t0, &matrix, &p0);
     ldMat2DVec2Mul(&t1, &matrix, &p1);
@@ -135,7 +136,8 @@ void ldGfxCanvasDrawImage(image_t* pImage, float32_t x, float32_t y)
     vec2_t p3 = { xw, y };
     vec2_t t0, t1, t2, t3;
     mat2d_t matrix = pCurrentCanvas->matrix;
-    uint32_t tint = 0xffffffff;
+    uint8_t ua = ((uint32_t)(pCurrentCanvas->alpha * 255.0f) | 0) & 0xFF;
+    uint32_t tint = ((ua << 24) | pCurrentCanvas->color) >> 0;
     vec2_t uv0 = { 0.0f, 0.0f };
     vec2_t uv1 = { 0.0f, 1.0f };
     vec2_t uv2 = { 1.0f, 1.0f };
@@ -204,7 +206,8 @@ void ldGfxCanvasDrawImageFrame(image_t* pImage, float32_t x, float32_t y, float3
     vec2_t p3 = { xw, y };
     vec2_t t0, t1, t2, t3;
     mat2d_t matrix = pCurrentCanvas->matrix;
-    uint32_t tint = 0xffffffff;
+    uint8_t ua = ((uint32_t)(pCurrentCanvas->alpha * 255.0f) | 0) & 0xFF;
+    uint32_t tint = ((ua << 24) | pCurrentCanvas->color) >> 0;
     float32_t u0 = fx / pImage->fwidth;
     float32_t v0 = fy / pImage->fheight;
     float32_t u1 = (fx + fw) / pImage->fwidth;

@@ -6,42 +6,43 @@
 #include <string.h>
 
 static const char* kCanvasVS = ""
-    #if defined(LD_PLATFORM_WINDOWS)
-    "#version 330\n"
-    #elif defined(LD_PLATFORM_WEB)
-    "precision mediump float;\n"
-    #endif
-    "uniform mat4 uProjectionMatrix;\n"
-    "attribute vec2 inPosition;\n"
-    "attribute vec2 inTexCoord;\n"
-    "attribute vec4 inTint;\n"
-    "attribute float inType;\n"
-    "varying vec2 outTexCoord;\n"
-    "varying vec4 outTint;\n"
-    "varying float outType;\n"
-    "void main() {\n"
-    "   gl_Position = uProjectionMatrix * vec4(inPosition, 0.0, 1.0);\n"
-    "   outTexCoord = inTexCoord;\n"
-    "   outTint = inTint;\n"
-    "   outType = inType;\n"
-    "}\n"
-    ;
+#if defined(LD_PLATFORM_WINDOWS)
+"#version 330\n"
+#elif defined(LD_PLATFORM_WEB)
+"precision mediump float;\n"
+#endif
+"uniform mat4 uProjectionMatrix;\n"
+"attribute vec2 inPosition;\n"
+"attribute vec2 inTexCoord;\n"
+"attribute vec4 inTint;\n"
+"attribute float inType;\n"
+"varying vec2 outTexCoord;\n"
+"varying vec4 outTint;\n"
+"varying float outType;\n"
+"void main() {\n"
+"   gl_Position = uProjectionMatrix * vec4(inPosition, 0.0, 1.0);\n"
+"   outTexCoord = inTexCoord;\n"
+"   outTint = inTint;\n"
+"   outType = inType;\n"
+"}\n"
+;
 
 static const char* kCanvasFS = ""
-    #if defined(LD_PLATFORM_WINDOWS)
-    "#version 330\n"
-    #elif defined(LD_PLATFORM_WEB)
-    "precision mediump float;\n"
-    #endif
-    "uniform sampler2D uMainSampler;\n"
-    "varying vec2 outTexCoord;\n"
-    "varying vec4 outTint;\n"
-    "varying float outType;\n"
-    "void main() {\n"
-    "   if (outType == 0.0) gl_FragColor = texture2D(uMainSampler, outTexCoord) * outTint.bgra;\n"
-    "   else gl_FragColor = outTint.bgra;\n"
-    "}\n"
-    ;
+#if defined(LD_PLATFORM_WINDOWS)
+"#version 330\n"
+#elif defined(LD_PLATFORM_WEB)
+"precision mediump float;\n"
+#endif
+"uniform sampler2D uMainSampler;\n"
+"uniform vec3 uMaskColor;\n"
+"varying vec2 outTexCoord;\n"
+"varying vec4 outTint;\n"
+"varying float outType;\n"
+"void main() {\n"
+"   if (outType == 0.0) gl_FragColor = vec4(uMaskColor.rgb, texture2D(uMainSampler, outTexCoord).a) * outTint.bgra;\n"
+"   else gl_FragColor = outTint.bgra;\n"
+"}\n"
+;
 
 #define MAX_VERTICES (2000)
 #define MAX_BATCHES (2000)
@@ -128,6 +129,7 @@ canvas_t* ldGfxCreateCanvas(float32_t width, float32_t height)
     pCanvas->width = width;
     pCanvas->height = height;
 
+
     return pCanvas;
 }
 
@@ -135,7 +137,6 @@ void ldGfxDestroyCanvas(canvas_t* pCanvas)
 {
     assert(pCanvas != NULL);
     ldPageFree(pCanvas);
-    memset(pCanvas, 0, sizeof(canvas_t));
 }
 
 void ldGfxCanvasBind()
@@ -155,6 +156,11 @@ void ldGfxCanvasBind()
     glBindVertexArray(pCurrentCanvas->vao);
 #endif
     glEnable(GL_BLEND);
+}
+
+void ldGfxCanvasSetMaskColor(float32_t r, float32_t g, float32_t b)
+{
+    glUniform3f(glGetUniformLocation(pCurrentCanvas->program, "uMaskColor"), r, g, b);
 }
 
 void ldGfxCanvasFlush()
@@ -179,7 +185,8 @@ void ldGfxCanvasFlush()
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, batch.texture);
         }
-        glDrawArrays(GL_TRIANGLES, batch.start, batch.count);
+        if (batch.count > 0)
+            glDrawArrays(GL_TRIANGLES, batch.start, batch.count);
     }
 
     pCurrentCanvas->texture = lastTexture;
