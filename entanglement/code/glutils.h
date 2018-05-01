@@ -120,7 +120,8 @@ LD_FORCEINLINE int32_t ldGfxCreateTexture2DNearestClamp(int32_t width, int32_t h
 
 LD_FORCEINLINE void ldGfxDiscardTexture(int32_t texture)
 {
-    glDeleteTextures(1, &texture);
+    GLuint tex = texture;
+    glDeleteTextures(1, &tex);
 }
 
 static LD_FORCEINLINE void ldGfxSetBlendMode(enum blend_mode blendMode)

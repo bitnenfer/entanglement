@@ -4,6 +4,7 @@
 #include "types.h"
 #include "config.h"
 #include "platform.h"
+#include "math.h"
 
 static void ldGameInit(int argc, const char* p_argv[]);
 static void ldGameRun();
@@ -19,6 +20,7 @@ static int32_t ldIsMouseDown(enum mouse_button button);
 static int32_t ldIsMouseHit(enum mouse_button button);
 static float32_t ldMouseX();
 static float32_t ldMouseY();
+static vec2_t ldMousePos();
 static float32_t ldMouseWheel();
 static void ldGameQuit();
 

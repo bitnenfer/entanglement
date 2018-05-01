@@ -9,7 +9,7 @@
 #define STBI_FREE(x) free(x)
 #define STBI_REALLOC(x, y) realloc(x, y)
 
-#include "stb_image.h"
+#include "thirdparty/stb_image.h"
     
 #include "loader.h"
 #include "utils.h"

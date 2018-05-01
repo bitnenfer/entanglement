@@ -34,13 +34,13 @@ static const char* kCanvasFS = ""
 "precision mediump float;\n"
 #endif
 "uniform sampler2D uMainSampler;\n"
-"uniform vec3 uMaskColor;\n"
 "varying vec2 outTexCoord;\n"
 "varying vec4 outTint;\n"
 "varying float outType;\n"
 "void main() {\n"
-"   if (outType == 0.0) gl_FragColor = vec4(uMaskColor.rgb, texture2D(uMainSampler, outTexCoord).a) * outTint.bgra;\n"
+"   if (outType == 0.0) gl_FragColor = texture2D(uMainSampler, outTexCoord).a * outTint.bgra;\n"
 "   else gl_FragColor = outTint.bgra;\n"
+//"   gl_FragColor = outTint.bgra;\n"
 "}\n"
 ;
 
@@ -63,6 +63,7 @@ struct canvas
     canvas_batch_t batches[MAX_BATCHES];
     mat2d_t matrices[MAX_MATRICES];
     mat2d_t matrix;
+    enum draw_mode tempDrawMode;
     int32_t vertexCount;
     int32_t batchCount;
     int32_t matrixIndex;
@@ -72,6 +73,7 @@ struct canvas
     float32_t height;
 
     /* GL */
+    GLenum drawMode;
     GLuint program;
     GLuint vbo;
     GLuint vao;
@@ -102,7 +104,6 @@ canvas_t* ldGfxCreateCanvas(float32_t width, float32_t height)
     byte_t emptyColor[] = { 0xff,0xff,0xff,0xff };
     gEmptyTexture = ldGfxCreateTexture2D(1, 1, GL_NEAREST, GL_CLAMP_TO_EDGE, emptyColor);
 
-    glBindTexture(GL_TEXTURE_2D, gEmptyTexture);
 
 #if defined(LD_PLATFORM_WINDOWS)
     GLuint vao;
@@ -128,7 +129,9 @@ canvas_t* ldGfxCreateCanvas(float32_t width, float32_t height)
     pCanvas->color = 0xFFFFFF;
     pCanvas->width = width;
     pCanvas->height = height;
+    pCanvas->drawMode = GL_TRIANGLES;
 
+    glBindTexture(GL_TEXTURE_2D, gEmptyTexture);
 
     return pCanvas;
 }
@@ -158,11 +161,6 @@ void ldGfxCanvasBind()
     glEnable(GL_BLEND);
 }
 
-void ldGfxCanvasSetMaskColor(float32_t r, float32_t g, float32_t b)
-{
-    glUniform3f(glGetUniformLocation(pCurrentCanvas->program, "uMaskColor"), r, g, b);
-}
-
 void ldGfxCanvasFlush()
 {
 #if defined(LD_CONFIG_DEBUG)
@@ -176,6 +174,7 @@ void ldGfxCanvasFlush()
     int32_t batchCount = pCurrentCanvas->batchCount;
     int32_t lastTexture = pCurrentCanvas->texture;
     canvas_batch_t* pBatches = pCurrentCanvas->batches;
+    GLenum drawMode = pCurrentCanvas->drawMode;
 
     for (int32_t index = 0; index < batchCount; ++index)
     {
@@ -186,7 +185,7 @@ void ldGfxCanvasFlush()
             glBindTexture(GL_TEXTURE_2D, batch.texture);
         }
         if (batch.count > 0)
-            glDrawArrays(GL_TRIANGLES, batch.start, batch.count);
+            glDrawArrays(drawMode, batch.start, batch.count);
     }
 
     pCurrentCanvas->texture = lastTexture;
@@ -195,4 +194,35 @@ void ldGfxCanvasFlush()
     pCurrentCanvas->batches[0].texture = 0;
     pCurrentCanvas->batches[0].start = 0;
     pCurrentCanvas->batches[0].count = 0;
+}
+
+void ldGfxCanvasSetDrawMode(enum draw_mode drawMode)
+{
+#if defined(LD_CONFIG_DEBUG)
+    assert(pCurrentCanvas != NULL);
+#endif
+    if (pCurrentCanvas->tempDrawMode != drawMode)
+    {
+        ldGfxCanvasFlush();
+        pCurrentCanvas->tempDrawMode = drawMode;
+
+        switch (drawMode)
+        {
+        case DRAW_TRIANGLES:
+            pCurrentCanvas->drawMode = GL_TRIANGLES;
+            break;
+        case DRAW_LINE_LOOP:
+            pCurrentCanvas->drawMode = GL_LINE_LOOP;
+            break;
+        case DRAW_LINE_STRIP:
+            pCurrentCanvas->drawMode = GL_LINE_STRIP;
+            break;
+        case DRAW_POINTS:
+            pCurrentCanvas->drawMode = GL_POINTS;
+            break;
+        default:
+            pCurrentCanvas->drawMode = GL_TRIANGLES;
+            break;
+        }
+    }
 }

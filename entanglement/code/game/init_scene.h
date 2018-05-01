@@ -4,11 +4,11 @@
 #include "../game.h"
 #include "../types.h"
 
-extern void TamagotchiSceneCreate();
-extern void TamagotchiSceneUpdate(float32_t delta);
-extern void TamagotchiSceneRender();
-extern void TamagotchiSceneDestroy();
+extern void InitSceneCreate();
+extern void InitSceneUpdate(float32_t delta);
+extern void InitSceneRender();
+extern void InitSceneDestroy();
 
-state_t gInitScene = { &TamagotchiSceneCreate, &TamagotchiSceneUpdate, &TamagotchiSceneRender, &TamagotchiSceneDestroy };
+state_t gInitScene = { &InitSceneCreate, &InitSceneUpdate, &InitSceneRender, &InitSceneDestroy };
 
 #endif // !_INIT_SCENE_H_

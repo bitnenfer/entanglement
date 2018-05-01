@@ -19,6 +19,13 @@ struct image
     float32_t fwidth;
     float32_t fheight;
 };
+enum draw_mode
+{
+    DRAW_TRIANGLES,
+    DRAW_LINE_LOOP,
+    DRAW_LINE_STRIP,
+    DRAW_POINTS
+};
 
 struct canvas;
 
@@ -30,7 +37,6 @@ canvas_t* ldGfxCreateCanvas(float32_t width, float32_t height);
 void ldGfxDestroyCanvas(canvas_t* pCanvas);
 void ldGfxSetCanvas(canvas_t* pCanvas);
 void ldGfxCanvasBind();
-void ldGfxCanvasSetMaskColor(float32_t r, float32_t g, float32_t b);
 void ldGfxCanvasPushMatrix();
 void ldGfxCanvasPopMatrix();
 void ldGfxCanvasIdentity();
@@ -44,6 +50,9 @@ void ldGfxCanvasFillRect(float32_t x, float32_t y, float32_t width, float32_t he
 void ldGfxCanvasDrawImage(image_t* pImage, float32_t x, float32_t y);
 void ldGfxCanvasDrawImageFrame(image_t* pImage, float32_t x, float32_t y, float32_t fx, float32_t fy, float32_t fw, float32_t fh);
 void ldGfxCanvasSetBlendMode(enum blend_mode blendMode);
+void ldGfxCanvasSetDrawMode(enum draw_mode drawMode);
+void ldGfxCanvasAddFillPoint(float32_t x, float32_t y);
+void ldGfxCanvasAddTexPoint(float32_t x, float32_t y, float32_t u, float32_t v);
 uint32_t ldGfxCanvasGetColor();
 float32_t ldGfxCanvasGetAlpha();
 float32_t ldGfxCanvasGetWidth();

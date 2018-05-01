@@ -34,7 +34,7 @@ __declspec(dllexport) unsigned long AmdPowerXpressRequestHighPerformance = 0x000
 /* Windows Platform                    */
 /* =================================== */
 
-#include "glad/glad.c"
+#include "thirdparty/glad/glad.c"
 #include "boot_win32.c"
 #include "alloc_win32.c"
 #include "canvas_gl.c"

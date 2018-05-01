@@ -5,6 +5,17 @@
 #include "platform.h"
 #include <math.h>
 
+const float32_t LD_PI = 3.141592653589793f;
+
+float32_t ldRadToDeg(float32_t rad)
+{
+    return rad * 180.0f / LD_PI;
+}
+float32_t ldDegToRad(float32_t deg)
+{
+    return deg * LD_PI / 180.0f;
+}
+
 struct quat
 {
     float32_t x, y, z, w;

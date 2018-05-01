@@ -31,8 +31,8 @@ uint32_t kKeyCodeMap[(int32_t)KEY_LENGTH] = {
 };
 int32_t gKeyDown[(int32_t)KEY_LENGTH] = { 0 };
 int32_t gKeyHit[(int32_t)KEY_LENGTH] = { 0 };
-int32_t gMouseX = 0;
-int32_t gMouseY = 0;
+float32_t gMouseX = 0.0f;
+float32_t gMouseY = 0.0f;
 float32_t gMouseWheel = 0.0f;
 int32_t gMouseButtonDown[3] = { 0 };
 int32_t gMouseButtonHit[3] = { 0 };
@@ -280,21 +280,21 @@ void ldPollEvents()
         }
         case WM_MOUSEMOVE:
         {
-            gMouseX = GET_X_LPARAM(msg.lParam);
-            gMouseY = GET_Y_LPARAM(msg.lParam);
+            gMouseX = (float32_t)GET_X_LPARAM(msg.lParam);
+            gMouseY = (float32_t)GET_Y_LPARAM(msg.lParam);
             break;
         }
         case WM_MOUSEWHEEL:
         {
-            gMouseX = GET_X_LPARAM(msg.lParam);
-            gMouseY = GET_Y_LPARAM(msg.lParam);
+            gMouseX = (float32_t)GET_X_LPARAM(msg.lParam);
+            gMouseY = (float32_t)GET_Y_LPARAM(msg.lParam);
             gMouseWheel = GET_WHEEL_DELTA_WPARAM(msg.wParam) > 0 ? +1.0f : -1.0f;
             break;
         }
         case WM_LBUTTONDOWN:
         {
-            gMouseX = GET_X_LPARAM(msg.lParam);
-            gMouseY = GET_Y_LPARAM(msg.lParam);
+            gMouseX = (float32_t)GET_X_LPARAM(msg.lParam);
+            gMouseY = (float32_t)GET_Y_LPARAM(msg.lParam);
             if (!gMouseButtonDown[MOUSE_BUTTON_LEFT])
             {
                 gMouseButtonHit[MOUSE_BUTTON_LEFT] = 1;
@@ -304,8 +304,8 @@ void ldPollEvents()
         }
         case WM_RBUTTONDOWN:
         {
-            gMouseX = GET_X_LPARAM(msg.lParam);
-            gMouseY = GET_Y_LPARAM(msg.lParam);
+            gMouseX = (float32_t)GET_X_LPARAM(msg.lParam);
+            gMouseY = (float32_t)GET_Y_LPARAM(msg.lParam);
             if (!gMouseButtonDown[MOUSE_BUTTON_RIGHT])
             {
                 gMouseButtonHit[MOUSE_BUTTON_RIGHT] = 1;
@@ -315,8 +315,8 @@ void ldPollEvents()
         }
         case WM_MBUTTONDOWN:
         {
-            gMouseX = GET_X_LPARAM(msg.lParam);
-            gMouseY = GET_Y_LPARAM(msg.lParam);
+            gMouseX = (float32_t)GET_X_LPARAM(msg.lParam);
+            gMouseY = (float32_t)GET_Y_LPARAM(msg.lParam);
             if (!gMouseButtonDown[MOUSE_BUTTON_MIDDLE])
             {
                 gMouseButtonHit[MOUSE_BUTTON_MIDDLE] = 1;
@@ -326,24 +326,24 @@ void ldPollEvents()
         }
         case WM_LBUTTONUP:
         {
-            gMouseX = GET_X_LPARAM(msg.lParam);
-            gMouseY = GET_Y_LPARAM(msg.lParam);
+            gMouseX = (float32_t)GET_X_LPARAM(msg.lParam);
+            gMouseY = (float32_t)GET_Y_LPARAM(msg.lParam);
             gMouseButtonDown[MOUSE_BUTTON_LEFT] = 0;
             gMouseButtonHit[MOUSE_BUTTON_LEFT] = 0;
             break;
         }
         case WM_RBUTTONUP:
         {
-            gMouseX = GET_X_LPARAM(msg.lParam);
-            gMouseY = GET_Y_LPARAM(msg.lParam);
+            gMouseX = (float32_t)GET_X_LPARAM(msg.lParam);
+            gMouseY = (float32_t)GET_Y_LPARAM(msg.lParam);
             gMouseButtonDown[MOUSE_BUTTON_RIGHT] = 0;
             gMouseButtonHit[MOUSE_BUTTON_RIGHT] = 0;
             break;
         }
         case WM_MBUTTONUP:
         {
-            gMouseX = GET_X_LPARAM(msg.lParam);
-            gMouseY = GET_Y_LPARAM(msg.lParam);
+            gMouseX = (float32_t)GET_X_LPARAM(msg.lParam);
+            gMouseY = (float32_t)GET_Y_LPARAM(msg.lParam);
             gMouseButtonDown[MOUSE_BUTTON_MIDDLE] = 0;
             gMouseButtonHit[MOUSE_BUTTON_MIDDLE] = 0;
             break;
@@ -404,11 +404,16 @@ int32_t ldIsMouseHit(enum mouse_button button)
 }
 float32_t ldMouseX()
 {
-    return (float32_t)gMouseX;
+    return gMouseX;
 }
 float32_t ldMouseY()
 {
-    return (float32_t)gMouseY;
+    return gMouseY;
+}
+vec2_t ldMousePos()
+{
+    vec2_t v = { gMouseX, gMouseY };
+    return v;
 }
 float32_t ldMouseWheel()
 {

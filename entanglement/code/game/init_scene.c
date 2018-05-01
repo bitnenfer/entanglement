@@ -1,245 +1,155 @@
+#define TINYC2_IMPLEMENTATION
+
+#include "../thirdparty/tinyc2.h"
 #include "init_scene.h"
 
+c2AABB b0, b1;
+c2Circle c0;
 
-enum tamagotchi_anim_state
+void StrokeAABB(c2AABB AABB)
 {
-    TAM_IDLE,
-    TAM_WALK_LEFT,
-    TAM_WALK_RIGHT
-};
+    float32_t x = AABB.min.x;
+    float32_t y = AABB.min.y;
+    float32_t xw = AABB.max.x;
+    float32_t yh = AABB.max.y;
 
-typedef struct tamagotchi_char
-{
-    vec2_t pos;
-    float32_t timer;
-    float32_t tileX;
-    float32_t flipX;
-    float32_t targetX;
-    int32_t frame;
-    enum tamagotchi_anim_state state;
-    int32_t head;
-    int32_t eye;
-    int32_t mouth;
-
-} tamagotchi_char_t;
-
-typedef struct tamagotchi_state
-{
-    float32_t age;
-    float32_t hunger;
-    float32_t health;
-    float32_t happy;
-
-} tamagotchi_state_t;
-
-tamagotchi_char_t mainChar;
-tamagotchi_state_t mainState;
-
-const float32_t animDelays[] = {
-    15.0f,
-    25.0f,
-    40.0f,
-    100.0f
-};
-
-float32_t currentAnimDelay = 15.0f;
-
-void InitTamagotchiChar()
-{
-    tamagotchi_char_t tamaChar = {
-        .pos = { LD_CONFIG_GAME_WIDTH / 2, LD_CONFIG_GAME_HEIGHT / 2 },
-        .timer = 0.0f,
-        .tileX = 0.0f,
-        .flipX = 1.0f,
-        .frame = 0,
-        .state = TAM_IDLE,
-        .head = 0,
-        .eye = 0,
-        .mouth = 0,
-        .targetX = LD_CONFIG_GAME_WIDTH / 2 + 10
-    };
-    tamagotchi_state_t tamaState = {
-        .age = 0.0f,
-        .hunger = 0.0f,
-        .health = 0.0f,
-        .happy = 0.0f
-    };
-
-    mainChar = tamaChar;
-    mainState = tamaState;
-
-    mainChar.head = rand() % 4;
-    mainChar.eye = rand() % 4;
-    mainChar.mouth = rand() % 4;
-
-}
-
-void UpdateTamagotchiChar(float32_t delta)
-{
-    mainChar.timer += delta;
-
-    /* Handle Input */
-    {
-        if (ldIsKeyHit(KEY_LEFT))
-        {
-            mainChar.state = TAM_WALK_LEFT;
-        }
-        else if (ldIsKeyHit(KEY_RIGHT))
-        {
-            mainChar.state = TAM_WALK_RIGHT;
-        }
-        else if (ldIsKeyHit(KEY_DOWN))
-        {
-            mainChar.state = TAM_IDLE;
-        }
-    }
-
-    /* Handle States */
-    {
-        switch (mainChar.state)
-        {
-        case TAM_IDLE:
-        {
-            mainChar.frame = 0;
-            mainChar.tileX = 0.0f;
-            if (mainChar.timer > currentAnimDelay)
-            {
-                #define GET_RAND ((rand() % 100) * 2 - 100)
-
-                currentAnimDelay = animDelays[rand() % 4];
-                
-                if (GET_RAND < 0)
-                {
-                    if (GET_RAND < 0)
-                    {
-                        mainChar.targetX = LD_CONFIG_GAME_WIDTH / 2 - 20;
-                        mainChar.state = TAM_WALK_LEFT;
-                    }
-                    else
-                    {
-                        mainChar.targetX = LD_CONFIG_GAME_WIDTH / 2 + 20;
-                        mainChar.state = TAM_WALK_RIGHT;
-                    }
-                }
-                else
-                {
-                    if (GET_RAND < 0)
-                    {
-                        mainChar.targetX = LD_CONFIG_GAME_WIDTH / 2;
-
-                        if (mainChar.targetX < mainChar.pos.x)
-                        {
-                            mainChar.state = TAM_WALK_LEFT;
-                        }
-                        else
-                        {
-                            mainChar.state = TAM_WALK_RIGHT;
-                        }
-                    }
-                }
-
-                #undef GET_RAND
-                mainChar.timer = 0;
-            }
-            break;
-        }
-        case TAM_WALK_LEFT:
-        {
-            if (mainChar.timer > 1.0f)
-            {
-                mainChar.frame = 1 + ((mainChar.frame + 1) % 5);
-                mainChar.tileX = (float32_t)(mainChar.frame * 24);
-                mainChar.timer = 0;
-            }
-            mainChar.flipX = 1.0f;
-            if (mainChar.pos.x > mainChar.targetX)
-            {
-                mainChar.pos.x -= 1.0f;
-            }
-            else
-            {
-                mainChar.state = TAM_IDLE;
-            }
-            break;
-        }
-        case TAM_WALK_RIGHT:
-        {
-            if (mainChar.timer > 1.0f)
-            {
-                mainChar.frame = 1 + ((mainChar.frame + 1) % 5);
-                mainChar.tileX = (float32_t)(mainChar.frame * 24);
-                mainChar.timer = 0;
-            }
-            mainChar.flipX = -1.0f;
-            if (mainChar.pos.x < mainChar.targetX)
-            {
-                mainChar.pos.x += 1.0f;
-            }
-            else
-            {
-                mainChar.state = TAM_IDLE;
-            }
-            break;
-        }
-        }
-    }
-}
-void RenderTamagotchiChar()
-{
-    ldGfxCanvasPushMatrix();
-    {
-        ldGfxCanvasTranslate(mainChar.pos.x, mainChar.pos.y);
-        ldGfxCanvasScale(mainChar.flipX, 1.0f);
-        ldGfxCanvasDrawImageFrame(&tamaBodyImage, -12, -32, mainChar.tileX, 0, 24, 32);
-        ldGfxCanvasDrawImage(&tamaHeadParts[mainChar.head], -12, -32);
-        ldGfxCanvasDrawImage(&tamaEyeParts[mainChar.eye], -12, -32);
-        ldGfxCanvasDrawImage(&tamaMouthParts[mainChar.mouth], -12, -32);
-    }
-    ldGfxCanvasPopMatrix();
-}
-
-void TamagotchiSceneCreate()
-{
-    glClearColor(227.0f /255.0f, 244.0f /255.0f, 212.0f /255.0f, 1);
-
-    InitTamagotchiChar();
-    ldGfxCanvasSetMaskColor(
-        115.0f / 255.0f,
-        140.0f / 255.0f,
-        95.0f / 255.0f
-    );
-}
-void TamagotchiSceneUpdate(float32_t delta)
-{
-    if (ldIsKeyHit(KEY_SPACE))
-    {
-        ldGameSwapState(&gInitScene);
-    }
-    UpdateTamagotchiChar(delta);
-}
-void TamagotchiSceneRender()
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-    ldGfxCanvasPushMatrix();
-    {
-        ldGfxCanvasScale(LD_CONFIG_SCALE, LD_CONFIG_SCALE);
-        ldGfxCanvasPushMatrix();
-        {
-            ldGfxCanvasSetAlpha(0.1f);
-            ldGfxCanvasTranslate(2, 2);
-            ldGfxCanvasDrawImage(&bgImage, 0, 0);
-            RenderTamagotchiChar();
-        }
-        ldGfxCanvasPopMatrix();
-
-        ldGfxCanvasSetAlpha(1.0f);
-        ldGfxCanvasDrawImage(&bgImage, 0, 0);
-        RenderTamagotchiChar();
-    }
-    ldGfxCanvasPopMatrix();
+    ldGfxCanvasSetDrawMode(DRAW_LINE_LOOP);
+    ldGfxCanvasAddFillPoint(x, y);
+    ldGfxCanvasAddFillPoint(xw, y);
+    ldGfxCanvasAddFillPoint(xw, yh);
+    ldGfxCanvasAddFillPoint(x, yh);
     ldGfxCanvasFlush();
 }
-void TamagotchiSceneDestroy()
-{
 
+void StrokeCircle(c2Circle circle)
+{
+    ldGfxCanvasSetDrawMode(DRAW_LINE_LOOP);
+    for (int32_t i = 0; i < 360; ++i)
+    {
+        float32_t r = ldDegToRad((float32_t)i);
+        float32_t x = cosf(r) * circle.r;
+        float32_t y = sinf(r) * circle.r;
+        ldGfxCanvasAddFillPoint(circle.p.x + x, circle.p.y + y);
+    }
+    ldGfxCanvasFlush();
+}
+
+void InitSceneCreate()
+{
+    b0.min.x = 100.0f;
+    b0.min.y = 100.0f;
+    b0.max.x = b0.min.x + 200.0f;
+    b0.max.y = b0.min.y + 100.0f;
+
+    b1.min.x = 0.0f;
+    b1.min.y = 0.0f;
+    b1.max.x = b1.min.x + 50.0f;
+    b1.max.y = b1.min.y + 50.0f;
+
+    c0.p.x = 300.0f;
+    c0.p.y = 300.0f;
+    c0.r = 60.0f;
+
+    glClearColor(0, 0, 0, 1);
+    glLineWidth(2.0f);
+}
+void InitSceneUpdate(float32_t delta)
+{
+    b1.min.x = ldMouseX();
+    b1.min.y = ldMouseY();
+    b1.max.x = b1.min.x + 50.0f;
+    b1.max.y = b1.min.y + 50.0f;
+
+    {
+        c2Manifold colInfo = { 0 };
+        c2AABBtoAABBManifold(b0, b1, &colInfo);
+
+        if (colInfo.count > 0)
+        {
+            float32_t px = colInfo.depths[0] * colInfo.n.x;
+            float32_t py = colInfo.depths[0] * colInfo.n.y;
+
+            b0.min.x -= px;
+            b0.min.y -= py;
+            b0.max.x -= px;
+            b0.max.y -= py;
+        }
+    }
+
+    {
+        c2Manifold colInfo = { 0 };
+        
+        c2CircletoAABBManifold(c0, b1, &colInfo);
+
+        if (colInfo.count > 0)
+        {
+            float32_t px = colInfo.depths[0] * colInfo.n.x;
+            float32_t py = colInfo.depths[0] * colInfo.n.y;
+
+            c0.p.x -= px;
+            c0.p.y -= py;
+        }
+    }
+
+    {
+        c2Manifold colInfo = { 0 };
+
+        c2CircletoAABBManifold(c0, b0, &colInfo);
+
+        if (colInfo.count > 0)
+        {
+            float32_t px = colInfo.depths[0] * colInfo.n.x;
+            float32_t py = colInfo.depths[0] * colInfo.n.y;
+
+            b0.min.x += px;
+            b0.min.y += py;
+            b0.max.x += px;
+            b0.max.y += py;
+
+            c0.p.x -= px;
+            c0.p.y -= py;
+        }
+    }
+
+    {
+        c2Manifold colInfo = { 0 };
+
+        c2CircletoAABBManifold(c0, b1, &colInfo);
+
+        if (colInfo.count > 0)
+        {
+            float32_t px = colInfo.depths[0] * colInfo.n.x;
+            float32_t py = colInfo.depths[0] * colInfo.n.y;
+
+            c0.p.x -= px;
+            c0.p.y -= py;
+        }
+    }
+
+    {
+        c2Manifold colInfo = { 0 };
+        c2AABBtoAABBManifold(b0, b1, &colInfo);
+
+        if (colInfo.count > 0)
+        {
+            float32_t px = colInfo.depths[0] * colInfo.n.x;
+            float32_t py = colInfo.depths[0] * colInfo.n.y;
+
+            b0.min.x -= px;
+            b0.min.y -= py;
+            b0.max.x -= px;
+            b0.max.y -= py;
+        }
+    }
+}
+void InitSceneRender()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    StrokeAABB(b0);
+    StrokeAABB(b1);
+    StrokeCircle(c0);
+    ldGfxCanvasFlush();
+}
+void InitSceneDestroy()
+{
 }

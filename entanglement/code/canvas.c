@@ -251,6 +251,56 @@ void ldGfxCanvasDrawImageFrame(image_t* pImage, float32_t x, float32_t y, float3
     pCurrentCanvas->vertexCount += 6;
 }
 
+void ldGfxCanvasAddFillPoint(float32_t x, float32_t y)
+{
+    LD_CANVAS_CHECK;
+    if (pCurrentCanvas->vertexCount > MAX_VERTICES)
+    {
+        ldGfxCanvasFlush();
+    }
+    canvas_vertex_t* pVertices = &pCurrentCanvas->vertices[pCurrentCanvas->vertexCount];
+    vec2_t p0 = { x, y };
+    vec2_t t0;
+    mat2d_t matrix = pCurrentCanvas->matrix;
+    uint8_t ua = ((uint32_t)(pCurrentCanvas->alpha * 255.0f) | 0) & 0xFF;
+    uint32_t tint = ((ua << 24) | pCurrentCanvas->color) >> 0;
+
+    ldMat2DVec2Mul(&t0, &matrix, &p0);
+
+    pVertices[0].position = t0;
+    pVertices[0].tint = tint;
+    pVertices[0].type = 1.0f;
+
+    pCurrentCanvas->batches[pCurrentCanvas->batchCount - 1].count += 1;
+    pCurrentCanvas->vertexCount += 1;
+}
+
+void ldGfxCanvasAddTexPoint(float32_t x, float32_t y, float32_t u, float32_t v)
+{
+    LD_CANVAS_CHECK;
+    if (pCurrentCanvas->vertexCount > MAX_VERTICES)
+    {
+        ldGfxCanvasFlush();
+    }
+    canvas_vertex_t* pVertices = &pCurrentCanvas->vertices[pCurrentCanvas->vertexCount];
+    vec2_t p0 = { x, y };
+    vec2_t uv = { u, v };
+    vec2_t t0;
+    mat2d_t matrix = pCurrentCanvas->matrix;
+    uint8_t ua = ((uint32_t)(pCurrentCanvas->alpha * 255.0f) | 0) & 0xFF;
+    uint32_t tint = ((ua << 24) | pCurrentCanvas->color) >> 0;
+
+    ldMat2DVec2Mul(&t0, &matrix, &p0);
+
+    pVertices[0].position = t0;
+    pVertices[0].tint = tint;
+    pVertices[0].texcoord = uv;
+    pVertices[0].type = 0.0f;
+
+    pCurrentCanvas->batches[pCurrentCanvas->batchCount - 1].count += 1;
+    pCurrentCanvas->vertexCount += 1;
+}
+
 void ldGfxCanvasSetBlendMode(enum blend_mode blendMode)
 {
     ldGfxCanvasFlush();

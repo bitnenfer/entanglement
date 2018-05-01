@@ -9,7 +9,7 @@
 #if defined(LD_PLATFORM_WINDOWS)
 #include "config.h"
 #include "types.h"
-#include "glad/glad.h"
+#include "thirdparty/glad/glad.h"
 
 static const char kShaderHeader[] = "#version 120\n";
 static const size_t kShaderHeaderSize = sizeof(kShaderHeader) - 1;
