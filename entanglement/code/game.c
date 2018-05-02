@@ -38,20 +38,7 @@ void ldGameStart()
     ldGfxCanvasSetBlendMode(BLEND_NORMAL_NPM);
     ldGameSwapState(&gInitScene);
 
-    ldLoadImage("data/assets/textures/spritesheet.png", &tamaBodyImage);
-    ldLoadImage("data/assets/textures/head/0.png", &tamaHeadParts[0]);
-    ldLoadImage("data/assets/textures/head/1.png", &tamaHeadParts[1]);
-    ldLoadImage("data/assets/textures/head/2.png", &tamaHeadParts[2]);
-    ldLoadImage("data/assets/textures/head/3.png", &tamaHeadParts[3]);
-    ldLoadImage("data/assets/textures/eye/0.png", &tamaEyeParts[0]);
-    ldLoadImage("data/assets/textures/eye/1.png", &tamaEyeParts[1]);
-    ldLoadImage("data/assets/textures/eye/2.png", &tamaEyeParts[2]);
-    ldLoadImage("data/assets/textures/eye/3.png", &tamaEyeParts[3]);
-    ldLoadImage("data/assets/textures/mouth/0.png", &tamaMouthParts[0]);
-    ldLoadImage("data/assets/textures/mouth/1.png", &tamaMouthParts[1]);
-    ldLoadImage("data/assets/textures/mouth/2.png", &tamaMouthParts[2]);
-    ldLoadImage("data/assets/textures/mouth/3.png", &tamaMouthParts[3]);
-    ldLoadImage("data/assets/textures/bg.png", &bgImage);
+    // Load assets here
 
 }
 

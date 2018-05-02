@@ -6,34 +6,6 @@
 c2AABB b0, b1;
 c2Circle c0;
 
-void StrokeAABB(c2AABB AABB)
-{
-    float32_t x = AABB.min.x;
-    float32_t y = AABB.min.y;
-    float32_t xw = AABB.max.x;
-    float32_t yh = AABB.max.y;
-
-    ldGfxCanvasSetDrawMode(DRAW_LINE_LOOP);
-    ldGfxCanvasAddFillPoint(x, y);
-    ldGfxCanvasAddFillPoint(xw, y);
-    ldGfxCanvasAddFillPoint(xw, yh);
-    ldGfxCanvasAddFillPoint(x, yh);
-    ldGfxCanvasFlush();
-}
-
-void StrokeCircle(c2Circle circle)
-{
-    ldGfxCanvasSetDrawMode(DRAW_LINE_LOOP);
-    for (int32_t i = 0; i < 360; ++i)
-    {
-        float32_t r = ldDegToRad((float32_t)i);
-        float32_t x = cosf(r) * circle.r;
-        float32_t y = sinf(r) * circle.r;
-        ldGfxCanvasAddFillPoint(circle.p.x + x, circle.p.y + y);
-    }
-    ldGfxCanvasFlush();
-}
-
 void InitSceneCreate()
 {
     b0.min.x = 100.0f;
@@ -145,9 +117,12 @@ void InitSceneUpdate(float32_t delta)
 void InitSceneRender()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    StrokeAABB(b0);
-    StrokeAABB(b1);
-    StrokeCircle(c0);
+    ldGfxCanvasSetColor(0xff0000);
+    ldGfxCanvasStrokeRect(b0.min.x, b0.min.y, b0.max.x - b0.min.x, b0.max.y - b0.min.y);
+    ldGfxCanvasSetColor(0x00ff00);
+    ldGfxCanvasStrokeRect(b1.min.x, b1.min.y, b1.max.x - b1.min.x, b1.max.y - b1.min.y);
+    ldGfxCanvasSetColor(0x0000ff);
+    ldGfxCanvasStrokeCircle(c0.p.x, c0.p.y, c0.r);
     ldGfxCanvasFlush();
 }
 void InitSceneDestroy()

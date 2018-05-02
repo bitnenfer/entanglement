@@ -301,6 +301,31 @@ void ldGfxCanvasAddTexPoint(float32_t x, float32_t y, float32_t u, float32_t v)
     pCurrentCanvas->vertexCount += 1;
 }
 
+void ldGfxCanvasStrokeCircle(float32_t x, float32_t y, float32_t radius)
+{
+    ldGfxCanvasSetDrawMode(DRAW_LINE_LOOP);
+    for (int32_t i = 0; i < 360; ++i)
+    {
+        float32_t r = ldDegToRad((float32_t)i);
+        float32_t cx = cosf(r) * radius;
+        float32_t cy = sinf(r) * radius;
+        ldGfxCanvasAddFillPoint(x + cx, y + cy);
+    }
+    ldGfxCanvasFlush();
+}
+void ldGfxCanvasStrokeRect(float32_t x, float32_t y, float32_t width, float32_t height)
+{
+    float32_t xw = x + width;
+    float32_t yh = y + height;
+
+    ldGfxCanvasSetDrawMode(DRAW_LINE_LOOP);
+    ldGfxCanvasAddFillPoint(x, y);
+    ldGfxCanvasAddFillPoint(xw, y);
+    ldGfxCanvasAddFillPoint(xw, yh);
+    ldGfxCanvasAddFillPoint(x, yh);
+    ldGfxCanvasFlush();
+}
+
 void ldGfxCanvasSetBlendMode(enum blend_mode blendMode)
 {
     ldGfxCanvasFlush();

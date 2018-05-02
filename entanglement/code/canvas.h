@@ -53,6 +53,8 @@ void ldGfxCanvasSetBlendMode(enum blend_mode blendMode);
 void ldGfxCanvasSetDrawMode(enum draw_mode drawMode);
 void ldGfxCanvasAddFillPoint(float32_t x, float32_t y);
 void ldGfxCanvasAddTexPoint(float32_t x, float32_t y, float32_t u, float32_t v);
+void ldGfxCanvasStrokeCircle(float32_t x, float32_t y, float32_t radius);
+void ldGfxCanvasStrokeRect(float32_t x, float32_t y, float32_t width, float32_t height);
 uint32_t ldGfxCanvasGetColor();
 float32_t ldGfxCanvasGetAlpha();
 float32_t ldGfxCanvasGetWidth();
