@@ -1,6 +1,4 @@
-#define TINYC2_IMPLEMENTATION
-
-#include "../thirdparty/tinyc2.h"
+#include "body.h"
 #include "init_scene.h"
 
 c2AABB b0, b1;

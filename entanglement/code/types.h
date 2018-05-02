@@ -13,4 +13,7 @@ typedef int8_t bool8_t;
 typedef intptr_t opaque_handle_t;
 typedef uint8_t byte_t;
 
+#define LD_TRUE 1
+#define LD_FALSE 0
+
 #endif // !_TYPES_H_

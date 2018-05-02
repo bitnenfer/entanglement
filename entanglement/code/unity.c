@@ -16,7 +16,8 @@
 #include "alloc.c"
 #include "game.c"
 
-/* Passes */
+/* Game */
+#include "game/body.c"
 #include "game/init_scene.c"
 
 /* ======================== */

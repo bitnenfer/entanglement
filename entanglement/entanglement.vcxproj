@@ -153,6 +153,7 @@
     <ClInclude Include="code\canvas.h" />
     <ClInclude Include="code\config.h" />
     <ClInclude Include="code\game.h" />
+    <ClInclude Include="code\game\body.h" />
     <ClInclude Include="code\game\init_scene.h" />
     <ClInclude Include="code\thirdparty\glad\glad.h" />
     <ClInclude Include="code\glutils.h" />
