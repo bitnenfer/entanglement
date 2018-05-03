@@ -50,8 +50,8 @@ void InitSceneCreate()
     c0.p.y = 300.0f;
     c0.r = 60.0f;
 
-    glClearColor(0, 0, 0, 1);
-    glLineWidth(2.0f);
+    //glClearColor(0, 0, 0, 1);
+    //glLineWidth(2.0f);
 }
 void InitSceneUpdate(float32_t delta)
 {
@@ -144,7 +144,7 @@ void InitSceneUpdate(float32_t delta)
 }
 void InitSceneRender()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    //glClear(GL_COLOR_BUFFER_BIT);
     StrokeAABB(b0);
     StrokeAABB(b1);
     StrokeCircle(c0);

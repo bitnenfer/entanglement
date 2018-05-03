@@ -3,7 +3,7 @@
 #include "alloc.h"
 #include "config.h"
 #include "platform.h"
-#include "glutils.h"
+//#include "glutils.h"
 #include "boot.h"
 
 #include "game/init_scene.h"

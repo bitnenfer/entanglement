@@ -38,7 +38,6 @@ __declspec(dllexport) unsigned long AmdPowerXpressRequestHighPerformance = 0x000
 #include "boot_win32.c"
 #include "alloc_win32.c"
 #include "canvas_gl.c"
-#include "canvas.c"
 
 /* =================================== */
 #elif defined(LD_PLATFORM_WEB)
@@ -50,9 +49,27 @@ __declspec(dllexport) unsigned long AmdPowerXpressRequestHighPerformance = 0x000
 #include "boot_emscripten.c"
 #include "alloc_emscripten.c"
 #include "canvas_gl.c"
-#include "canvas.c"
+
+/* =================================== */
+#elif defined(LD_PLATFORM_OSX)
+/* =================================== */
+/* OSX (Apple) Platform                */
+/* =================================== */
+
+
+#else
+/* =================================== */
+/* NULL Platform                       */
+/* =================================== */
+
+#include "boot_null.c"
+#include "alloc_null.c"
+#include "canvas_null.c"
 
 /* =================================== */
 #endif
 /* =================================== */
+
+#include "canvas.c"
+
 
